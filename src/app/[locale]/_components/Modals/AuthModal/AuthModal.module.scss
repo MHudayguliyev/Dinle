@@ -1,0 +1,123 @@
+@use '../../../_styles/globalTypography.scss' as *;
+
+.content {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    
+}
+
+.authModal {
+    max-width: 655px;
+    width: 100%;
+    min-height: 409px;
+    background: rgba(0, 0, 0, 1);
+    border: 2px solid rgba(22, 22, 22, 1);
+    display: flex;
+    align-items: center;
+
+.logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16.77px;
+
+    .logoTxt {
+        font-weight: 400;
+        font-size: 30px;
+        line-height: 36px;
+        color: var(--text-color);
+    }
+}
+
+.header {
+    max-width: 320px;
+    h4 {
+        font-family: 'Roboto Flex';
+        font-weight: calc($fontWeightMedium + 100);
+        font-size: calc($fontSizeBig + 4) + px;
+        line-height: calc($lineHeightBig + 10) + px;
+        color: var(--text-color);
+        margin-bottom: 6px;
+    }
+    p {
+        font-weight: $fontWeightRegular;
+        font-size: $fontSizeMedium + px;
+        line-height: $lineHeightBig + px;
+        color: var(--login-text-color)
+    }
+}
+
+.formik {
+    display: flex;
+    flex-direction: column;
+    gap: inherit;
+    max-width: 320px;
+    width: 100%;
+
+    .inputField {
+        height: 46px;
+        width: 100%;
+    }
+
+    .btnGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .error {
+        color: var(--main-color-red);
+        font-size: $fontSizeSmall + px;
+        height: 15px;
+        margin-bottom: -15px;
+    }
+}
+}
+
+
+.otp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 90px;
+    .otp__fields {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        max-width: 210px;
+    }
+
+    .error__text {
+        text-align: center;
+        color: var(--otp-error-text-color);
+        font-weight: calc($fontWeightMedium - 100);
+        font-size: $fontSizeMedium + px;
+        line-height: calc($lineHeightBig + 2) + px;
+        display: none;
+    }
+    .showErrorTxt {
+        display: block;
+    }
+}
+
+.otpHeader {
+    text-align: center;
+}
+
+.changeNumber{
+    font-weight: $fontWeightRegular;
+    font-size: $fontSizeMedium + px;
+    line-height: $lineHeightBig + px;
+    color: var(--main-color-blue);
+    cursor: pointer
+}
+
+.resend {
+    max-width: 210px;
+    width: 100%;
+}

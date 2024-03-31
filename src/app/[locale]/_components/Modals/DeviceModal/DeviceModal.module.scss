@@ -1,0 +1,83 @@
+@use '../../../_styles/globalTypography.scss' as *;
+
+.wrapper {
+    padding: 30px;
+}
+
+.content {
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.deviceModal {
+    max-width: 655px;
+    width: 100%;
+    min-height: 409px;
+    background: rgba(0, 0, 0, 1);
+    border: 2px solid rgba(22, 22, 22, 1);
+    display: flex;
+    align-items: center;
+}
+
+.header {
+    h4 {
+        font-weight: calc($fontWeightMedium + 100);
+        font-size: calc($fontSizeBig + 4) + px;
+        line-height: calc($lineHeightBig + 10) + px;
+        color: var(--text-color);
+        margin-bottom: 6px;
+    }
+    p {
+        font-weight: $fontWeightRegular;
+        font-size: $fontSizeMedium + px;
+        line-height: $lineHeightBig + px;
+        color: var(--login-text-color)
+    }
+}
+
+.otp {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-height: 90px;
+    .otp__fields {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        max-width: 210px;
+    }
+
+    .error__text {
+        text-align: center;
+        color: var(--otp-error-text-color);
+        font-weight: calc($fontWeightMedium - 100);
+        font-size: $fontSizeMedium + px;
+        line-height: calc($lineHeightBig + 2) + px;
+        display: none;
+    }
+    .showErrorTxt {
+        display: block;
+    }
+}
+.otpHeader {
+    text-align: center;
+}
+
+.changeNumber{
+    font-weight: $fontWeightRegular;
+    font-size: $fontSizeMedium + px;
+    line-height: $lineHeightBig + px;
+    color: var(--main-color-blue);
+    cursor: pointer
+}
+
+.resend {
+    width: 100%;
+}

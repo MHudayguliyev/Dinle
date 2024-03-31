@@ -1,0 +1,73 @@
+@use "./../../_styles/globalFunctions" as *;
+@use "./../../_styles/globalAnimation" as Ganimation;
+
+.switchWrapper {
+   cursor: pointer;
+   position: relative;
+}
+
+//'small' | 'middle' | 'big',
+.switchWrapperSmall {
+   width: toRem(40);
+   height: toRem(20);
+}
+
+.switchWrapperMiddle {
+   width: toRem(48);
+   height: toRem(24);
+}
+
+.switchWrapperBig {
+   width: toRem(56);
+   height: toRem(28);
+}
+
+//'small' | 'middle' | 'big',
+.circle {
+   position: absolute;
+   top: 50%;
+   left: toRem(2);
+   right: toRem(2);
+   background-color: white;
+   border-radius: 50%;
+   transition: transform Ganimation.$duration ease;
+}
+
+.circleSmall {
+   width: toRem(16);
+   height: toRem(16);
+}
+
+.circleMiddle {
+   width: toRem(20);
+   height: toRem(20);
+}
+
+.circleBig {
+   width: toRem(24);
+   height: toRem(24);
+}
+
+.circleChecked {
+   transform: translate(120%, -50%)
+}
+
+.circleNotChecked {
+   transform: translate(0, -50%)
+}
+
+// 'primary' | 'secondary' | 'tertiary'
+.track {
+   width: 100%;
+   height: 100%;
+   border-radius: toRem(1000);
+}
+
+.trackNotChecked {
+   background:rgba(12, 11, 11, 1);
+   border: 1px solid white;
+}
+
+.trackPrimary {
+   background: var(--main-color-red);
+}

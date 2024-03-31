@@ -1,0 +1,79 @@
+@use '../../_styles/globalBreakPoints.scss' as *;
+
+$columnCount: 12;
+
+.row {
+   display: flex;
+   align-items: center;
+   flex-flow: row wrap;
+   @media screen and (max-width: 600px) {
+      justify-content: start;
+   }
+}
+
+@mixin createColumn($columnCount, $className) {
+   @for $i from 1 through $columnCount {
+      #{$className}#{$i} {
+         display: block;
+         flex: 0 0 calc((100/$columnCount)*$i * 1%);
+         max-width: calc((100/$columnCount)*$i * 1%);
+      }
+   }
+}
+
+@mixin createOffset($columnCount, $className) {
+   @for $i from 1 through $columnCount {
+      #{$className}#{$i} {
+         margin-left: calc((100/$columnCount)*$i * 1%)
+      }
+   }
+}
+
+@mixin createOrder($columnCount, $className) {
+   @for $i from 1 through $columnCount {
+      #{$className}#{$i} {
+         order: $i;
+      }
+   }
+}
+
+
+@include createColumn($columnCount, '.col-');
+@include createOffset($columnCount, '.offset-');
+@include createOrder($columnCount, '.order-');
+
+@media (min-width: $bigDesktop) {
+   @include createColumn($columnCount, '.col-xxlg-');
+   @include createOffset($columnCount, '.offset-xxlg-');
+   @include createOrder($columnCount, '.order-xxlg-');
+}
+
+@media (max-width: $bigDesktop) {
+   @include createColumn($columnCount, '.col-xlg-');
+   @include createOffset($columnCount, '.offset-xlg-');
+   @include createOrder($columnCount, '.order-xlg-');
+}
+
+@media (max-width: $desktop) {
+   @include createColumn($columnCount, '.col-lg-');
+   @include createOffset($columnCount, '.offset-lg-');
+   @include createOrder($columnCount, '.order-lg-');
+}
+
+@media (max-width: $minDesktop) {
+   @include createColumn($columnCount, '.col-md-');
+   @include createOffset($columnCount, '.offset-md-');
+   @include createOrder($columnCount, '.order-md-');
+}
+
+@media (max-width: $tablet) {
+   @include createColumn($columnCount, '.col-sm-');
+   @include createOffset($columnCount, '.offset-sm-');
+   @include createOrder($columnCount, '.order-sm-');
+}
+
+@media (max-width: $mobile) {
+   @include createColumn($columnCount, '.col-xs-');
+   @include createOffset($columnCount, '.offset-xs-');
+   @include createOrder($columnCount, '.order-xs-');
+}

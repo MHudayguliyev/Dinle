@@ -1,0 +1,99 @@
+// Roboto flex regular
+@font-face {
+    font-family: 'Roboto Flex';
+    font-weight:400;
+    font-style: normal;
+    src: url('../_assets/fonts/RobotoFlex-Regular.eot'); /* IE9 Compat Modes */
+    src: local('Roboto Flex Regular'), local('Roboto Flex Regular'),
+          url('../_assets/fonts/RobotoFlex-Regular.eot?#iefix') format('embedded-opentype'),
+          url('../_assets/fonts/RobotoFlex-Regular.woff2') format('woff2'),
+          url('../_assets/fonts/RobotoFlex-Regular.woff') format('woff'),
+          url('../_assets/fonts/RobotoFlex-Regular.ttf') format('truetype');
+}
+// Bodoni Moda regular
+@font-face {
+    font-family: 'Bodoni Moda';
+    src: url('../_assets/fonts/BodoniModa-Regular.eot');
+    src: local('Bodoni Moda Regular'), local('BodoniModa-Regular'),
+        url('../_assets/fonts/BodoniModa-Regular.eot?#iefix') format('embedded-opentype'),
+        url('../_assets/fonts/BodoniModa-Regular.woff2') format('woff2'),
+        url('../_assets/fonts/BodoniModa-Regular.woff') format('woff'),
+        url('../_assets/fonts/BodoniModa-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+// Bodoni Moda Italic
+@font-face {
+    font-family: 'Bodoni Moda';
+    src: url('../_assets/fonts/BodoniModa-Italic.eot');
+    src: local('Bodoni Moda Italic'), local('BodoniModa-Italic'),
+        url('../_assets/fonts/BodoniModa-Italic.eot?#iefix') format('embedded-opentype'),
+        url('../_assets/fonts/BodoniModa-Italic.woff2') format('woff2'),
+        url('../_assets/fonts/BodoniModa-Italic.woff') format('woff'),
+        url('../_assets/fonts/BodoniModa-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+// Pacifico 
+@font-face {
+    font-family: 'Pacifico';
+    src: url('../_assets/fonts/Pacifico-Regular.eot');
+    src: local('Pacifico Regular'), local('Pacifico-Regular'),
+        url('../_assets/fonts/Pacifico-Regular.eot?#iefix') format('embedded-opentype'),
+        url('../_assets/fonts/Pacifico-Regular.woff2') format('woff2'),
+        url('../_assets/fonts/Pacifico-Regular.woff') format('woff'),
+        url('../_assets/fonts/Pacifico-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+//YellowTail
+@font-face {
+    font-family: 'Yellowtail';
+    src: url('../_assets/fonts/Yellowtail-Regular.eot');
+    src: local('Yellowtail Regular'), local('Yellowtail-Regular'),
+        url('../_assets/fonts/Yellowtail-Regular.eot?#iefix') format('embedded-opentype'),
+        url('../_assets/fonts/Yellowtail-Regular.woff2') format('woff2'),
+        url('../_assets/fonts/Yellowtail-Regular.woff') format('woff'),
+        url('../_assets/fonts/Yellowtail-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+//QuickSand Regular
+@font-face {
+    font-family: 'QuickSand';
+    src: url('../_assets/fonts/Quicksand-Regular.eot');
+    src: local('QuickSand Regular'), local('QuickSand-Regular'),
+        url('../_assets/fonts/Quicksand-Regular.eot?#iefix') format('embedded-opentype'),
+        url('../_assets/fonts/Quicksand-Regular.woff2') format('woff2'),
+        url('../_assets/fonts/Quicksand-Regular.woff') format('woff'),
+        url('../_assets/fonts/Quicksand-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+//QuickSand Medium
+@font-face {
+    font-family: 'QuickSand Medium';
+    src: url('../_assets/fonts/Quicksand-Medium.eot');
+    src: local('QuickSand Medium'), local('QuickSand-Medium'),
+        url('../_assets/fonts/Quicksand-Medium.eot?#iefix') format('embedded-opentype'),
+        url('../_assets/fonts/Quicksand-Medium.woff2') format('woff2'),
+        url('../_assets/fonts/Quicksand-Medium.woff') format('woff'),
+        url('../_assets/fonts/Quicksand-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+//QuickSand Bold
+@font-face {
+    font-family: 'QuickSand Bold';
+    src: url('../_assets/fonts/Quicksand-Bold.eot');
+    src: local('QuickSand Bold'), local('QuickSand-Bold'),
+        url('../_assets/fonts/Quicksand-Bold.eot?#iefix') format('embedded-opentype'),
+        url('../_assets/fonts/Quicksand-Bold.woff2') format('woff2'),
+        url('../_assets/fonts/Quicksand-Light.woff') format('woff'),
+        url('../_assets/fonts/Quicksand-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}

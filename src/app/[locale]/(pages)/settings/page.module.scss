@@ -1,0 +1,93 @@
+@use '../../_styles/globalTypography.scss' as *;
+@use '../../_styles/globalBreakPoints.scss' as *;
+@use '../../_styles/globalMixins.scss' as GMixin;
+
+
+.wrapper {
+    height: calc(100vh - 105px);
+    width: 100%;
+    position: relative;
+    color: var(--text-color);
+
+
+    .top {
+        position: fixed;
+        top: 0;
+        left: $sidebarWidth;
+        width: calc(100% - $sidebarWidth);
+        height: 64px;
+        background-color: transparent;
+        padding: 10px 20px;
+        @include GMixin.flexible($align: center);
+    }
+
+    @media screen and (max-width: $md) {
+        height: calc(100vh - (90px + 65px));
+        
+        .top {
+            width: 100%;
+            left: 0;
+        }
+    }
+
+}
+
+.box {
+    max-width: 493px;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.topHeader {
+    font-weight: $fontWeightBold;
+    font-size: calc($fontSizeBig + 6) + px;
+    line-height:26.4px;
+}
+
+.item {
+    background-color: var(--box-main-bg);
+    display: flex;
+    padding:10px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    border-radius: calc(var(--border-radius) + 2px);
+
+    .theLeft {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .thePaymentLeft {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .theRight {
+        display: flex;
+        align-items: center;
+    }
+
+
+
+    .header {
+        font-weight: $fontWeightMedium;
+        font-size: $fontSizeBig + px;
+        line-height: $lineHeightBig + px;
+        margin-bottom: 3px;
+    }
+    .phone {
+        font-weight: $fontWeightRegular;
+        font-size: $fontSizeMedium + px;
+        line-height: $lineHeightMedium + px;
+        color: var(--text-third-color);
+    }
+}

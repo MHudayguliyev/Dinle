@@ -1,0 +1,33 @@
+@use '../../../_styles/globalTypography.scss' as *;
+@use '../../../_styles/globalBreakPoints.scss' as *;
+
+.searchModal{
+    height: 365px;
+    max-width: 557px;
+    width: 100%;
+    background: rgba(21, 21, 21, 1);
+}
+.content {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+.header {
+    font-weight: $fontWeightBold;
+    font-size: calc($fontSizeBig + 10) + px;
+    line-height: 31.2px;
+    color: var(--text-color);
+    margin-top: 50px;
+}
+
+.text {
+    color: var(--text-fourth-color);
+    width: 270px;
+    text-align: center;
+    font-weight: $fontWeightRegular;
+    font-size: $fontSizeSmall + px;
+    line-height: $lineHeightMedium + px;
+}

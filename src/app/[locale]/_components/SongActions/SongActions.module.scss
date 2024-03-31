@@ -1,0 +1,62 @@
+@use '../../_styles/globalBreakPoints.scss' as *;
+@use '../../_styles/globalTypography.scss' as *;
+@use '../../_styles/globalShapes' as GShapes;
+@use '../../_styles/globalAnimation.scss' as GAnimation;
+
+.actions {
+    position: absolute;
+    bottom: 50px;
+    right: 10px;
+    z-index: GShapes.$songActionsZIndex; 
+    background: var(--show-more-bg);
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(10px);
+    transform: scale(0);
+    transition: transform GAnimation.$duration ease 0s;
+    padding: 10px;
+
+    @media screen and (max-width: $md) {
+        display: none;
+    }
+}
+
+.action {
+    width: 190px;
+    height: 44px;
+    padding: 4px 10px;
+    color: var(--text-second-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
+
+    .title {
+        font-size: $fontSizeBig + px;
+        font-weight: $fontWeightRegular;
+        line-height: calc($lineHeightBig + 1.2) + px;
+        transition: 0.3s ease-in-out;
+    }
+    &:hover {
+        background: var(--show-more-hover-bg);
+    }
+}
+
+
+.show{
+    transform: scale(1);
+    transition: transform .3s var(--transition-cubic);
+}
+
+.transformOriginBottomRight {
+    transform-origin: bottom right;
+}
+.transformOriginBottomLeft {
+    transform-origin: bottom left;
+}
+.transformOriginTopRight {
+    transform-origin: top right;
+}
+.transformOriginTopLeft {
+    transform-origin: top left;
+}

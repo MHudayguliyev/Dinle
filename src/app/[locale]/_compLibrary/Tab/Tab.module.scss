@@ -1,0 +1,69 @@
+@use '../../_styles/globalBreakPoints.scss' as *;
+
+.menu {
+    border-bottom: 1px solid  var(--artist-card-bg);
+    padding: 0 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+        background-color: transparent;
+        display: none;
+    }
+}
+
+.wrapper {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    background: var(--main-bg);
+
+    a {
+        padding: 10px;
+        height: 40px;
+        color: rgba(202, 196, 208, 1);
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    .active {
+        border-bottom: 1px solid rgba(202, 196, 208, 1);
+    }
+}
+
+.autoHeight {
+    height: 51px;
+}
+.fixed {
+    position: fixed;
+    width: calc(100% - $sidebarWidth);
+    top: 80px;
+    left: $sidebarWidth;
+    padding: 0 20px;
+    z-index: 4;
+    border-bottom: 1px solid  var(--artist-card-bg);
+
+
+
+    @media screen and (max-width: $md) {
+        width: 100%;
+        left: 0;
+    }
+}
+
+.fixedTopNull {
+    position: fixed;
+    width: calc(100% - $sidebarWidth);
+    top: 0;
+    left: $sidebarWidth;
+    padding: 0 20px;
+    z-index: 4;
+    border-bottom: 1px solid  var(--artist-card-bg);
+
+    
+    @media screen and (max-width: $md) {
+        width: 100%;
+        left: 0;
+    }
+}

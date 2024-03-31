@@ -1,0 +1,21 @@
+.baseStyle {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius-circled);
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+}
+
+.icon {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}

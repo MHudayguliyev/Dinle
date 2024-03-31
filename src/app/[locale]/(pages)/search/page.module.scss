@@ -1,0 +1,152 @@
+@use '../../_styles/globalTypography.scss' as *;
+@use '../../_styles/globalBreakPoints.scss' as *;
+@use '../../_styles/globalFunctions.scss' as *;
+@use '../../_styles/globalMixins.scss' as *;
+@use '../../_styles/globalAnimation.scss' as GAnimation;
+
+.search_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .search__actions {
+        padding: 10px 20px;
+        display: flex;
+        gap: 10px;
+        row-gap: 8px;
+        width: 100%;
+        background: var(--main-bg);
+        z-index: 3;
+
+
+        .input__container {
+            position: relative;
+            width: 360px;
+            .inputField {
+                height:43.72px;
+            }
+
+            .recent_search_wrapper {
+                background: var(--main-bg);
+                color: var(--text-fourth-color);
+                position: absolute;
+                left: 0;
+                top: 54px;
+                width: 100%;
+                transform: scale(0);
+                transform-origin: top right;
+                transition: transform GAnimation.$durationFaster;
+
+
+                .searchData {
+                    display: flex;
+                    padding: 10px 20px;
+                    justify-content: space-between;
+                    cursor: pointer;
+
+                    span {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        word-break: break-all;
+                    }
+
+                    &:hover {
+                        background-color: rgb(19, 19, 19);
+                    }
+                }
+
+                .active {
+                    background-color: rgb(19, 19, 19);
+                }
+
+            }
+
+            .openRecents {
+                transform: scale(1);
+                transition: transform GAnimation.$durationFaster;
+            }
+
+        }
+
+        @media screen and (max-width: $sm) {
+            width: 100%;
+            justify-content: flex-start;
+        }
+    }
+}
+
+.songCardTitle {
+    font-weight: 700;
+    font-size: $fontSizeBig + px;
+    color: var(--text-color);
+    padding: 10px 0;
+
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    
+}
+.recomendations {
+    --loadErrorHeight: calc(100vh - 400px);
+    padding: 0 20px;
+    
+    .loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .error_container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        height: calc(100vh - 400px);
+        .error_txt {
+            font-weight: calc($fontWeightMedium + 100);
+            font-size: calc($fontSizeBig + 4) + px;
+            line-height: calc($lineHeightBig + 8) + px;
+            color: var(--text-color);
+        }
+        .helper_txt {
+            color: rgba(193, 193, 193, 1);
+            font-weight: $fontWeightMedium;
+            font-size: calc($fontSizeBig + 4) + px;
+            line-height: calc($lineHeightBig + 6) + px;
+        }
+    }
+}
+
+.topShimmer {
+    display: block;
+    width: 200px;
+    background: rgba(40, 40, 40, 1);
+    height: 16px;
+    margin: 20px 0;
+    border-radius: var(--border-radius-sm);
+}
+
+.arrowRight {
+    display: block;
+    @media screen and (min-width: $md){
+        display:none;
+    }
+}
+
+.grid_wrapper {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 15px;
+
+    @media screen and (max-width: $xl){
+        grid-template-columns: repeat(4, 1fr);
+    }
+    @media screen and (max-width: $lg){
+        grid-template-columns: repeat(3, 1fr);
+    }
+    @media screen and (max-width:$sm) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

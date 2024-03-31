@@ -1,0 +1,23 @@
+@use '../../../_styles/globalBreakPoints.scss' as *;
+
+.hide {
+    @media screen and (max-width: $md) {
+        display: none;
+    }
+}
+.prev {
+    display: flex;
+    flex-shrink: 0;
+
+    @media screen and (max-width: $md) {
+        display: none;
+    }
+}
+
+.mobilePrev {
+    display: none;
+    @media screen and (max-width: $md){
+        display: flex;
+        flex-shrink: 0;
+    }
+}

@@ -1,0 +1,45 @@
+@use '../../../_styles/globalTypography.scss' as*;
+@use '../../../_styles/globalBreakPoints.scss'as *;
+@use '../../../_styles/globalShapes.scss' as GShapes;
+
+.the_top {
+    height: 64px;
+    background: rgba(9, 9, 9, 1);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 20px;
+    position: fixed;
+    width: calc(100% - 244px);
+    top: 0;
+    transition: 0.2s ease-in;
+    user-select: none;
+    z-index: GShapes.$fixedHeaderZIndex;
+
+    @media screen and (max-width: $md){
+        width: 100%;
+    }
+}
+
+.header {
+    font-weight: $fontWeightBold;
+    font-size: calc($fontSizeBig + 6) + px;
+    line-height: calc($lineHeightBig + 8) + px;
+    color: var(--text-color)
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.backForward {
+    display: flex;
+    gap: 20px;
+}
+
+.lists {
+    margin-top: 64px;
+    padding: 10px 20px;
+}

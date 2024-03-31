@@ -1,0 +1,158 @@
+@use '../../_styles/globalTypography.scss' as *;
+@use '../../_styles/globalBreakPoints.scss' as *;
+@use '../../_styles/globalShapes.scss' as GShapes;
+@use '../../_styles/globalMixins.scss' as *;
+
+.login__container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background: transparent;
+    user-select: none;
+    width: 100%;
+    max-width: 380px;
+
+    .logo {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16.77px;
+
+        .logoTxt {
+            font-weight: 400;
+            font-size: 30px;
+            line-height: 36px;
+            color: var(--text-color);
+        }
+    }
+
+    .header {
+        width: 320px;
+        h4 {
+            font-family: 'Roboto Flex';
+            font-weight: calc($fontWeightMedium + 100);
+            font-size: calc($fontSizeBig + 4) + px;
+            line-height: calc($lineHeightBig + 10) + px;
+            color: var(--text-color);
+            margin-bottom: 6px;
+        }
+        p {
+            font-weight: $fontWeightRegular;
+            font-size: $fontSizeMedium + px;
+            line-height: $lineHeightBig + px;
+            color: var(--login-text-color);
+        }
+
+        @media screen and (max-width: $md) {
+            width: 100%;
+        }
+    }
+
+    .formik {
+        display: flex;
+        flex-direction: column;
+        gap: inherit;
+
+        .inputField {
+            height: 43.72px;
+            width: 100%;
+        }
+
+        .btnGroup {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .field .error {
+            color: var(--main-color-red);
+            font-size: $fontSizeSmall + px;
+            height: 15px;
+            margin-bottom: -15px;
+        }
+    }
+}
+
+
+
+
+.otp__container {
+    width: 380px;
+    height: 284px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    user-select: none;
+
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+
+        h4 {
+            font-size: calc($fontSizeBig + 4) + px;
+            font-weight: $fontWeightBold;
+            line-height: calc($lineHeightBig + 10) + px;
+            color: var(--text-color);
+        }
+        p {
+            font-size: $fontSizeMedium + px;
+            font-weight: $fontWeightRegular;
+            line-height: calc($lineHeightBig + 2) + px;
+            color: var(--login-text-color)
+        }
+    }
+
+    .otp {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        .error__text {
+            text-align: center;
+            color: var(--otp-error-text-color);
+            font-weight: calc($fontWeightMedium - 100);
+            font-size: $fontSizeMedium + px;
+            line-height: calc($lineHeightBig + 2) + px;
+            display: none;
+        }
+        .showErrorTxt {
+            display: block;
+        }
+    }
+
+
+    .otp__fields {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .timer {
+        font-size: $fontSizeMedium + px;
+        font-weight: $fontWeightRegular;
+        line-height: calc($lineHeightBig + 2) + px;
+        color: var(--text-third-color);
+        align-self: center;
+    }
+    .resend__code {
+        font-size: $fontSizeMedium + px;
+        font-weight: $fontWeightRegular;
+        line-height: calc($lineHeightBig + 2) + px;
+        color: var(--button-blue);
+        align-self: center;
+        cursor: pointer;
+    }
+}

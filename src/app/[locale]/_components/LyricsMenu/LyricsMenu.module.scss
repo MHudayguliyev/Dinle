@@ -1,0 +1,57 @@
+@use '../../_styles/globalTypography.scss' as *;
+@use '../../_styles/globalBreakPoints.scss' as *;
+@use '../../_styles/globalShapes.scss' as GShapes;
+@use '../../_styles/globalAnimation.scss' as GAnimation;
+
+
+.wrapper {
+    background-color: var(--lyricsmenu-main-bg);
+    backdrop-filter: blur(35px);
+    transition: bottom GAnimation.$duration;
+    z-index: GShapes.$sideMenuZIndex - GShapes.$ZIndexAddition;
+    position: fixed;
+    right: 0;
+    bottom: -100%;
+    height: calc(100vh - 105px);
+    width: calc(100% - 244px);
+    color: var(--text-fourth-color);
+    user-select: none;
+    overflow-y: overlay;
+    &::-webkit-scrollbar {
+        width: 5px;
+        background-color: transparent;
+    }
+    &::-webkit-scrollbar-track {
+        right: 5px;
+        border-radius: 5px;
+        background-color: transparent;
+    }
+    &::-webkit-scrollbar-track-piece {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+
+    }
+
+    p {
+        max-width: 75%;
+        margin: 0 auto;
+        font-weight: $fontWeightBold;
+        font-size: 44px;
+        line-height: 53px;
+        text-align: center;
+    }
+
+    @media screen and (max-width: $md){
+        width: 100%;
+        height: calc(100vh - 155px);
+    }
+}
+
+.showLyrics {
+    bottom: 105px;
+    @media screen and (max-width: $md){
+        bottom: 155px;
+    }
+}
