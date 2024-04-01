@@ -314,11 +314,11 @@ const Search = () => {
         console.log('rsp', response.data)
         
         delay(200).then(() => {
-          setAlbums(alboms)
-          setArtists(artists)
-          setSongs(songs)
-          setPlaylists(playlists)
-          setShows(shows)
+          setAlbums(alboms?.slice(0, 5))
+          setArtists(artists?.slice(0, 5))
+          setSongs(songs?.slice(0, 5))
+          setPlaylists(playlists?.slice(0, 5))
+          // setShows(shows?.slice(0, 5))
           setSearchDataLoading(false)
         })
 
@@ -341,8 +341,9 @@ const Search = () => {
         router.push(`search?type=${tabs[3].route}`)
       }else {
         goSearch()
-      }
-    }
+      } 
+    }else if(e.keyCode === 32) //prevent propagation of audio player on space click
+    e.stopPropagation()
   }, [router, searchValue, goSearch])
 
   const searchOnIClick = useCallback(() => {
@@ -381,7 +382,9 @@ const Search = () => {
               removeDefaultWidth
               className={styles.inputField}
               value={searchValue}
-              onChange={e => setSearchValue(e.target.value)}
+              onChange={e => 
+                setSearchValue(e.target.value)
+              }
               onLeftClick={searchOnIClick}
               onRightClick={() => setOpenShazam(true)}
               onKeyDown={handleKeyDown}
