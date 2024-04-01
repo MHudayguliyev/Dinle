@@ -165,8 +165,8 @@ const ViewAll = () => {
 
     const songIds = useMemo(() => {
       return {
-        currentSongId: song[songIndex]?.id, 
-        rowSongId: songsRow[songIndex]?.id
+        currentSongId: song?.[songIndex]?.id, 
+        rowSongId: songsRow?.[songIndex]?.id
       }
     }, [  
       song, 

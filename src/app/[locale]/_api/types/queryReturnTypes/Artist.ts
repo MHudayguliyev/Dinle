@@ -17,7 +17,7 @@ interface Artist {
             }
         }
         songs: Songs['rows']
-        alboms: Albums['rows']
+        alboms: Albums['data']['rows']
     }
 }
 export default Artist

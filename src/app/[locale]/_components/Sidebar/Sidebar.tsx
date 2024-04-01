@@ -12,7 +12,6 @@ import premiumIcon from '@app/_assets/icons/premium.svg'
 import playlist from '@app/_assets/icons/playlist.svg';
 import gotoLib from '@app/_assets/icons/go_to_library.svg';
 import like_image from '@app/_assets/images/liked-sm.png';
-import playlistSm from '@app/_assets/images/playlist_sm.png';
 import user from '@app/_assets/icons/accountI.svg'
 //json data
 import sidebar_routes from '@app/_assets/json_data/sidebar_routes'
@@ -26,6 +25,8 @@ import Apple from '@app/_components/icons/apple/icon'
 //redux 
 import { useAppSelector } from '@app/_hooks/redux_hooks'
 import CustomLink from '../CustomLink/CustomLink'
+import { useQuery } from 'react-query'
+import { GetPlaylists } from '@app/_api/Queries/Getters'
 
 interface SidebarProps {
     hideSidebar: boolean
@@ -46,6 +47,10 @@ const Sidebar = (props: SidebarProps) => {
         if(pathname === '/search') return item.route === pathname.concat("?type=genre")
         return item.route === pathname
     });
+
+    const {data} = useQuery('GetPlaylists', () => GetPlaylists(4), {
+        refetchOnWindowFocus: false
+    })
 
   return (
     <>
@@ -99,40 +104,29 @@ const Sidebar = (props: SidebarProps) => {
 
                 <div className={styles.lists}>
                     <CustomLink href='/liked' className={cn({ list: true, active: pathname === '/liked' })}>
-                        <Image src={like_image} alt='alt'/>
+                        <div className={styles.playlistImage}>
+                            <Image src={like_image} alt='cover' width='400' height='400'/>
+                        </div>
                         <div className={styles.content}>
-                            <div >Title</div>
+                            <div>Favorim</div>
                             <span>Playlist ⋅ 2,169 songs</span>
                         </div>
                     </CustomLink>
-
-                    <CustomLink href='/liked' className={styles.list}>
-                        <Image src={playlistSm} alt='alt'/>
-                        <div className={styles.content}>
-                            <div >Title</div>
-                        </div>
-                    </CustomLink>
-
-                    <CustomLink href='/liked' className={styles.list}>
-                        <Image src={playlistSm} alt='alt'/>
-                        <div className={styles.content}>
-                            <div >Title</div>
-                        </div>
-                    </CustomLink>
-
-                    <CustomLink href='/liked' className={styles.list}>
-                        <Image src={playlistSm} alt='alt'/>
-                        <div className={styles.content}>
-                            <div >Title</div>
-                        </div>
-                    </CustomLink>
-
-                    <CustomLink href='/liked' className={styles.list}>
-                        <Image src={playlistSm} alt='alt'/>
-                        <div className={styles.content}>
-                            <div >Title</div>
-                        </div>
-                    </CustomLink>
+                    {
+                        data?.data?.rows.map((row) => {
+                            const url = `/playlist/${row.id}`
+                            return (
+                                <CustomLink href={url} className={cn({ list: true, active: url == pathname })}>
+                                    <div className={styles.playlistImage}>
+                                        <Image src={row.cover} alt='cover' width='400' height='400'/>
+                                    </div>
+                                    <div className={styles.content}>
+                                        {row.title}
+                                    </div>
+                                </CustomLink>
+                            )
+                        })
+                    }
                 </div>
 
                 <CustomLink href='/settings' className={cn({settings: true, active: pathname === '/settings'})}>

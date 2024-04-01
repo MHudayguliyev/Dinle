@@ -42,10 +42,19 @@
     &:hover {
         background-color: var(--artist-card-bg);
     }
+
+    @media screen and (max-width: $md) {
+        grid-template-columns: 1fr auto;
+        .colNumber, .colAlbum, .duration {
+            display: none;
+        }
+    }
 }
 
 .colNumber {
     padding: 0 14px;
+
+
 }
 
 .colActions {
@@ -78,6 +87,19 @@
 .musicContent {
     padding-left: 10px;
     width: 100%;
+
+    .musicTitleWrapper {
+        display: flex;
+        width: 100%;
+        height: 20px;
+    }
+}
+
+.responsive {
+    display: block;
+    @media screen and (min-width: $md) {
+        display: none;
+    }
 }
 
 .music {
@@ -92,6 +114,12 @@
 
 .title {
     font-weight: $fontWeightMedium;
+    transition: transform .3s;
+}
+.paddLeft {
+   @media screen and (max-width: $md) {
+        transform: translateX(5px);
+   } 
 }
 
 .description {
@@ -110,6 +138,10 @@
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
+
+    @media screen and (max-width: $md) {
+        gap: 10px;
+    }
 }
 
 .activeBg {

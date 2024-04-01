@@ -312,6 +312,7 @@ const Artist = ({params}: {params: {each: string}}) => {
 
         <SongList 
             data={rows}
+            artistId={data?.data?.artist.id}
             fetchStatuses={{
                 isLoading, isError
             }}
@@ -337,12 +338,11 @@ const Artist = ({params}: {params: {each: string}}) => {
                     <StandardCard 
                         key={i}
                         id={item.id}
+                        albomId={item.id}
                         title={item.title}
-                        author={item.description}
                         image={item.cover}
                         hideMoreI
                         alboms
-                        onClick={() => router.push(`/album/${item.id}`)}
                     />              
                 ))
             }

@@ -189,7 +189,7 @@ const Search = () => {
     data: playlistsData, 
     isLoading: isPlaylistsLoading, 
     isError: isPlaylistsError, 
-  } = useQuery(["GetPlaylists", showPlaylists], () => GetPlaylists(''), {
+  } = useQuery(["GetPlaylists", showPlaylists], () => GetPlaylists(), {
     refetchOnWindowFocus: false, enabled: showPlaylists
   })
   const {

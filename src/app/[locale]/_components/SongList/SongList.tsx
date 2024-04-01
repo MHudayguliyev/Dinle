@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState} from 'react'
+import React, {useCallback, useMemo, useRef, useState} from 'react'
 import Image from 'next/image'
 import CustomLink from '@components/CustomLink/CustomLink';
 //icons 
@@ -25,6 +25,7 @@ import { CheckObjOrArrForNull } from '@app/_utils/helpers'
 
 interface SongListProps {
     data: Songs['rows'] | any
+    artistId?: string 
     className?: string
     onPlay: (index: number) => void
     onLike?: (id: string) => void 
@@ -38,6 +39,7 @@ const cn = classNames.bind(styles)
 const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): JSX.Element => {
     const {
         data, 
+        artistId = "", 
         className = "",
         onPlay, 
         onLike, 
@@ -45,30 +47,42 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
         fetchStatuses
     } = props
 
-    //redux states
-    const songData = useAppSelector(state => state.mediaReducer.songData)
-    const songIndex = useAppSelector(state => state.mediaReducer.songIndex)
-    const isSongPlaying = useAppSelector(state => state.mediaReducer.isSongPlaying)
-    const runningSongId = useMemo(() => songData[songIndex]?.id,[songData, songIndex])
-
     const toggleActionsRef:any = useRef(null)
     const actionsContentRef: any = useRef(null)
     const [showActions, setShowActions] = useClickOutside(actionsContentRef, toggleActionsRef, 'click')
     const [width] = useWindowSize()
     const [showBottomsheet, setShowBottomsheet] = useState<boolean>(false)
-
     const [hoveredIndex, setHoveredIndex] = useState<string>("")
     const [toggleI, setToggleI] = useState<string>("")
+
+    //redux states
+    const songData = useAppSelector(state => state.mediaReducer.songData)
+    const songIndex = useAppSelector(state => state.mediaReducer.songIndex)
+    const isSongPlaying = useAppSelector(state => state.mediaReducer.isSongPlaying)
+    const runningSongId = useMemo(() => songData[songIndex]?.id,[songData, songIndex])
+    const renderEqualizer = useCallback((song: any, responsive = false) => {
+        const styles = cn({responsive: responsive})
+        const isEqual = isSongPlaying && runningSongId === song.id
+
+        return <>
+        {
+            isEqual ? (
+                <div className={styles}>
+                    <LottieI width={20} height={20} icon={EqualizerI} />
+                </div>
+            ) : ""
+        }
+        </>
+    }, [runningSongId, isSongPlaying, EqualizerI])
+
+
 
     const header = [
         '#', 'Ady', 'Albom', "Hereketler", 
     ]
 
-    const stopPropagation = (e: any) => {
-        e.stopPropagation()
-    }
-
-    // console.log("data", data)
+    const stopPropagation = (e: any) => e.stopPropagation();
+    
 
   return (
     <div className={`${styles.songs} ${className}`}>
@@ -96,7 +110,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                             })}>
 
                                 <div className={styles.colNumber}>
-                                    {isSongPlaying && runningSongId === song.id && <LottieI width={20} height={20} icon={EqualizerI} />}
+                                    {renderEqualizer(song)}
                                     <div className={cn({
                                         notVisible: true, 
                                         visible: (runningSongId !== song.id && hoveredIndex !== song.id)
@@ -116,11 +130,14 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                                             <Image src={song.cover} alt='cover' width='400' height='400'/>
                                         </div>
                                         <div className={styles.musicContent}>
-                                            <div className={styles.title}>
-                                                <CustomLink onClick={stopPropagation}  href={`/song/${song.id}`}>{song.title}</CustomLink>
+                                            <div className={styles.musicTitleWrapper}>
+                                                {renderEqualizer(song, true)}
+                                                <div className={cn({ title: true, paddLeft: isSongPlaying && songData[songIndex]?.id === song.id })}>
+                                                    <CustomLink onClick={stopPropagation}  href={`/song/${song.id}`}>{song.title}</CustomLink>
+                                                </div>
                                             </div>
                                             <div className={styles.description}>
-                                                <CustomLink onClick={stopPropagation} href={`/artist/${song.artistId}`}>{song.description}</CustomLink>
+                                                <CustomLink onClick={stopPropagation} href={`/artist/${song.artistId ?? artistId}`}>{song.description}</CustomLink>
                                             </div>
                                         </div>
                                     </div>

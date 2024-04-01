@@ -46,14 +46,10 @@ export const GetSongInfo = async (songId: string): Promise<SongInfo> => {
         url: `/client/songs/${songId}`
     })
 }
-export const GetPlaylists = async (searchValue: string): Promise<Playlists> => {
+export const GetPlaylists = async (pageSize = 20, page = 1): Promise<Playlists> => {
     return api.patch({
         url: '/client/playlists', 
-        data: {
-            page: 1,
-            pageSize: 20,
-            search: searchValue
-        }
+        data: {page, pageSize, search: null}
     })
 }
 export const GetArtists = async (page = 1): Promise<Artists> => {

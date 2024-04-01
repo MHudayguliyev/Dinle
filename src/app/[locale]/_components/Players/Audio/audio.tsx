@@ -8,7 +8,6 @@ import Heart from '@components/icons/heart/icon';
 import BackAndForth from '@components/icons/backandforth/icon';
 import ShuffleI from '@components/icons/shuffle/icon';
 import RepeatI from '@components/icons/repeat/icon';
-import MoreI from '@components/icons/more/icon';
 import TextI from '@components/icons/text/icon';
 import Volume from '@components/icons/volume/icon';
 import Device from '@components/icons/device/icon';
@@ -30,12 +29,11 @@ import { setCurrentSong, setIsSongPlaying, setSongIndex, setIsShuffle, shuffle }
 import { setShowAuthModal } from '@redux/reducers/AuthReducer';
 import { setIsBlockOverflow } from '@redux/reducers/OverflowReducer';
 //comps
-import SongActions from '@components/SongActions/SongActions';
 import Bottomsheet from '@components/Bottomsheet/Bottomsheet'
 import InfoMenu from '@components/InfoMenu/InfoMenu';
 //hooks
 import useWindowSize from '@hooks/useWindowSize';
-import { isEmpty, isUndefined, randomize } from '@utils/helpers';
+import { isAuthorized, isEmpty, isUndefined, randomize } from '@utils/helpers';
 //HLS 
 import HLS from 'hls.js'  
 //api
@@ -96,17 +94,15 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   const mobileRef:any = useRef(null)
   const lyricsRef:any = useRef(null)
 
-  const toggleSongActionsRef:any = useRef(null)
-  const songActionsRef:any = useRef(null)
   const toggleMenuRef:any = useRef(null)
   const menuRef:any = useRef(null)
-  const [showSongActions, setShowSongActions] = useClickOutside(songActionsRef, toggleSongActionsRef, 'mousedown')
   const [showMenu, setShowMenu] = useClickOutside(menuRef, toggleMenuRef, 'mousedown')
   const [width] = useWindowSize()
   
   const [showMobPlaylist, setShowMobPlaylist] = useState<boolean>(false)
   const [showMobLyrics, setShowMobLyrics] = useState<boolean>(false)
   const [showBottomsheet, setShowBottomsheet] = useState<boolean>(false)
+  const [prevSongUrl, setPrevSongUrl] = useState<string>("")
   const [songId, setSongId] = useState<string>("")
 
 
@@ -133,17 +129,17 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     if(HLS.isSupported() && !isUndefined(audioRef?.current)){
       const audio = audioRef.current;
       const hls = new HLS();
-      hls.attachMedia(audio);
-      hls.on(HLS.Events.MEDIA_ATTACHED, () => {
-        hls.loadSource(song?.link); 
-        // hls.on(HLS.Events.ERROR, (event, err) => console.log(err));
-      })
-      if(isSongPlaying) audio?.play();
-      return () => {
-        if (hls) {
-          hls.destroy();
-        }
+      const audioRefPaused = audioRef.current?.paused === true;
+
+      if(song?.link !== prevSongUrl){       
+        hls.attachMedia(audio);
+        hls.on(HLS.Events.MEDIA_ATTACHED, () => {
+          hls.loadSource(song?.link); 
+          // hls.on(HLS.Events.ERROR, (event, err) => console.log(err));
+        })
       }
+      if(isSongPlaying && audioRefPaused) audio?.play();
+      setPrevSongUrl(song?.link)
     }
   }, [audioRef, song])
 
@@ -190,6 +186,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     if(isLiked) setLiked(false)
   }, [song])
 
+  //hot keys
   useEffect(() => {
     const handleKeyDown = (event: any) => {
 
@@ -208,9 +205,11 @@ const AudioPlayer = (props: AudioPlayerProps) => {
             setTimeProgress(Math.max(timeProgress + 5, 0))
             break;
           case 'ArrowUp':
+            event.preventDefault()
             setVolume(Math.min(volume + 5, 100))
             break;
           case 'ArrowDown':
+            event.preventDefault()
             setVolume(Math.max(volume - 5, 0))
             break;
           case 's': 
@@ -241,19 +240,12 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     else dispatch(setIsBlockOverflow(false))
   }, [showPlayer])
 
-  const isAuthorized = useCallback(() => {
-    const token = authToken()
-    if(token) return true
-    return false
-  }, [authToken])
-
   const toggleShuffle = useCallback(() => dispatch(setIsShuffle(!isShuffle)),[isShuffle])
 
   const openMenu = useCallback((value: string) => {
     if(value === 'info') {
       setShowMenu(true)
     }
-    setShowSongActions(false)
     setShowBottomsheet(false)
   }, [])
 
@@ -291,48 +283,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     audioRef, 
     isShuffle,
   ])
-
-
-
-  // //audio hot keys
-  // const handleKeyDown = useCallback((event: any) => {
-  //   event.preventDefault();
-  //   if(!isUndefined(audioRef?.current))
-  //     switch (event.key) {
-  //       case ' ':
-  //         dispatch(setIsSongPlaying(!isSongPlaying))
-  //         break;
-  //       case 'ArrowLeft': 
-  //         audioRef.current.currentTime = Math.max(timeProgress - 5, 0);
-  //         setTimeProgress(Math.max(timeProgress - 5, 0))
-  //         break;
-  //       case 'ArrowRight':
-  //         audioRef.current.currentTime = Math.max(timeProgress + 5, 0);
-  //         setTimeProgress(Math.max(timeProgress + 5, 0))
-  //         break;
-  //       case 'ArrowUp': 
-  //         handleNext()
-  //         break;
-  //       case 'ArrowDown':
-  //         handlePrevious()
-  //         break;
-  //       case 's': 
-  //         toggleShuffle()
-  //         break;
-  //       case 'r': 
-  //         setIsRepeat(!isRepeat)
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  // }, [
-  //   audioRef, 
-  //   isSongPlaying,
-  //   timeProgress, 
-  //   isShuffle, 
-  //   isRepeat,
-  //   songs
-  // ])
 
   const handleProgressChange = useCallback(() => {
     if (audioRef?.current){
