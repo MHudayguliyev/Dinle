@@ -27,6 +27,7 @@
     --text-third-color: rgba(94, 94, 98, 1);
     --text-fourth-color: rgba(193, 193, 193, 1);
     --text-fifth-color: rgba(184, 184, 184, 1);
+    --text-sixths-color: rgba(132, 132, 142, 1);
     --text-dark: rgba(15, 11, 11, 1);
 
     --show-more-bg: rgba(9, 9, 9, 1);
@@ -57,6 +58,8 @@
     --main-color-blue: rgba(15, 96, 255, 1);
     --main-color-gray: rgba(135, 135, 135, 1);
 
+    --second-color-red: rgba(186, 26, 26, 1);
+
     --button-light: rgba(255, 255, 255, 1);
     --button-purple: rgba(0, 0, 0, 0.3);
     --button-orange: rgba(67, 23, 0, 1);
@@ -64,7 +67,9 @@
     --button-light-dark: rgba(26, 26, 26, 1);
     --button-second-light-dark: rgba(47, 47, 47, 1);
     --button-third-light-dark: rgba(26, 26, 26, 0.5);
+    --button-fourth-light-dark: rgba(16, 16, 20, 1);
     --button-red: var(--main-color-red);
+    --button-second-red: var(--second-color-red);
     --button-gray: var(--main-color-gray);
 
     --prev-next-main-bg: rgba(255, 255, 255, 0.05);

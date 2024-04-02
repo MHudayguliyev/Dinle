@@ -4,11 +4,10 @@
 
 
 .wrapper {
-    height: calc(100vh - 105px);
+    height: 100vh;
     width: 100%;
     position: relative;
     color: var(--text-color);
-
 
     .top {
         position: fixed;
@@ -30,6 +29,10 @@
         }
     }
 
+}
+
+.truncateHeight {
+    height: calc(100vh - 105px);
 }
 
 .box {

@@ -117,8 +117,9 @@ const AuthModal = (props: AuthModalProps) => {
         if(response.statusCode === 200 && response.success){
           setToStorage('authUser', stringify({
             access_token: response.data?.token, 
-            username: response.data?.phone, 
-            createdAt: response.data?.createdAt, 
+            refresh_token: response?.data?.refreshToken, 
+            username: response.data?.phone,
+            expiresAt: response.data?.worksUntil, 
             userId: response.data?.userId
           }))
           close()
