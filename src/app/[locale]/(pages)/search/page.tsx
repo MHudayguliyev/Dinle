@@ -342,7 +342,8 @@ const Search = () => {
       }else {
         goSearch()
       }
-    }
+    }else if(e.keyCode === 32)
+    e.stopPropagation()
   }, [router, searchValue, goSearch])
 
   const searchOnIClick = useCallback(() => {

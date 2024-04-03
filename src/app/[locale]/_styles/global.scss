@@ -105,7 +105,7 @@
     font-size: typography.$fontSizeMedium + px;
     font-weight: typography.$fontWeightRegular;
     line-height: typography.$lineHeightBig + px;
-    user-select: none;
+    // user-select: none;
 
     &::-webkit-scrollbar {
         width: 4px;
@@ -147,6 +147,7 @@
     cursor: pointer;
     position: relative;
     z-index: 1;
+    flex-shrink: 0;
  }
  
  .swiper {

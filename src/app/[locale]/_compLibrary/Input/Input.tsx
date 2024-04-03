@@ -39,7 +39,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref): JSX.E
       fontSize = 'medium',
       fontWeight = 'medium',
       outline = 'transparent', 
-      className,
+      className = "",
       autoFocus,
       rightIcon,
       leftIcon, 

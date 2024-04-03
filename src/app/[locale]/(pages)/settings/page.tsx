@@ -82,7 +82,7 @@ const Settings = () => {
                         <ArrowI />
                     </div>
 
-                    <CustomLink href='/profile' className={styles.item}>
+                    <CustomLink href='/premium' className={styles.item}>
                         <div className={styles.thePaymentLeft}>
                             <div className={styles.header}>Купить подписку</div>
                         </div>

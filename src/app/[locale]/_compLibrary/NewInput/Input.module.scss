@@ -1,0 +1,78 @@
+@use '../../_styles/globalTypography.scss' as typography;
+@use '../../_styles/globalFunctions.scss' as *;
+
+.input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    line-height: var(typography.$lineHeightBig) + px;
+    color: var(--text-color);
+    width: 100%;
+    &::placeholder {
+       /* Chrome, Firefox, Opera, Safari 10.1+ */
+       color: var(--text-placeholder);
+       opacity: 1;
+       /* Firefox */
+    }
+ 
+    &:-ms-input-placeholder {
+       /* Internet Explorer 10-11 */
+       color: var(--text-color);
+    }
+ 
+    &::-ms-input-placeholder {
+       /* Microsoft Edge */
+       color: var(--text-color);
+    }
+ 
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+       -webkit-appearance: none;
+       margin: 0;
+    }
+ 
+    /* Firefox */
+    &[type=number] {
+       -moz-appearance: textfield;
+    }
+ 
+    &[type=search] {
+       -webkit-search-cancel-button {
+       -webkit-appearance: searchfield-cancel-button;
+       }
+      
+    }
+ }
+
+ .iconedStyles {
+    display: flex;
+    align-items: center;
+    width: 100%;
+ }
+
+ 
+.fontSizeSmall {
+    font-size: toRem(typography.$fontSizeSmall);
+ }
+ .fontSizeMedium {
+    font-size: toRem(typography.$fontSizeMedium);
+ }
+ .fontSizeBig {
+    font-size: toRem(typography.$fontSizeBig);
+ }
+ .fontWeightNormal {
+    font-weight: toRem(typography.$fontWeightRegular);
+ }
+ .fontWeightMedium {
+    font-weight: toRem(typography.$fontWeightMedium);
+ }
+ .fontWeightBold {
+    font-weight: toRem(typography.$fontWeightBold);
+ }
+
+ .rounded {
+    border-radius: var(--border-radius);
+ }
+ .roundedSm {
+    border-radius: calc(--border-radius-sm);
+ }
