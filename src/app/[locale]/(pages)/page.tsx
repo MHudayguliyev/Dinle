@@ -109,7 +109,7 @@ export default function Home() {
     <>
         {infoMenu}
         <div className={styles.fixed_top}>
-          <h3>Diňle-de hiňlen...</h3>
+          <h3>Täzelikler</h3>
           {authContent}
         </div>
 
@@ -122,6 +122,8 @@ export default function Home() {
                 modules={[ Navigation ]}
                 slidesPerView={2}
                 spaceBetween={15}
+                speed={2000}
+                autoplay={{delay: 1000}}
                 breakpoints={sliderBreakpoints}
               >
                 <SwiperSlide>

@@ -73,14 +73,14 @@ const Settings = () => {
                         <MoreSm />
                     </div>
 
-                    <div className={styles.item}>
+                    <CustomLink href='/history' className={styles.item}>
                         <div className={styles.thePaymentLeft}>
                             <div className={styles.header}>Toleg podpiskasy</div>
                             <div className={styles.phone}>Tolenen wagty:12.12.2023</div>
                         </div>
 
                         <ArrowI />
-                    </div>
+                    </CustomLink>
 
                     <CustomLink href='/premium' className={styles.item}>
                         <div className={styles.thePaymentLeft}>
