@@ -7,6 +7,7 @@ import styles from './Bottomsheet.module.scss'
 import InfoSmI from '../icons/infoSm/icon';
 import ShareSmI from '../icons/shareSm/icon';
 import MobileRectI from '../icons/mobileRect/icon'
+import ReadMoreI from '../icons/readMore/icon';
 
 interface BottomsheetProps {
     open: boolean
@@ -33,6 +34,11 @@ const Bottomsheet = React.forwardRef<HTMLDivElement, BottomsheetProps>((props, r
             value: 'share', 
             title: 'Paylasmak', 
             icon: <ShareSmI />
+        }, 
+        {
+            value: 'queue', 
+            title: 'Add to queue', 
+            icon: <ReadMoreI />
         }
     ]
 

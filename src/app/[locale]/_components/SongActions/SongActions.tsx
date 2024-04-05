@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { capitalize } from '@app/_utils/helpers';
 import InfoSmI from '../icons/infoSm/icon';
 import ShareSmI from '../icons/shareSm/icon';
+import ReadMoreI from '../icons/readMore/icon';
 
 interface SongActionsProps {
     open: boolean
@@ -50,7 +51,7 @@ const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, r
         {
             value: 'queue', 
             title: 'Add to queue', 
-            icon: <ShareSmI />
+            icon: <ReadMoreI />
         }
     ]
 

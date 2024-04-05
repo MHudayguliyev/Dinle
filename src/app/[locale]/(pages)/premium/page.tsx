@@ -3,17 +3,15 @@ import React, {useState} from 'react'
 //styles
 import classNames from 'classnames/bind';
 import styles from './page.module.scss';
-import ChevronRightI from '@components/icons/chevronRight/icon';
 import ChevronLeft from '@app/_components/icons/chevronLeft/icon';
 import Input from '@compLibrary/NewInput';
 import ProfileHelp from '@components/icons/profileHelp/icon';
 import Button from '@app/_compLibrary/Button';
 import RadioI from '@app/_components/icons/radio/icon';
+import Dropdown from '@app/_compLibrary/Dropdown';
 
 const cn = classNames.bind(styles)
 const Premium = () => {
-    const [paymentIndex, setPaymentIndex] = useState<number>(0)
-
     const paymentTypes = [
         {
             value: '20', label: '1 мес. / 20 man'
@@ -28,7 +26,14 @@ const Premium = () => {
             value: '220', label: '1 мес. / 20 man'
         },
     ]
+    const banks = [
+        {label: "Рысгал банк", value: 'rysgal'}, 
+        {label: "Senagat банк", value: 'senagat'}, 
+        {label: "Altyn asyr банк", value: 'altyn-asyr'}, 
+    ]
 
+    const [paymentIndex, setPaymentIndex] = useState<number>(0)
+    const [selectedBank, setSelectedBank] = useState<string>(banks[0].label ?? "")
 
   return (
     <div className={styles.wrapper}>
@@ -60,7 +65,13 @@ const Premium = () => {
                     /> 
                 </div>
 
-            {/* dropdown is to be here */}
+                <div className={styles.dropdownWrapper}>
+                    <Dropdown 
+                        data={banks}
+                        value={selectedBank}
+                        onChange={(item) => setSelectedBank(item.label)}
+                    />
+                </div>
 
 
             <div className={styles.payment}>

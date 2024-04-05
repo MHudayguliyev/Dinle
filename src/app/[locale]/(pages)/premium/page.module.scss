@@ -39,12 +39,15 @@
     }
 }
 
+.field, .dropdownWrapper {
+    margin-bottom: 10px;
+}
+
 .field {
     background-color: rgba(16, 16, 20, 1);
     height: 100%;
     padding: 14px 24px;
     border-radius: var(--border-radius);
-    margin-bottom: 10px;
 }
 .inputField {
     height: 100%;

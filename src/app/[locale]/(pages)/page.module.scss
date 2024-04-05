@@ -18,7 +18,7 @@
         padding: 12px;
         z-index: GShapes.$songActionsZIndex; 
         transform: scale(0);
-        transition: transform .3s ease 0s;
+        transition: transform  GAnimation.$duration ease 0s;
         transform-origin: top right;
     }
 
@@ -35,7 +35,7 @@
 
     .open {
         transform: scale(1);
-        transition: transform .3s var(--transition-cubic);
+        transition: transform GAnimation.$duration var(--transition-cubic);
     }
 }
 
