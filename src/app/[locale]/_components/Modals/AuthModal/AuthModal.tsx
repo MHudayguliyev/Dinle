@@ -14,7 +14,7 @@ import classNames from 'classnames/bind'
 import logo from '@app/_assets/images/logo.png'
 //libs
 import Button from '@app/_compLibrary/Button'
-import Input from '@app/_compLibrary/Input'
+import Input from '@app/_compLibrary/NewInput'
 import Otp from '@compLibrary/Otp/Otp';
 //api
 import { checkOtp, sendOtp, signUp } from '@app/_api/Queries/Post'
@@ -23,6 +23,7 @@ import { getUserDevice, stringify } from '@app/_utils/helpers'
 import { setToStorage } from '@app/_utils/storage'
 //react toast 
 import toast from 'react-hot-toast'
+import moment from 'moment'
 
 
 interface Fields<T> {
@@ -119,8 +120,8 @@ const AuthModal = (props: AuthModalProps) => {
             access_token: response.data?.token, 
             refresh_token: response?.data?.refreshToken, 
             username: response.data?.phone,
-            expiresAt: response.data?.worksUntil, 
-            userId: response.data?.userId
+            userId: response.data?.userId,
+            expiresAt: moment(response.data?.worksUntil).format('YYYY-MM-DD HH:mm:ss')
           }))
           close()
           toast.success('Successfully signed in.')
@@ -160,32 +161,38 @@ const AuthModal = (props: AuthModalProps) => {
 
 
                     <form className={styles.formik} onSubmit={formik.handleSubmit}>
-                        <div className={styles.fields}>
-                            <Input 
-                            type='text'
+                      <div>
+                        <div className={styles.field}>
+                          <Input 
+                            type='search'
                             name='phone'
                             inputMode='numeric'
                             maxLength={8}
                             roundedSm
-                            showLoginMask
                             fontSize='medium' 
                             fontWeight='medium'
-                            outline='light'
                             autoComplete='off'
                             className={styles.inputField}
                             value={formik.values.phone}
                             onChange={e => {
-                                formik.handleChange(e)
-                                formik.setFieldTouched('phone', false, false)
+                              formik.handleChange(e)
+                              formik.setFieldTouched('phone', false, false)
                             }}
-                            /> 
-                            <div className={styles.error}>
-                                {
-                                    formik.errors.phone && formik.touched.phone ? 
-                                    formik.errors.phone : null
-                                }
-                            </div>
+                            startIcon={
+                              <div className={styles.mask}>
+                                  <span>+993</span>
+                              </div>
+                          }
+                          /> 
                         </div>
+
+                        <div className={styles.error}>
+                          {
+                            formik.errors.phone && formik.touched.phone ? 
+                            formik.errors.phone : null
+                          }
+                        </div>
+                      </div>
                         <Button
                             htmlType='submit' 
                             color='red'

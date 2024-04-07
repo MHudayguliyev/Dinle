@@ -1,4 +1,7 @@
 import React, { LegacyRef } from 'react'
+import { motion } from 'framer-motion'
+
+
 interface SongListProps {
   repeatAfterall?: boolean
   repeat?: boolean
@@ -17,7 +20,7 @@ const List = React.forwardRef<LegacyRef<SVGSVGElement>, SongListProps>((props, r
     } = props
 
   return (
-    <>
+    <motion.div whileTap={{ scale: 0.9 }} style={{outline: 'none'}}>
       {
 
         repeatAfterall ? (
@@ -53,7 +56,7 @@ const List = React.forwardRef<LegacyRef<SVGSVGElement>, SongListProps>((props, r
         )
       }
 
-    </>
+    </motion.div>
   )
 })
 

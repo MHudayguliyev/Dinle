@@ -356,6 +356,7 @@ const ViewAll = () => {
               artists?.rows?.map(artist => (
                 <StandardCard 
                   id={artist.id}
+                  artistId={artist.id}
                   image={artist.cover}
                   title={artist.title}
                   artists

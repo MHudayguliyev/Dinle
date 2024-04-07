@@ -3,6 +3,7 @@ import Albums from "../types/queryReturnTypes/Albums";
 import Artist from "../types/queryReturnTypes/Artist";
 import ArtistInfo from "../types/queryReturnTypes/ArtistInfo";
 import Artists from "../types/queryReturnTypes/Artists";
+import Banners from "../types/queryReturnTypes/Banners";
 import Devices from "../types/queryReturnTypes/Devices";
 import Genres from "../types/queryReturnTypes/Genres";
 import HomeItems from "../types/queryReturnTypes/HomeItems";
@@ -11,6 +12,12 @@ import LikedPlaylists from "../types/queryReturnTypes/LikedPlaylists";
 import LikedSongs from "../types/queryReturnTypes/LikedSongs";
 import Playlists from "../types/queryReturnTypes/Playlists";
 import SongInfo from "../types/queryReturnTypes/SongInfo";
+
+export const GetBanners = async (): Promise<Banners[]> => {
+    return api.get<Banners[]>({
+        url: '/client/banners'
+    })
+}
 
 export const getHomeItems = async (): Promise<HomeItems> => {
     return api.patch({

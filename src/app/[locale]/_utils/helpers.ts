@@ -50,6 +50,9 @@ export function handleBufferProgress(e: any) {
       }
     }
 };
+export const findIndex = (data: any, currentId: string) => {
+  if(CheckObjOrArrForNull(data)) return data.findIndex((item:any) => item.id === currentId)
+}
 export function parse(data: string) {
   return JSON.parse(data)
 }

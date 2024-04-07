@@ -29,7 +29,7 @@ import { useAppDispatch, useAppSelector } from '@hooks/redux_hooks';
 import { setCurrentSong } from '@redux/reducers/MediaReducer';
 import { setIsShuffle } from '@redux/reducers/MediaReducer';
 //utils
-import { CheckObjOrArrForNull, copyLink, isAuthorized } from '@utils/helpers';
+import { CheckObjOrArrForNull, copyLink, isAuthorized, findIndex } from '@utils/helpers';
 //react-hot-toast
 import toast from 'react-hot-toast';
 import { setShowAuthModal } from '@app/_redux/reducers/AuthReducer';
@@ -112,10 +112,12 @@ const Playlist = ({params}: {params: {each: string}}) => {
 
     const playBtn = useCallback((topFixed = false) => {
         const currentSongId = song?.[songIndex]?.id
-        const rowSongId = rows?.[songIndex]?.id
+        const rowIndex = findIndex(rows, currentSongId)
+        const rowSongId = rows?.[rowIndex!]?.id
+
         const playFN = () => {
             if(CheckObjOrArrForNull(rows)){
-                const index = (songIndex !== -1 && songIndex <= rows!?.length - 1 && currentSongId === rowSongId) ? songIndex : 0
+                const index = (rowIndex !== -1 && currentSongId === rowSongId) ? rowIndex : 0
                 dispatch(setCurrentSong({
                     data: rows, index, id: rows?.[index]?.id
                 }))

@@ -22,6 +22,7 @@ import LanguagesMenu from '@app/_components/LanguagesMenu/LanguagesMenu';
 //utils
 import {getUserDevice, stringify} from '@utils/helpers'
 import { setToStorage } from '@app/_utils/storage';
+import moment from 'moment';
 
 interface Fields<T> {
   input1: T
@@ -113,8 +114,8 @@ const Login = () => {
             access_token: response.data?.token, 
             refresh_token: response?.data?.refreshToken, 
             username: response.data?.phone,
-            expiresAt: response.data?.worksUntil, 
-            userId: response.data?.userId
+            userId: response.data?.userId,
+            expiresAt: moment(response.data?.worksUntil).format('YYYY-MM-DD HH:mm:ss')
           }))
           router.replace('/')
         }

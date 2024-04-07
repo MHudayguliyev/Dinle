@@ -27,7 +27,7 @@ import Songs from '@app/_api/types/queryReturnTypes/Songs';
 //redux
 import { useAppDispatch, useAppSelector } from '@app/_hooks/redux_hooks';
 import { setCurrentSong, setIsShuffle } from '@app/_redux/reducers/MediaReducer';
-import { CheckObjOrArrForNull, copyLink } from '@app/_utils/helpers';
+import { CheckObjOrArrForNull, copyLink, findIndex } from '@app/_utils/helpers';
 import useWindowSize from '@app/_hooks/useWindowSize';
 import toast from 'react-hot-toast';
 
@@ -92,10 +92,12 @@ const Genre = ({params}: {params: {each: string}}) => {
     }, [])
     const playBtn = useCallback((topFixed = false) => {
         const currentSongId = song?.[songIndex]?.id
-        const rowSongId = rows?.[songIndex]?.id
+        const rowIndex = findIndex(rows, currentSongId)
+        const rowSongId = rows?.[rowIndex]?.id
+
         const playFN = () => {
             if(CheckObjOrArrForNull(rows)){
-                const index = (songIndex !== -1 && songIndex <= rows!?.length - 1 && currentSongId === rowSongId) ? songIndex : 0
+                const index = (rowIndex !== -1 && currentSongId === rowSongId) ? rowIndex : 0
                 dispatch(setCurrentSong({
                     data: rows, index, id: rows?.[index]?.id
                 }))

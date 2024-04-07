@@ -138,7 +138,10 @@ const AudioPlayer = (props: AudioPlayerProps) => {
           // hls.on(HLS.Events.ERROR, (event, err) => console.log(err));
         })
       }
-      if(isSongPlaying && audioRefPaused) audio?.play();
+      console.log('audioRefPaused', audioRefPaused)
+      console.log('isSongPlaying', isSongPlaying)
+
+      if(isSongPlaying) audio?.play();
       setPrevSongUrl(song?.link)
     }
   }, [audioRef, song])

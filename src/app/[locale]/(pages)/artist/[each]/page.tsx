@@ -36,14 +36,15 @@ import { likeArtist, likeSong } from '@app/_api/Queries/Post'
 import Songs from '@app/_api/types/queryReturnTypes/Songs'
 import { TabMenuTypes } from '@app/_types'
 //utils
-import { isUndefined, CheckObjOrArrForNull, copyLink, isAuthorized } from '@app/_utils/helpers'
+import { isUndefined, CheckObjOrArrForNull, copyLink, isAuthorized, findIndex } from '@app/_utils/helpers'
 //toast 
 import toast from 'react-hot-toast'
-import authToken from '@app/_api/Services/auth_token'
+import authToken, { refreshAccessToken } from '@app/_api/Services/auth_token'
 import CheckI from '@app/_components/icons/check/icon'
 import FollowCheckI from '@app/_components/icons/followCheck/icon'
 import HeartIcon from '@app/_components/icons/heart/icon'
 import HeartFilledI from '@app/_components/icons/heartFilled/icon'
+import { isAxiosError } from 'axios'
 
 const cn = classNames.bind(styles)
 const Artist = ({params}: {params: {each: string}}) => {
@@ -94,8 +95,7 @@ const Artist = ({params}: {params: {each: string}}) => {
     } = useQuery(['GetArtist', id], () => GetArtist(id), {
         refetchOnWindowFocus: false, enabled: !!id
     })
-    console.log('data', data)
-    // const currentSongId = useMemo(() => song?.[songIndex]?.id,[song, songIndex])
+    // console.log('data', data)
 
     useEffect(() => {
         if(!isLoading && !isError) setRows(data?.data?.songs)
@@ -113,6 +113,14 @@ const Artist = ({params}: {params: {each: string}}) => {
         )
     }, [scrolly, headerRef])
 
+    const refreshToken = (cb: Function) => {
+        refreshAccessToken().then(isError => {
+            console.log("is error", isError)
+            if(isError) router.replace('/login')
+            else cb()
+        })
+    }
+
     const handleCopyLink = useCallback(() => {
         copyLink(`/artist/${id}${!isUndefined(searchType) ? `?type=${searchType}` : ""}`)?.then((mode) => {
             if(mode === 'desktop') toast.success('Link is copied.')
@@ -124,13 +132,17 @@ const Artist = ({params}: {params: {each: string}}) => {
 
         try {
             const response = await likeArtist(id)
-            console.log('res', response)
+            // console.log('res', response)
             if(response.success){
                 toast.success(response.data.message)
                 refetchArtist()
             }
         } catch (error) {
-            console.log('follow error', error)
+            if(isAxiosError(error)){
+                if(error.response?.status === 401){
+                    refreshToken(() =>  handleFollow())
+                }
+            }else console.log('follow error', error)
         }
     }, [id])
 
@@ -142,7 +154,11 @@ const Artist = ({params}: {params: {each: string}}) => {
             if(response.success && response.statusCode === 200)
             setRows(prev => prev?.map(row => row.id === songId ? {...row, isLiked: !row.isLiked} : row))
           } catch (error) {
-            console.log('like song error', error)
+            if(isAxiosError(error)){
+                if(error.response?.status === 401){
+                    refreshToken(() => handleLike(songId))
+                }
+            }else console.log('like song error', error)
           }
     }, [])
 
@@ -156,12 +172,20 @@ const Artist = ({params}: {params: {each: string}}) => {
 
     const playBtn = useCallback((topFixed = false) => {
         const currentSongId = song?.[songIndex]?.id
-        const rowSongId = rows?.[songIndex]?.id
+        const rowIndex = findIndex(rows, currentSongId)
+        const rowSongId = rows?.[rowIndex!]?.id
+        
+        // console.log("rowIndex",rowIndex)
+        // console.log("currentSongId", currentSongId)
+        // console.log("rowSongId", rowSongId)
+
+
         const playFN = () => {
             if(CheckObjOrArrForNull(rows)){
-                const index = (songIndex !== -1 && songIndex <= rows!?.length - 1 && currentSongId === rowSongId) ? songIndex : 0
+                const index = (rowIndex !== -1 && currentSongId === rowSongId) ? rowIndex : 0
+                console.log('real index', index)
                 dispatch(setCurrentSong({
-                    data: rows, index, id: rows?.[index]?.id
+                    data: rows, index, id: rows?.[index as number]?.id
                 }))
             }
         }

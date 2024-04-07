@@ -108,6 +108,7 @@
     font-size: typography.$fontSizeMedium + px;
     font-weight: typography.$fontWeightRegular;
     line-height: typography.$lineHeightBig + px;
+    outline: none;
     // user-select: none;
 
     &::-webkit-scrollbar {

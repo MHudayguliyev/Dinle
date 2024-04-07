@@ -17,11 +17,11 @@ import UserI from '@app/_components/icons/user/icon';
 import { standardCardBreaksPoints, sliderBreakpoints } from '@app/_assets/json_data/swiper_breakpoints';
 // import Swiper JS
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Autoplay } from 'swiper/modules';
 //cards
 import StandardCard from '@components/StandardCard/StandardCard';
 //api 
-import { getHomeItems } from '@app/_api/Queries/Getters';
+import { getHomeItems, GetBanners } from '@app/_api/Queries/Getters';
 import Button from '@app/_compLibrary/Button';
 //redux 
 import { useAppDispatch } from '@hooks/redux_hooks';
@@ -49,6 +49,12 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
 
   //queries
+  const {
+    data: banners
+  } = useQuery('GetBanners', () => GetBanners(), {
+    refetchOnWindowFocus: false
+  })
+  console.log("banners", banners)
   const {
     data: homeItems, 
     isLoading, 
@@ -118,31 +124,23 @@ export default function Home() {
             <div className={styles.banners}>
               <Swiper
                 navigation
-                loop
-                modules={[ Navigation ]}
+                // loop
+                modules={[ Navigation, Autoplay ]}
                 slidesPerView={2}
                 spaceBetween={15}
-                speed={2000}
-                autoplay={{delay: 1000}}
+                speed={1000}
+                autoplay={{delay: 5000}}
                 breakpoints={sliderBreakpoints}
               >
-                <SwiperSlide>
-                  <div className={styles.banner}>
-                    <Image src={firstBanner} alt='bannerImage'/>
-                  </div>
-                </SwiperSlide>
-
-                <SwiperSlide>
-                  <div className={styles.banner}>
-                    <Image src={secondBanner} alt='bannerImage'/>
-                  </div>
-                </SwiperSlide>
-
-                <SwiperSlide>
-                  <div className={styles.banner}>
-                    <Image src={thirdBanner} alt='bannerImage'/>
-                  </div>
-                </SwiperSlide>
+                {
+                  banners?.map(banner => (
+                    <SwiperSlide key={banner.id}>
+                      <div className={styles.banner}>
+                        <Image src={banner.cover} alt='banner' width='400' height='400'/>
+                      </div>
+                    </SwiperSlide>
+                  ))
+                }
               </Swiper>
             </div>
 

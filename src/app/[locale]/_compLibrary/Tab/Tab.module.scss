@@ -1,10 +1,10 @@
 @use '../../_styles/globalBreakPoints.scss' as *;
 
 .menu {
-    border-bottom: 1px solid  var(--artist-card-bg);
     padding: 0 20px;
     overflow-x: auto;
     overflow-y: hidden;
+    outline: none;
 
     &::-webkit-scrollbar {
         background-color: transparent;
@@ -17,14 +17,13 @@
     gap: 15px;
     align-items: center;
     background: var(--main-bg);
+    border-bottom: 1px solid  var(--artist-card-bg);
+
 
     a {
         padding: 10px;
         height: 40px;
         color: rgba(202, 196, 208, 1);
-        &:hover {
-            text-decoration: none;
-        }
     }
 
     .active {
