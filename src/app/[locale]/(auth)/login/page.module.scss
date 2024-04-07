@@ -22,7 +22,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 16.77px;
+        gap: 16px;
 
         .logoTxt {
             font-weight: 400;
@@ -58,11 +58,7 @@
         display: flex;
         flex-direction: column;
         gap: inherit;
-
-        .inputField {
-            height: 43.72px;
-            width: 100%;
-        }
+        color: var(--text-fourth-color);
 
         .btnGroup {
             display: flex;
@@ -70,11 +66,30 @@
             gap: 20px;
         }
 
-        .field .error {
+        .error {
             color: var(--main-color-red);
             font-size: $fontSizeSmall + px;
             height: 15px;
             margin-bottom: -15px;
+        }
+
+
+        .field {
+            background-color: rgba(16, 16, 20, 1);
+            height: 100%;
+            padding: 14px 24px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(51, 51, 51, 0.49);
+        }
+        .inputField {
+            color: var(--text-fourth-color);
+            width: 100%;
+            padding-left: 20px;
+        }
+        
+        .mask {
+            border-right: 1px solid rgba(94, 94, 98, 1);
+            width: calc(100% + 10px);
         }
     }
 }

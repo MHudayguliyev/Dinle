@@ -8,7 +8,7 @@ import {useRouter} from 'next/navigation'
 import styles from './page.module.scss';
 import classNames from 'classnames/bind';
 //libs
-import Input from '@app/_compLibrary/Input';
+import Input from '@app/_compLibrary/NewInput';
 import Button from '@app/_compLibrary/Button';
 import Otp from '@app/_compLibrary/Otp';
 //images
@@ -148,31 +148,37 @@ const Login = () => {
             </div>
 
             <form className={styles.formik} onSubmit={formik.handleSubmit}>
-              <div className={styles.field}>
-                <Input 
-                  type='text'
-                  name='phone'
-                  inputMode='numeric'
-                  maxLength={8}
-                  roundedSm
-                  showLoginMask
-                  fontSize='medium' 
-                  fontWeight='medium'
-                  outline='light'
-                  autoComplete='off'
-                  className={styles.inputField}
-                  value={formik.values.phone}
-                  onChange={e => {
-                    formik.handleChange(e)
-                    formik.setFieldTouched('phone', false, false)
-                  }}
-                /> 
-              <div className={styles.error}>
-                {
-                  formik.errors.phone && formik.touched.phone ? 
-                  formik.errors.phone : null
-                }
-              </div>
+              <div>
+                <div className={styles.field}>
+                  <Input 
+                    type='search'
+                    name='phone'
+                    inputMode='numeric'
+                    maxLength={8}
+                    roundedSm
+                    fontSize='medium' 
+                    fontWeight='medium'
+                    autoComplete='off'
+                    className={styles.inputField}
+                    value={formik.values.phone}
+                    onChange={e => {
+                      formik.handleChange(e)
+                      formik.setFieldTouched('phone', false, false)
+                    }}
+                    startIcon={
+                      <div className={styles.mask}>
+                          <span>+993</span>
+                      </div>
+                  }
+                  /> 
+                </div>
+
+                <div className={styles.error}>
+                  {
+                    formik.errors.phone && formik.touched.phone ? 
+                    formik.errors.phone : null
+                  }
+                </div>
               </div>
 
               <div className={styles.btnGroup}>

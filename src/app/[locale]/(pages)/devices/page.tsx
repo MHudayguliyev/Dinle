@@ -1,7 +1,6 @@
 
 'use client';
-import React, {useEffect, useMemo, useState} from 'react'
-import { useRouter } from 'next/navigation'
+import React, {useEffect, useState} from 'react'
 import {useQuery} from 'react-query'
 //styles
 import styles from './page.module.scss'
@@ -23,8 +22,6 @@ import {getUserDevice} from '@utils/helpers'
 
 const cn = classNames.bind(styles)
 const ConnectedDevices = () => {
-    const router = useRouter()
-
     const {
         data, 
         isLoading, 

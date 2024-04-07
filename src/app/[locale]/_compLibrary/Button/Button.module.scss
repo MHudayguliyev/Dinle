@@ -2,6 +2,9 @@
 @use '../../_styles/globalAnimation.scss' as GAnimation;
 
 .baseStyle {
+    font-family: "Roboto Flex", sans-serif;
+    font-size: $fontSizeMedium;
+    font-weight: $fontWeightBold;
     cursor: pointer;
     border: none;
     padding: 10px;
@@ -59,6 +62,9 @@
  .colorRed {
   background-color: var(--button-red);
   }
+  .colorDarkRed {
+    background-color: var(--button-second-red);
+  }
  .colorLightDark {
   background-color: var(--button-light-dark);
   }
@@ -78,6 +84,9 @@
   }
   .colorLightDarkThird{
     background-color: var(--button-third-light-dark);
+  }
+  .colorLightDarkFourth{
+    background-color: var(--button-fourth-light-dark);
   }
  .colorPurple {
    background-color: var(--button-purple);

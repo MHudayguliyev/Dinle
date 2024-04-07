@@ -11,7 +11,7 @@ import { capitalize } from '@app/_utils/helpers'
 type ButtonProps = {
     children: ReactNode 
     /** @defaultValue purple  */
-    color: 'light' | 'dark' | 'red' | 'purple' | 'lightDark' | 'lightDarkSecond' | 'lightDarkThird' | 'orange' | 'transparent' | 'linearGradient' | 'linearGradientSecond'
+    color: 'light' | 'dark' | 'red'  | 'darkRed' | 'purple' | 'lightDark' | 'lightDarkSecond' | 'lightDarkThird' | 'lightDarkFourth' | 'orange' | 'transparent' | 'linearGradient' | 'linearGradientSecond'
     /** @defaultValue none **/ 
     border?: 'light' | 'dark' | 'none'
     onClick?: (e: any) => void

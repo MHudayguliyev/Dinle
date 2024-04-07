@@ -1,13 +1,11 @@
 'use client'
 import React, {useState} from "react"
-import { useRouter } from 'next/navigation'
-
 import Image from "next/image"
 //styles
+import classNames from "classnames/bind"
 import styles from './page.module.scss'
 //icons
 import PrevNext from '@components/icons/prevNext/icon'
-//images
 import account from '@app/_assets/images/account.png'
 import MoreSm from "@app/_components/icons/moreSm/icon"
 import ArrowI from "@app/_components/icons/arrow/icon"
@@ -21,36 +19,22 @@ import Button from "@app/_compLibrary/Button"
 import Switch from "@app/_compLibrary/Switch"
 //comps
 import LanguagesMenu from '@components/LanguagesMenu/LanguagesMenu'
-import Link from "next/link"
-import { logOut } from "@app/_api/Queries/Post"
-import { getUserDevice, isAuthorized } from "@app/_utils/helpers"
+import CustomLink from "@app/_components/CustomLink/CustomLink"
 //utils
-import { removeFromStorage } from '@utils/storage'
+import LogoutModal from "@app/_components/Modals/LogoutModal/LogoutModal"
+import { isAuthorized } from "@app/_utils/helpers"
+//hot toast
 import toast from "react-hot-toast"
+//redux
+import { useAppSelector } from "@app/_hooks/redux_hooks"
 
-
+const cn = classNames.bind(styles)
 const Settings = () => {
-    const router = useRouter()
-
     const [checked, setChecked] = useState<boolean>(false)
     const [openLangMenu, setOpenLangMenu] = useState<boolean>(false)
+    const [openModal, setOpenModal] = useState<boolean>(false)
 
-    const logout = async () => {
-        if(!isAuthorized()) return toast.error('You already logged out.')
-
-        const device = getUserDevice()
-        try {
-            const response = await logOut(device!?.id)
-            console.log("res", response)
-            if(response.success && response.statusCode === 200 && response.data.logout){
-                console.log('response', response)
-                router.replace('/login')
-                removeFromStorage('authUser')
-            }
-        } catch (error) {
-            console.log("logut error", error)
-        }
-    }
+    const isPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
 
     return (
         <>
@@ -60,7 +44,15 @@ const Settings = () => {
                 leftCut
             />
 
-            <div className={styles.wrapper}>
+            <LogoutModal 
+                show={openModal}
+                close={() => setOpenModal(false)}
+            />
+
+            <div className={cn({
+                wrapper: true, 
+                truncateHeight: isPlayerOpen
+            })}>
 
             <div className={styles.top}>
                 <PrevNext  mode='prev'/>
@@ -81,14 +73,22 @@ const Settings = () => {
                         <MoreSm />
                     </div>
 
-                    <div className={styles.item}>
+                    <CustomLink href='/history' className={styles.item}>
                         <div className={styles.thePaymentLeft}>
                             <div className={styles.header}>Toleg podpiskasy</div>
                             <div className={styles.phone}>Tolenen wagty:12.12.2023</div>
                         </div>
 
                         <ArrowI />
-                    </div>
+                    </CustomLink>
+
+                    <CustomLink href='/premium' className={styles.item}>
+                        <div className={styles.thePaymentLeft}>
+                            <div className={styles.header}>Купить подписку</div>
+                        </div>
+
+                        <ArrowI />
+                    </CustomLink>
                 </div>
 
 
@@ -118,27 +118,34 @@ const Settings = () => {
                 </div>
 
                 <div>
-                    <Link href='/devices' className={styles.item}>
+                    <CustomLink href='/devices' className={styles.item}>
                         <div className={styles.theLeft}>
                             <List active={false}/>
                             <div className={styles.header}>Birikdirlen enjamlar</div>
                         </div>
                         <ArrowI />
-                    </Link>
+                    </CustomLink>
                 </div>
 
                 <div>
-                    <Link href='' className={styles.item}>
+                    <CustomLink href='' className={styles.item}>
                         <div className={styles.theLeft}>
                             <HelpI/>
                             <div className={styles.header}>Salgylanma</div>
                         </div>
                         <ArrowI />
-                    </Link>
+                    </CustomLink>
                 </div>
 
 
-                <Button onClick={logout} color="transparent" startIcon={<LogoutI />} roundedSm style={{display: 'flex', background: 'rgba(255, 55, 64, 0.2)'}}> 
+                <Button onClick={() => {
+                    if(!isAuthorized()) return toast.error('You already logged out.')
+                    setOpenModal(true)
+                }} 
+                color="transparent" 
+                startIcon={<LogoutI />} 
+                roundedSm 
+                style={{display: 'flex', background: 'rgba(255, 55, 64, 0.2)'}}> 
                     Logout
                 </Button>
             </div>
