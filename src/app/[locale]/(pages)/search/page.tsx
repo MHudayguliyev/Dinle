@@ -47,6 +47,7 @@ import { Navigation } from 'swiper/modules';
 import { standardCardBreaksPoints } from '@app/_assets/json_data/swiper_breakpoints';
 import ArtistsList from '@app/_components/ArtistsList/ArtistsList';
 import ArrowRightI from '@app/_components/icons/arrowRight/icon';
+import Link from 'next/link';
 
 const cn = classNames.bind(styles)
 const Search = () => {
@@ -60,10 +61,11 @@ const Search = () => {
   const dispatch = useAppDispatch()
   const router = useRouter()
   const searchParam = useSearchParams()
-  const searchType = searchParam.get('type')
-  const searchAll = searchParam.get('all')
+  const type = searchParam.get('type')
+  const mask = searchParam.get('mask')
+  const all = searchParam.get('all')
 
-  const [searchValue, setSearchValue] = useState<string>(searchAll ?? "")
+  const [searchValue, setSearchValue] = useState<string>(mask ?? "")
   const [openShazam, setOpenShazam] = useState<boolean>(false)
   const [isSearchDataLoading, setSearchDataLoading] = useState<boolean>(false)
   const [isNotFound, setIsNotFound] = useState<boolean>(false)
@@ -94,12 +96,12 @@ const Search = () => {
       }
     }
   ]
-  const showFoundData = useMemo(() => isUndefined(searchType) && (!isUndefined(searchAll) && !isEmpty(searchAll)),[searchType, searchAll])
-  const showArtists = useMemo(() => searchType === tabs[0]?.route ,[searchType])
-  const showPlaylists = useMemo(() => searchType === tabs[1]?.route,[searchType])
-  const showAlbums = useMemo(() => searchType === tabs[2]?.route,[searchType])
-  const showGenres = useMemo(() =>searchType === tabs[3]?.route,[searchType])
-  // console.log('showFoundData',showFoundData)
+  const showFoundData = useMemo(() => isUndefined(type) && (!isUndefined(mask) && !isEmpty(mask)),[type, mask])
+  const showArtists = useMemo(() => type === tabs[0]?.route ,[type])
+  const showPlaylists = useMemo(() => type === tabs[1]?.route,[type])
+  const showAlbums = useMemo(() => type === tabs[2]?.route,[type])
+  const showGenres = useMemo(() =>type === tabs[3]?.route,[type])
+  const isViewAll = useMemo(() => !isUndefined(all) && !isEmpty(all),[all])
 
   const errorDiv = useMemo(() => {
     return (
@@ -118,7 +120,7 @@ const Search = () => {
     )
   }, [])
   const arrowRight = useMemo(() => (
-    <ArrowRightI className={styles.arrowRight}/>
+    <ArrowRightI/>
   ), [])
   const loader = useCallback((type: 'artist' | 'playlist' | 'album' | 'genre', swiperMode = false) => {
     const arr = [1,2,3,4,5,6]
@@ -208,17 +210,22 @@ const Search = () => {
   })
 
   useEffect(() => {
-    if(isUndefined(searchType) && (isUndefined(searchAll) || isEmpty(searchAll))) {
+    if(isUndefined(type) && (isUndefined(mask) || isEmpty(mask))) {
       router.push(`/search?type=${tabs[3].route}`)
     }
-    else if(!isUndefined(searchAll) && !isEmpty(searchAll)) goSearch()
+    else if(!isUndefined(mask) && !isEmpty(mask)) goSearch()
     setRecentSearchData(parse(getFromStorage('recentSearchData')!) ?? [])
   }, [])
 
   useEffect(() => {
+    if(isViewAll){
+      goSearch()
+    }
+  }, [isViewAll])
+
+  useEffect(() => {
     const localSearches = parse(getFromStorage('recentSearchData')!)
     if(!isEmpty(searchValue)){
-      console.log('searchValue', searchValue)
       const searchValueTrimmed = searchValue?.trim()?.toLowerCase()
       const filtered = localSearches?.filter((searchData:any) => searchData.title?.toLowerCase().includes(searchValueTrimmed))
       setRecentSearchData(filtered)
@@ -299,10 +306,22 @@ const Search = () => {
     }
 
     try {
-      //push to route right when enter clicked/searched
-      router.push(`/search?all=${searchValue}`, { scroll: false })
+      interface DataToSend {
+        search: string;
+        type?: string
+      }
+      let dataToSend: DataToSend = {
+        search: searchValue,
+      };
+
+      if(!isViewAll){
+        router.push(`/search?mask=${searchValue}`, { scroll: false })
+      }else {
+        dataToSend = {...dataToSend, type: all as string}
+      }
       setSearchDataLoading(true)
-      const response = await searchSong({ search: searchValue })
+      console.log("dataToSend", dataToSend)
+      const response = await searchSong(dataToSend)
       if(response.statusCode === 200){
         const {
           alboms, 
@@ -314,11 +333,10 @@ const Search = () => {
         console.log('rsp', response.data)
         
         delay(200).then(() => {
-          setAlbums(alboms?.slice(0, 5))
-          setArtists(artists?.slice(0, 5))
-          setSongs(songs?.slice(0, 5))
-          setPlaylists(playlists?.slice(0, 5))
-          // setShows(shows?.slice(0, 5))
+          setAlbums(alboms)
+          setArtists(artists)
+          setSongs(songs)
+          setPlaylists(playlists)
           setSearchDataLoading(false)
         })
 
@@ -333,7 +351,7 @@ const Search = () => {
       setShows([])
       setSearchDataLoading(false)
     }
-  }, [searchValue])
+  }, [searchValue, isViewAll])
 
   const handleKeyDown = useCallback((e: any) => {
     if(e.keyCode === 13){
@@ -417,7 +435,7 @@ const Search = () => {
           baseUrl='search'
           searchMenu
           tabs={tabs}
-          pathname={searchType}
+          pathname={type}
           fixedTopNull
           scrollYPosition={73}
         />
@@ -526,7 +544,9 @@ const Search = () => {
             <div className={styles.recomendations}>
               <h3 className={styles.songCardTitle}>
                 Songs
-                <ArrowRightI />
+                <Link href={`/search?mask=${searchValue}&all=songs`}>
+                  {arrowRight}
+                </Link>
               </h3>
               <SongList 
                 data={songs} 
@@ -546,7 +566,9 @@ const Search = () => {
             <div className={styles.recomendations}>
               <h3 className={styles.songCardTitle}>
                 Artists
-                {arrowRight}
+                <Link href={`/search?mask=${searchValue}&all=artists`}>
+                  {arrowRight}
+                </Link>
               </h3>
                 {
                   width >=768 ? 
@@ -594,7 +616,9 @@ const Search = () => {
             <div className={styles.recomendations}>
               <h3 className={styles.songCardTitle}>
                 Albums
-                {arrowRight}
+                <Link href={`/search?mask=${searchValue}&all=alboms`}>
+                  {arrowRight}
+                </Link>
               </h3>
                 <Swiper
                   navigation
@@ -629,7 +653,9 @@ const Search = () => {
             <div className={styles.recomendations}>
               <h3 className={styles.songCardTitle}>
                 Playlists
-                {arrowRight}
+                <Link href={`/search?mask=${searchValue}&all=playlists`}>
+                  {arrowRight}
+                </Link>
               </h3>
                 <Swiper
                   navigation

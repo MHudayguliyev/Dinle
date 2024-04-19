@@ -151,6 +151,7 @@ export default function Home() {
                 const top10 = homeItem.id === 'top-10-songs'
                 const playlist = homeItem.id === 'playlists'
                 const albom = homeItem.id === 'alboms'
+                const clip = homeItem.id === 'clips'
 
                 return (
                   <div key={homeItem.id}>
@@ -193,6 +194,7 @@ export default function Home() {
                                   artists={artist}
                                   playlists={playlist}
                                   alboms={albom}
+                                  videoCard={clip}
                                   hideMoreI={albom}
                                   standard={homeItem.type === 'playlist'}
                                   onPlay={() => {

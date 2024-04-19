@@ -46,6 +46,8 @@ interface StandardProps {
     /** @defaultValue false **/
     alboms?: boolean
     /** @defaultValue false **/
+    videoCard?: boolean
+    /** @defaultValue false **/
     hideMoreI?: boolean
     /** @defaultValue false **/
     recentSearched?: boolean
@@ -73,6 +75,7 @@ const StandardCard = (props: StandardProps) => {
         genres = false, 
         playlists = false, 
         alboms = false, 
+        videoCard = false, 
         shimmer = false, 
         onPlay, 
         onOpenBottomSheet, 
@@ -100,8 +103,8 @@ const StandardCard = (props: StandardProps) => {
     const moreBtn = useMemo(() => (
         <More ref={toggleRef} onClick={() => {
             if(width <= 786 && onOpenBottomSheet) onOpenBottomSheet()
-        }} className={styles.more}/>
-    ), [width, onOpenBottomSheet])
+        }} className={cn({ more: !videoCard })}/>
+    ), [width, videoCard, onOpenBottomSheet])
 
     const routeMem = useMemo(() => {
         const route = `
@@ -150,8 +153,9 @@ const StandardCard = (props: StandardProps) => {
                 card_with_close: recentSearched,
                 card_for_artist: artists,
                 card_for_genres: genres, 
-                withActiveBg: (!artists && !genres && !playlists && !alboms && !standard) || (songData[songIndex]?.id === id), 
-                hoverable: !artists && !genres
+                card_for_video: videoCard,
+                withActiveBg: (!artists && !genres && !playlists && !alboms && !standard && !videoCard) || (songData[songIndex]?.id === id), 
+                hoverable: !artists && !genres && !videoCard
             })}>
             {
                 genres ? (
@@ -233,6 +237,8 @@ const StandardCard = (props: StandardProps) => {
                                             {title}
                                         </CustomLink>
                                     </div>
+
+                                    {videoCard && moreBtn}
                                 </div>
 
                                 

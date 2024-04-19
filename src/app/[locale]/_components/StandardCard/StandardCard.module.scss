@@ -106,7 +106,7 @@
         overflow: hidden;
         width: 100%; 
         margin-bottom: 10px;
-        padding-top: 100%;
+        padding-top:100%;
 
         .bg_gradient {
             height: 100%;
@@ -145,6 +145,7 @@
         }
 
         .actions {
+            border: 1px solid red;
             padding-right: 10px;
             display: flex;
             align-items: center;
@@ -315,6 +316,10 @@
         -ms-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
     }
+}
+
+.card_for_video {
+    border: 1px solid red;
 }
 
 .hoverable:hover > .image_container .more {

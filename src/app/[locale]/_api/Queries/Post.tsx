@@ -58,7 +58,10 @@ export const checkOtp = async (values: {
     })
 }
 
-export const searchSong = async (data: {search: string}): Promise<SearchType> => {
+export const searchSong = async (data: {
+    search: string, 
+    type?: string
+}): Promise<SearchType> => {
     return api.post({
         url: '/client/search', 
         data: data
