@@ -100,11 +100,13 @@ const StandardCard = (props: StandardProps) => {
         if(onPlay) onPlay(id)
     }, [onPlay])
 
+    const openBottomSheet = useCallback(() => {
+        if(width <= 786 && onOpenBottomSheet) onOpenBottomSheet()
+    }, [width, onOpenBottomSheet])
+
     const moreBtn = useMemo(() => (
-        <More ref={toggleRef} onClick={() => {
-            if(width <= 786 && onOpenBottomSheet) onOpenBottomSheet()
-        }} className={cn({ more: !videoCard })}/>
-    ), [width, videoCard, onOpenBottomSheet])
+        <More ref={toggleRef} onClick={openBottomSheet}/>
+    ), [width, openBottomSheet])
 
     const routeMem = useMemo(() => {
         const route = `
@@ -205,7 +207,7 @@ const StandardCard = (props: StandardProps) => {
                                         !artists && !playlists && !alboms &&  <PlayPause className={styles.play} state='play' onClick={playSong}/>
                                     }
                                     {
-                                        !artists && !hideMoreI && moreBtn
+                                        !artists && !hideMoreI && <div className={styles.more}>{moreBtn}</div>
                                     }
                                 </div>
                             </CustomLink>

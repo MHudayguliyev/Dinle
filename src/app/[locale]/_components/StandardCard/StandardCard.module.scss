@@ -145,7 +145,6 @@
         }
 
         .actions {
-            border: 1px solid red;
             padding-right: 10px;
             display: flex;
             align-items: center;
@@ -200,6 +199,9 @@
 
             .theTop {
                 display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
                 margin-bottom: 4px;
             }
 
@@ -319,7 +321,9 @@
 }
 
 .card_for_video {
-    border: 1px solid red;
+    .image_container {
+        padding-top: 80%;
+    }
 }
 
 .hoverable:hover > .image_container .more {

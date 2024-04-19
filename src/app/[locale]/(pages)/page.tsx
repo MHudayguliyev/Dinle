@@ -151,7 +151,7 @@ export default function Home() {
                 const top10 = homeItem.id === 'top-10-songs'
                 const playlist = homeItem.id === 'playlists'
                 const albom = homeItem.id === 'alboms'
-                const clip = homeItem.id === 'clips'
+                const clip = homeItem.id === 'clips' || homeItem.id === 'karaoke' || homeItem.id === 'concerts' || homeItem.id === 'shows' || homeItem.id === 'videos' || homeItem.id === 'news'
 
                 return (
                   <div key={homeItem.id}>
@@ -176,7 +176,20 @@ export default function Home() {
                         modules={[ Navigation ]}
                         slidesPerView={6}
                         spaceBetween={2}
-                        breakpoints={standardCardBreaksPoints}
+                        breakpoints={!clip ? standardCardBreaksPoints : {
+                          0: {
+                            slidesPerView: 2
+                          }, 
+                          576: {
+                            slidesPerView: 2
+                          },
+                          768: {
+                            slidesPerView: 3,
+                          },
+                          1200: {
+                            slidesPerView: 3.5
+                          }
+                        }}
                       >
                         {
                           homeItem?.rows?.map((row, rowIndex) => {
