@@ -101,7 +101,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
         <div className={styles.songsBody}>
             {
                 data?.map((song: any, index: number) => (
-                    <div className={styles.box} key={song.id} onClick={() => onPlay && onPlay(index)} onMouseEnter={() => setHoveredIndex(song.id)} onMouseLeave={() => setHoveredIndex("")}>
+                    <div ref={ref} className={styles.box} key={song.id} onClick={() => onPlay && onPlay(index)} onMouseEnter={() => setHoveredIndex(song.id)} onMouseLeave={() => setHoveredIndex("")}>
 
                         <div className={styles.row}>
                             <div className={cn({

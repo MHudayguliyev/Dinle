@@ -146,7 +146,7 @@ export default function Home() {
 
             {
               data?.map((homeItem) => {
-                if(Array.isArray(homeItem)) return null
+                if(homeItem.id === 'banner') return null
                 const artist = homeItem.id === 'artists'
                 const top10 = homeItem.id === 'top-10-songs'
                 const playlist = homeItem.id === 'playlists'
@@ -159,9 +159,9 @@ export default function Home() {
                       <h3>{homeItem.name}</h3>
                       <CustomLink   
                         href={
-                          artist ? '/search?type=artist' : 
-                          playlist ? '/search?type=playlist' : 
-                          albom ? '/search?type=album' : 
+                          artist ? '/search?tab=artist' : 
+                          playlist ? '/search?tab=playlist' : 
+                          albom ? '/search?tab=album' : 
                           `viewall/${homeItem.id}`
                         } 
                       >
@@ -220,7 +220,6 @@ export default function Home() {
                                   onOpenInfoMenu={() => {
                                     setSongId(row.id)
                                     setShowInfo(true)
-                                    
                                   }}
                                   onAddToQueue={() => 
                                     dispatch(addToQueue(row))

@@ -1,7 +1,6 @@
 'use client';
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
-import { useRouter } from 'next/navigation'
-import { useQuery } from 'react-query';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import { useInfiniteQuery } from 'react-query';
 //styles
 import styles from './page.module.scss';
 //icon
@@ -16,32 +15,54 @@ import { likeSong } from '@app/_api/Queries/Post';
 //redux
 import { useAppDispatch } from '@app/_hooks/redux_hooks';
 import { setCurrentSong } from '@app/_redux/reducers/MediaReducer';
+//hooks
+import useObserve from '@app/_hooks/useObserve';
 
 const ViewAll = ({params}: {params: {each: string}}) => {
+  const observer = useRef<IntersectionObserver>();
   const dispatch = useAppDispatch()
-  const router = useRouter()
   const id = useMemo(() => params?.each?.[0],[params.each])
   const [rows, setRows] = useState<Songs['rows']>()
 
+
+
   const {
     data, 
+    hasNextPage, 
+    isFetching, 
+    isError, 
     isLoading, 
-    isError
-  } = useQuery(['GetSongs', id], () => getSongs({
-    playlistId: id
-  }), {
-    refetchOnWindowFocus: false, enabled: !!id
+    fetchNextPage
+  } = useInfiniteQuery({
+    queryKey: ['Songs', id], 
+    queryFn: ({pageParam}) => getSongs({ page: pageParam }), 
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.data.rows.length ? allPages.length + 1 : undefined;
+    }, 
+    enabled: !!id, refetchOnWindowFocus: false
   })
 
-  const viewData = useMemo(() => {
-    return data?.data?.rows
-  },[data?.data])
+
+  const lastElementRef = useObserve({
+    observer, hasNextPage, 
+    isFetching, isLoading, 
+    fetchNextPage, 
+  })
+
+  const songsData = useMemo(() => {
+    console.log("data", data)
+    // @ts-ignore
+    return data?.pages.reduce((acc, page) => {
+      return [...acc, ...page.data.rows];
+    }, [])
+  }, [data]);
+
+  // const songTitle = useMemo(() => data?.pages?[0]?.,[data])
 
   useEffect(() => {
-    if(!isLoading && !isError){
-      setRows(viewData)
-    }
-  }, [viewData])
+    if(!isLoading && !isError)
+    setRows(songsData)
+  }, [songsData])
 
   
   const handleLike = useCallback(async(songId: string) => {
@@ -63,11 +84,12 @@ const ViewAll = ({params}: {params: {each: string}}) => {
             <PrevNext mode='next'/>
           </div>
 
-          <div className={styles.header}>{data?.title}</div>
+          {/* <div className={styles.header}>{data?.title}</div> */}
       </div>
 
       <div className={styles.lists}>
         <SongList 
+          ref={lastElementRef}
           data={rows}
           fetchStatuses={{isLoading, isError}}
           className={styles.songList}

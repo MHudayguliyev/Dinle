@@ -71,7 +71,7 @@ function formatDurationDisplay(duration: number) {
 
 interface AudioPlayerProps {
   toggleSideMenuRef: Ref<SVGSVGElement> 
-  toggleLyricsRef: Ref<SVGSVGElement> 
+  onToggleLyrics: () => void
   showSideMenu: boolean
   showLyricsMenu: boolean
 }
@@ -81,7 +81,7 @@ const cn = classNames.bind(styles)
 const AudioPlayer = (props: AudioPlayerProps) => {
   const {
     toggleSideMenuRef,
-    toggleLyricsRef,  
+    onToggleLyrics,  
     showSideMenu, 
     showLyricsMenu, 
   } = props
@@ -129,7 +129,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     if(HLS.isSupported() && !isUndefined(audioRef?.current)){
       const audio = audioRef.current;
       const hls = new HLS();
-      const audioRefPaused = audioRef.current?.paused === true;
 
       if(song?.link !== prevSongUrl){       
         hls.attachMedia(audio);
@@ -138,8 +137,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
           // hls.on(HLS.Events.ERROR, (event, err) => console.log(err));
         })
       }
-      console.log('audioRefPaused', audioRefPaused)
-      console.log('isSongPlaying', isSongPlaying)
 
       if(isSongPlaying) audio?.play();
       setPrevSongUrl(song?.link)
@@ -505,8 +502,8 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                 <List active={showSideMenu} ref={toggleSideMenuRef}/>
                 <TextI 
                   active={showLyricsMenu} 
-                  ref={!isEmpty(song?.lyrics) ? toggleLyricsRef : null}
                   noLyricFound={isEmpty(song?.lyrics)}
+                  onClick={onToggleLyrics}
                 />
                 <Device active={false}/>
                 <Volume volume={

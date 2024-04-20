@@ -7,7 +7,7 @@ import { useAppSelector } from '@app/_hooks/redux_hooks'
 
 interface LyricsMenuProps {
   show: boolean
-  contentRef: LegacyRef<HTMLDivElement>
+  contentRef?: LegacyRef<HTMLDivElement>
 }
 const cn = classNames.bind(styles)
 const LyricsMenu = (props: LyricsMenuProps) => {
@@ -22,9 +22,11 @@ const LyricsMenu = (props: LyricsMenuProps) => {
         wrapper: true, 
         showLyrics: show
       })} ref={contentRef}>
-        <p>
-          {lyrics ?? ""}
-        </p>
+          {
+            lyrics.split('\n').map(item => (
+              <p>{item}</p>
+            ))
+          }
     </div>
   )
 }

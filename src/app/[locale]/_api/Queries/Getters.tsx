@@ -32,14 +32,16 @@ export const getSongs = async (data: {
     artistId?: string 
     albomId?: string
     genreId?: string, 
+    page?: number
     pageSize?: number, 
     search?: string 
 }): Promise<any> => {
+    console.log('page', data.page)
     return api.patchDynamic({
         url: '/client/songs', 
         data: {
-            page: 1,
-            pageSize: data.pageSize ?? 5,
+            page: data.page ?? 1,
+            pageSize: data.pageSize ?? 20,
             search: data.search ?? "",
             artistId: data.artistId ?? "",
             playlistId: data.playlistId ?? "",
@@ -120,6 +122,11 @@ export const GetFavoriteArists = async(): Promise<LikedArtists> => {
 export const GetFavoritePlaylists = async (): Promise<LikedPlaylists> => {
     return api.getPrivate<LikedPlaylists>({
         url: '/client/favorite-playlists'
+    })
+}
+export const GetFavoriteAlboms = async (): Promise<Albums['data']> => {
+    return api.getPrivate<Albums['data']>({
+        url: '/client/favorite-alboms'
     })
 }
 export const GetDevices = async (): Promise<Devices[]> => {

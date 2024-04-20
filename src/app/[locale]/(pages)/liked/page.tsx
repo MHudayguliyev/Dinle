@@ -1,7 +1,7 @@
 'use client';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useQuery } from 'react-query';
+import { useQuery, useInfiniteQuery } from 'react-query';
 //styles
 import styles from './page.module.scss';
 import classNames from 'classnames/bind';
@@ -18,7 +18,6 @@ import Tab from '@app/_compLibrary/Tab';
 
 import Button from '@app/_compLibrary/Button';
 import SongList from '@app/_components/SongList/SongList';
-import Preloader from '@app/_compLibrary/Preloader';
 //redux
 import { useAppDispatch, useAppSelector } from '@app/_hooks/redux_hooks';
 import { setCurrentSong, setIsShuffle } from '@app/_redux/reducers/MediaReducer';
@@ -36,41 +35,61 @@ import useWindowSize from '@app/_hooks/useWindowSize';
 //utils
 import { CheckObjOrArrForNull, copyLink, getUserDevice, isUndefined } from '@app/_utils/helpers';
 
-import { GetFavoriteArists, GetFavoritePlaylists, GetFavoriteSongs } from '@app/_api/Queries/Getters';
+import { GetFavoriteAlboms, GetFavoriteArists, GetFavoritePlaylists, GetFavoriteSongs } from '@app/_api/Queries/Getters';
 //icons
 import LikeStaticI from '@app/_components/icons/likeStatic/icon';
 //toast
 import toast from 'react-hot-toast';
 import { likeSong } from '@app/_api/Queries/Post';
+import useObserve from '@app/_hooks/useObserve';
+import Artists from '@app/_api/types/queryReturnTypes/Artists';
+import LikedSongs from '@app/_api/types/queryReturnTypes/LikedSongs';
+import Albums from '@app/_api/types/queryReturnTypes/Albums';
+import Playlist from '@app/_api/types/queryReturnTypes/Playlist';
+import LikedPlaylists from '@app/_api/types/queryReturnTypes/LikedPlaylists';
 
 const cn = classNames.bind(styles)
 const ViewAll = () => {
+    const songsObserver = useRef<IntersectionObserver>();
+    const artistsObserver = useRef<IntersectionObserver>();
+    const playlistsObserver = useRef<IntersectionObserver>();
+    const albomsObserver = useRef<IntersectionObserver>();
+    const clipsObserver = useRef<IntersectionObserver>();
+
+
     const dispatch = useAppDispatch()
-    const router = useRouter()
     const searchParam = useSearchParams()
-    const searchType = searchParam.get('type')
+    const tab = searchParam.get('tab')
     const { scrolly } = useWindowScrollPositions()
     const [width] = useWindowSize()
-
     const tabs: TabMenuTypes[] = [
       {
         route: 'song', label: {
           en: 'Songs', tm: 'Songs', ru:'Songs'
         }
       }, 
+      {route: 'clip', label: {
+        en: 'Clips', tm:'Clips', ru: 'Clips'
+      }}, 
       {
         route: 'artist', label: {
           en: 'Artists', tm:'Artists', ru: 'Artists'
         }
       },
+      {route: 'albom', label: {
+        en: 'Alboms', tm:'Alboms', ru: 'Alboms'
+      }}, 
       {route: 'playlist', label: {
         en: 'Playlist', tm:'Playlist', ru: 'Playlist'
       }}
     ]
 
-    const showSongs = useMemo(() => searchType === tabs[0].route || isUndefined(searchType),[searchType])
-    const showArtists = useMemo(() => searchType === tabs[1].route,[searchType])
-    const showPlaylists = useMemo(() => searchType === tabs[2].route,[searchType])
+    const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab])
+    const showClips = useMemo(() => tab === tabs[1].route,[tab])
+    const showArtists = useMemo(() => tab === tabs[2].route,[tab])
+    const showAlboms = useMemo(() => tab === tabs[3].route,[tab])
+    const showPlaylists = useMemo(() => tab === tabs[tabs.length - 1].route,[tab])
+    
 
     //redux states 
     const song = useAppSelector(state => state.mediaReducer.songData)
@@ -87,43 +106,137 @@ const ViewAll = () => {
 
     //queries
     const {
-      data: songs, 
-      isLoading: isSongsLoading, 
+      data: songsData, 
+      hasNextPage: hasSongNextPage, 
+      isFetching: isFetchingSongs, 
       isError: isSongsError, 
-      isRefetching: refetchingSongs
-    } = useQuery(['GetFavoriteSongs', showSongs], () => GetFavoriteSongs(), {
-      refetchOnWindowFocus: false, enabled: showSongs
+      isLoading: isSongsLoading,
+      fetchNextPage: fetchSongNextPage, 
+      isRefetching: isSongsRefetcing
+    } = useInfiniteQuery({
+      queryKey: ['FavoriteSongs', showSongs], 
+      queryFn: ({pageParam}) => GetFavoriteSongs(), 
+      getNextPageParam: (lastPage, allPages) => {
+        // return lastPage.rows.length ? allPages.length + 1 : undefined;
+      }, 
+      enabled: showSongs
     })
-    // console.log('songs', songs)
-
     const {
-      data: artists, 
-      isLoading: isArtistsLoading, 
+      data: artistsData, 
+      hasNextPage: hasArtistNextPage, 
+      isFetching: isFetchingArtists, 
       isError: isArtistsError, 
-      isRefetching: refetchingArtists
-    } = useQuery(['GetFavoriteArtists', showArtists], () => GetFavoriteArists(), {
-      refetchOnWindowFocus: false, enabled: showArtists
+      isLoading: isArtistsLoading,
+      fetchNextPage: fetchArtistNextPage, 
+      isRefetching: isArtistsRefetcing
+    } = useInfiniteQuery({
+      queryKey: ['FavoriteArtists', showArtists], 
+      queryFn: ({pageParam}) => GetFavoriteArists(), 
+      getNextPageParam: (lastPage, allPages) => {
+        // return lastPage.rows.length ? allPages.length + 1 : undefined;
+      }, 
+      enabled: showArtists
     })
     const {
-      data: playlists, 
-      isLoading: isPlaylistsLoading, 
+      data: albomsData, 
+      hasNextPage: hasAlbomNextPage, 
+      isFetching: isFetchingAlboms, 
+      isError: isAlbomsError, 
+      isLoading: isAlbomsLoading,
+      fetchNextPage: fetchAlbomNextPage, 
+      isRefetching: isAlbomsRefetcing
+    } = useInfiniteQuery({
+      queryKey: ['FavoriteAlboms', showAlboms], 
+      queryFn: ({pageParam}) => GetFavoriteAlboms(), 
+      getNextPageParam: (lastPage, allPages) => {
+        // return lastPage.rows.length ? allPages.length + 1 : undefined;
+      }, 
+      enabled: showAlboms
+    })
+    const {
+      data: playlistsData, 
+      hasNextPage: hasPlaylistNextPage, 
+      isFetching: isFetchingPlaylists, 
       isError: isPlaylistsError, 
-      isRefetching: refetchingPlaylists
-    } = useQuery(['GetFavoritePlaylists', showPlaylists], () => GetFavoritePlaylists(), {
-      refetchOnWindowFocus: false, enabled: showPlaylists
+      isLoading: isPlaylistsLoading,
+      fetchNextPage: fetchPlaylistNextPage, 
+      isRefetching: isPlaylistsRefetcing
+    } = useInfiniteQuery({
+      queryKey: ['FavoritePlaylists', showPlaylists], 
+      queryFn: ({pageParam}) => GetFavoritePlaylists(), 
+      getNextPageParam: (lastPage, allPages) => {
+        // return lastPage.rows.length ? allPages.length + 1 : undefined;
+      }, 
+      enabled: showPlaylists
     })
 
-    useEffect(() => {
-      if(!isSongsLoading && !isSongsError) setSongsRow(songs!?.rows)
-    }, [songs])
+    //last element refs
+    const lastSongRef = useObserve({
+      observer: songsObserver, 
+      hasNextPage: hasSongNextPage, 
+      isFetching: isFetchingSongs, 
+      isLoading: isSongsLoading, 
+      fetchNextPage: fetchSongNextPage, 
+    })
+    const lastArtistRef = useObserve({
+      observer: artistsObserver, 
+      hasNextPage: hasArtistNextPage, 
+      isFetching: isFetchingArtists, 
+      isLoading: isArtistsLoading, 
+      fetchNextPage: fetchArtistNextPage, 
+    })
+    const lastAlbomRef = useObserve({
+      observer: albomsObserver, 
+      hasNextPage: hasAlbomNextPage, 
+      isFetching: isFetchingAlboms, 
+      isLoading: isAlbomsLoading, 
+      fetchNextPage: fetchAlbomNextPage, 
+    })
+    const lastPlaylistRef = useObserve({
+      observer: playlistsObserver, 
+      hasNextPage: hasPlaylistNextPage, 
+      isFetching: isFetchingPlaylists, 
+      isLoading: isPlaylistsLoading, 
+      fetchNextPage: fetchPlaylistNextPage, 
+    })
 
-    useEffect(() => {
-      const opacity = Math.min(1, scrolly / window.innerHeight)
-      if(headerRef && headerRef.current)
-      headerRef.current?.style?.setProperty(
-          '--opacity', opacity
-      )
-    }, [scrolly, headerRef])
+  //lists
+  const songsList = useMemo((): LikedSongs['rows'] => {
+    // @ts-ignore
+    return songsData?.pages.reduce((acc, page) => {
+      return [...acc, ...page.rows];
+    }, [])
+  }, [songsData]);
+  const artistsList = useMemo((): Artists['data']['rows'] => {
+    // @ts-ignore
+    return artistsData?.pages.reduce((acc, page) => {
+      return [...acc, ...page.rows];
+    }, [])
+  }, [artistsData]);
+  const albomsList = useMemo((): Albums['data']['rows'] => {
+    // @ts-ignore
+    return albomsData?.pages.reduce((acc, page) => {
+      return [...acc, ...page.rows];
+    }, [])
+  }, [albomsData]);
+  const playlistsList = useMemo((): LikedPlaylists['rows'] => {
+    // @ts-ignore
+    return playlistsData?.pages.reduce((acc, page) => {
+      return [...acc, ...page.rows];
+    }, [])
+  }, [playlistsData]);
+  
+  useEffect(() => {
+    if(CheckObjOrArrForNull(songsList)) setSongsRow(songsList)
+  }, [songsList])
+
+  useEffect(() => {
+    const opacity = Math.min(1, scrolly / window.innerHeight)
+    if(headerRef && headerRef.current)
+    headerRef.current?.style?.setProperty(
+      '--opacity', opacity
+    )
+  }, [scrolly, headerRef])
 
 
     const handleLike = useCallback(async (id: string) => {
@@ -137,7 +250,7 @@ const ViewAll = () => {
       }
     }, [setSongsRow])
 
-    const loader = useCallback((type: 'artist' | 'playlist' | 'album' | 'genre', withTopShimmer = false) => {
+    const loader = useCallback((tab: 'artist' | 'playlist' | 'albom' | 'genre', withTopShimmer = false) => {
       return (
         <>
         {withTopShimmer && <span className={styles.topShimmer}></span>}
@@ -148,10 +261,10 @@ const ViewAll = () => {
                   id=""
                   key={item}
                   shimmer
-                  artists={type === 'artist'}
-                  playlists={type === 'playlist'}
-                  alboms={type === 'album'}
-                  genres={type === 'genre'}
+                  artists={tab === 'artist'}
+                  playlists={tab === 'playlist'}
+                  alboms={tab === 'albom'}
+                  genres={tab === 'genre'}
                   title=''
                 />
               ))
@@ -271,7 +384,7 @@ const ViewAll = () => {
 
             <div className={styles.my_favorite}>
               <div className={styles.title}>My foverim</div>
-              <p>Songs {songs?.count}</p>
+              {/* <p>Songs {songs?.count}</p> */}
             </div>
           </div>
 
@@ -298,7 +411,7 @@ const ViewAll = () => {
           <div className={styles.the_bottom}>
             <div className={styles.my_favorite}>
               <div className={styles.title}>My foverim</div>
-              <p>Songs {songs?.count}</p>
+              {/* <p>Songs {songs?.count}</p> */}
             </div>
 
             <div className={styles.actions}>
@@ -318,17 +431,15 @@ const ViewAll = () => {
       <Tab 
         baseUrl='liked'
         tabs={tabs}
-        pathname={searchType}
+        pathname={tab}
         scrollYPosition={271}
         fixed
       />
 
-      <div className={cn({
-        section: true, 
-        show: showSongs
-      })}>
-
+      {
+        showSongs && 
         <SongList 
+          ref={lastSongRef}
           data={songsRow ?? []}
           fetchStatuses={{
             isLoading: isSongsLoading, isError: isSongsError
@@ -337,58 +448,72 @@ const ViewAll = () => {
           onLike={handleLike}
           onPlay={(index) => dispatch(setCurrentSong({data: songsRow, index, id: songsRow[index]?.id}))}
           onShowInfo={(id) => {
-            console.log("id", id)
+            // console.log("id", id)
             setSongId(id)
             setShowInfoMenu(true)
           }}
         />
+      }
 
-      </div>
+      {
+        showArtists && 
+        isArtistsLoading || isArtistsRefetcing ? loader('artist') : 
+        <div className={styles.grid_wrapper}>
+          {
+            artistsList?.map(artist => (
+              <StandardCard
+                ref={lastArtistRef} 
+                id={artist.id}
+                artistId={artist.id}
+                image={artist.cover}
+                title={artist.title}
+                artists
+              />
+            ))
+          }
+        </div>
+      }
 
-      <div className={cn({
-        section: true,
-        show: showArtists
-      })}>
-        {
-          isArtistsLoading || refetchingArtists ? loader('artist') : 
-          <div className={styles.grid_wrapper}>
-            {
-              artists?.rows?.map(artist => (
-                <StandardCard 
-                  id={artist.id}
-                  artistId={artist.id}
-                  image={artist.cover}
-                  title={artist.title}
-                  artists
-                />
-              ))
-            }
-          </div>
-        }
-      </div>
+      {
+        showAlboms && 
+        isAlbomsLoading || isAlbomsRefetcing ? loader('albom') : 
+        <div className={styles.grid_wrapper}>
+          {
+            albomsList?.map(albom => (
+              <StandardCard
+                ref={lastAlbomRef} 
+                id={albom.id}
+                albomId={albom.id}
+                artistId={albom.id}
+                image={albom.cover}
+                title={albom.title}
+                alboms
+              />
+            ))
+          }
+        </div>
+      }
 
+      {
+        showPlaylists && 
+        isPlaylistsLoading || isPlaylistsRefetcing ? loader('playlist') : 
+        <div className={styles.grid_wrapper}>
+          {
+            playlistsList?.map(playlist => (
+              <StandardCard
+                ref={lastPlaylistRef} 
+                id={playlist.id}
+                playlistId={playlist.id}
+                image={playlist.cover}
+                title={playlist.title}
+                playlists
+              />
+            ))
+          }
+        </div>
+      }
 
-      <div className={cn({
-        section: true,
-        show: showPlaylists
-      })}>
-        {
-          isPlaylistsLoading || refetchingPlaylists ? loader('playlist') : 
-          <div className={styles.grid_wrapper}>
-            {
-              playlists?.rows?.map(playlist => (
-                <StandardCard 
-                  id={playlist.id}
-                  playlistId={playlist.id}
-                  image={playlist.cover}
-                  title={playlist.title}
-                  playlists
-                />
-              ))
-            }
-          </div>
-        }
-      </div>
+        
 
     </>
   )

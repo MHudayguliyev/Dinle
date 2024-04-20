@@ -12,7 +12,7 @@
     height: calc(100vh - 105px);
     background: var(--sidemenu-main-bg);
     backdrop-filter: blur(35px);
-    transition: right GAnimation.$duration var(--transition-cubic);
+    transition: right .4s var(--transition-cubic);
     z-index: GShapes.$sideMenuZIndex + GShapes.$ZIndexAddition;
 
     display: flex;

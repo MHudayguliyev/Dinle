@@ -200,9 +200,11 @@
             .theTop {
                 display: flex;
                 align-items: center;
+                margin-bottom: 4px;
+            }
+            .topFlex {
                 justify-content: space-between;
                 gap: 10px;
-                margin-bottom: 4px;
             }
 
             .title, .description {

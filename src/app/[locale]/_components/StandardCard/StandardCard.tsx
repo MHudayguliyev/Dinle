@@ -57,7 +57,7 @@ interface StandardProps {
     shimmer?: boolean
 }
 const cn = classNames.bind(styles)
-const StandardCard = (props: StandardProps) => {
+const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref): JSX.Element => {
     const {
         id,
         artistId = "",
@@ -150,7 +150,7 @@ const StandardCard = (props: StandardProps) => {
                 </div>
             </div>
         ) : (
-        <div onClick={playSong} className={cn({
+        <div ref={ref} onClick={playSong} className={cn({
                 standard_card: !genres, 
                 card_with_close: recentSearched,
                 card_for_artist: artists,
@@ -221,7 +221,10 @@ const StandardCard = (props: StandardProps) => {
                             }
                             <div className={styles.main_content}>
 
-                                <div className={styles.theTop}>
+                                <div className={cn({
+                                    theTop: true, 
+                                    topFlex: videoCard
+                                })}>
                                     {
                                         (!artists && !playlists && !alboms) && (isSongPlaying && songData[songIndex]?.id === id) &&
                                         <LottieI 
@@ -235,7 +238,7 @@ const StandardCard = (props: StandardProps) => {
                                         title: true, 
                                         paddLeft: isSongPlaying && songData[songIndex]?.id === id
                                     })}>
-                                        <CustomLink onClick={stopPropagation} href={playlists ? `/playlist/${playlistId}` : artists ? `/artist/${artistId}` : alboms ? `/album/${albomId}` : `/song/${id}`}>
+                                        <CustomLink onClick={stopPropagation} href={playlists ? `/playlist/${playlistId}` : artists ? `/artist/${artistId}` : alboms ? `/album/${albomId}` : ``}>
                                             {title}
                                         </CustomLink>
                                     </div>
@@ -244,9 +247,11 @@ const StandardCard = (props: StandardProps) => {
                                 </div>
 
                                 
-                                <div className={styles.description}>
-                                    <CustomLink onClick={stopPropagation} href={`/artist/${artistId}`}>{description}</CustomLink>
-                                </div>
+                                {!videoCard && 
+                                    <div className={styles.description}>
+                                        <CustomLink onClick={stopPropagation} href={`/artist/${artistId}`}>{description}</CustomLink>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </>
@@ -258,6 +263,6 @@ const StandardCard = (props: StandardProps) => {
     }
    </>
   )
-}
+})
 
 export default StandardCard

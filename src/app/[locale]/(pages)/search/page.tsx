@@ -2,7 +2,7 @@
 import React, {useCallback, useEffect, useMemo, useState, useRef} from 'react'
 import Image from 'next/image';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { useQuery } from 'react-query';
+import { useInfiniteQuery, useQuery } from 'react-query';
 
 import InfiniteScroll from 'react-infinite-scroller';
 // lib
@@ -48,34 +48,30 @@ import { standardCardBreaksPoints } from '@app/_assets/json_data/swiper_breakpoi
 import ArtistsList from '@app/_components/ArtistsList/ArtistsList';
 import ArrowRightI from '@app/_components/icons/arrowRight/icon';
 import Link from 'next/link';
+import Artists from '@app/_api/types/queryReturnTypes/Artists';
+import useObserve from '@app/_hooks/useObserve';
+import Playlists from '@app/_api/types/queryReturnTypes/Playlists';
+import Albums from '@app/_api/types/queryReturnTypes/Albums';
 
 const cn = classNames.bind(styles)
 const Search = () => {
+  //refs
+  const artistsObserver = useRef<IntersectionObserver>();
+  const playlistsObserver = useRef<IntersectionObserver>();
+  const albomsObserver = useRef<IntersectionObserver>();
+
   const inputRef:any = useRef(null)
   const dropdownRef:any = useRef<HTMLDivElement>(null)
   const dropdownToggleRef:any = useRef(null)
   const [openRecents, setOpenRecents] = useClickOutside(dropdownRef, dropdownToggleRef, 'mousedown')
-  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(0)
   const [width] = useWindowSize()
 
   const dispatch = useAppDispatch()
   const router = useRouter()
   const searchParam = useSearchParams()
-  const type = searchParam.get('type')
+  const tab = searchParam.get('tab')
   const mask = searchParam.get('mask')
   const all = searchParam.get('all')
-
-  const [searchValue, setSearchValue] = useState<string>(mask ?? "")
-  const [openShazam, setOpenShazam] = useState<boolean>(false)
-  const [isSearchDataLoading, setSearchDataLoading] = useState<boolean>(false)
-  const [isNotFound, setIsNotFound] = useState<boolean>(false)
-  const [albums, setAlbums] = useState<SearchType['data']['alboms']>([])
-  const [songs, setSongs] = useState<SearchType['data']['songs']>([])
-  const [artists, setArtists] = useState<SearchType['data']['artists']>([])
-  const [shows, setShows] = useState<SearchType['data']['shows']>([])
-  const [playlists, setPlaylists] = useState<SearchType['data']['playlists']>([])
-  const [recentSearchData, setRecentSearchData] = useState<{title: string}[]>([])
-
   const tabs: TabMenuTypes[] = [
     {
       route: 'artist', label: {
@@ -96,12 +92,124 @@ const Search = () => {
       }
     }
   ]
-  const showFoundData = useMemo(() => isUndefined(type) && (!isUndefined(mask) && !isEmpty(mask)),[type, mask])
-  const showArtists = useMemo(() => type === tabs[0]?.route ,[type])
-  const showPlaylists = useMemo(() => type === tabs[1]?.route,[type])
-  const showAlbums = useMemo(() => type === tabs[2]?.route,[type])
-  const showGenres = useMemo(() =>type === tabs[3]?.route,[type])
+  //states
+  const [searchValue, setSearchValue] = useState<string>(mask ?? "")
+  const [openShazam, setOpenShazam] = useState<boolean>(false)
+  const [isSearchDataLoading, setSearchDataLoading] = useState<boolean>(false)
+  const [albumsSearch, setAlbums] = useState<SearchType['data']['alboms']>([])
+  const [songsSearch, setSongs] = useState<SearchType['data']['songs']>([])
+  const [artistsSearch, setArtists] = useState<SearchType['data']['artists']>([])
+  const [showsSearch, setShows] = useState<SearchType['data']['shows']>([])
+  const [playlistsSearch, setPlaylists] = useState<SearchType['data']['playlists']>([])
+  const [recentSearchData, setRecentSearchData] = useState<{title: string}[]>([])
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(0)
+
+  const showFoundData = useMemo(() => isUndefined(tab) && (!isUndefined(mask) && !isEmpty(mask)),[tab, mask])
+  const showArtists = useMemo(() => tab === tabs[0]?.route ,[tab])
+  const showPlaylists = useMemo(() => tab === tabs[1]?.route,[tab])
+  const showAlbums = useMemo(() => tab === tabs[2]?.route,[tab])
+  const showGenres = useMemo(() =>tab === tabs[3]?.route,[tab])
   const isViewAll = useMemo(() => !isUndefined(all) && !isEmpty(all),[all])
+
+  //queries
+  const {
+    data:artistsData, 
+    hasNextPage: hasArtistNextPage, 
+    isFetching: isFetchingArtists, 
+    isError: isArtistsError, 
+    isLoading: isArtistsLoading,
+    fetchNextPage: fetchArtistNextPage, 
+  } = useInfiniteQuery({
+    queryKey: ['Artists', showArtists], 
+    queryFn: ({pageParam}) => GetArtists(pageParam), 
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.data.rows.length ? allPages.length + 1 : undefined;
+    }, 
+    enabled: showArtists
+  })
+  const {
+    data: playlistsData, 
+    hasNextPage: hasPlaylistNextPage, 
+    isFetching: isFetchingPlaylists, 
+    isError: isPlaylistsError, 
+    isLoading: isPlaylistsLoading,
+    fetchNextPage: fetchPlaylistNextPage, 
+  } = useInfiniteQuery({
+    queryKey: ['Playlists', showPlaylists], 
+    queryFn: ({pageParam}) => GetPlaylists(20, pageParam), 
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.data.rows.length ? allPages.length + 1 : undefined;
+    }, 
+    enabled: showPlaylists
+  })
+  const {
+    data: albomsData, 
+    hasNextPage: hasAlbomNextPage, 
+    isFetching: isFetchingAlboms, 
+    isError: isAlbomsError, 
+    isLoading: isAlbomsLoading,
+    fetchNextPage: fetchAlbomNextPage, 
+  } = useInfiniteQuery({
+    queryKey: ['Alboms', showAlbums], 
+    queryFn: ({pageParam}) => GetAlbums({ page: pageParam }), 
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.data.rows.length ? allPages.length + 1 : undefined;
+    }, 
+    enabled: showAlbums
+  })
+  const {
+    data: genresData,
+    isFetching,  
+    isError: isGenresError, 
+    isLoading: isGenresLoading,
+  } = useQuery(['Genres', showGenres], () => GetGenres(),{
+    refetchOnWindowFocus: false, enabled: showGenres
+  })
+
+  //last element refs
+  const lastArtistRef = useObserve({
+    observer: artistsObserver, 
+    hasNextPage: hasArtistNextPage, 
+    isFetching: isFetchingArtists, 
+    isLoading: isArtistsLoading, 
+    fetchNextPage: fetchArtistNextPage, 
+  })
+  const lastPlaylistRef = useObserve({
+    observer: playlistsObserver, 
+    hasNextPage: hasPlaylistNextPage, 
+    isFetching: isFetchingPlaylists, 
+    isLoading: isPlaylistsLoading, 
+    fetchNextPage: fetchPlaylistNextPage, 
+  })
+  const lasAlbomRef = useObserve({
+    observer: albomsObserver, 
+    hasNextPage: hasAlbomNextPage, 
+    isFetching: isFetchingAlboms, 
+    isLoading: isAlbomsLoading, 
+    fetchNextPage: fetchAlbomNextPage, 
+  })
+
+
+  //lists
+  const artistsList = useMemo((): Artists['data']['rows'] => {
+    // @ts-ignore
+    return artistsData?.pages.reduce((acc, page) => {
+      return [...acc, ...page.data.rows];
+    }, [])
+  }, [artistsData]);
+  const playlistsList = useMemo((): Playlists['data']['rows'] => {
+    // @ts-ignore
+    return playlistsData?.pages.reduce((acc, page) => {
+      return [...acc, ...page.data.rows];
+    }, [])
+  }, [playlistsData]);
+  const albomsList = useMemo((): Albums['data']['rows'] => {
+    // @ts-ignore
+    return albomsData?.pages.reduce((acc, page) => {
+      return [...acc, ...page.data.rows];
+    }, [])
+  }, [albomsData]);
+
 
   const errorDiv = useMemo(() => {
     return (
@@ -119,9 +227,6 @@ const Search = () => {
       </div>
     )
   }, [])
-  const arrowRight = useMemo(() => (
-    <ArrowRightI/>
-  ), [])
   const loader = useCallback((type: 'artist' | 'playlist' | 'album' | 'genre', swiperMode = false) => {
     const arr = [1,2,3,4,5,6]
     return (
@@ -176,51 +281,22 @@ const Search = () => {
       </div>
     )
   }, [])
+  const arrowRight = useMemo(() => (
+    <ArrowRightI/>
+  ), [])
 
-
-  //queries 
-  const {
-    data: artistsData, 
-    isLoading: isArtistsLoading, 
-    isError: isArtistsError
-  }  = useQuery(['GetArtists', showArtists], () => GetArtists(), {
-    refetchOnWindowFocus: false, enabled: showArtists,
-  })
-
-  const {
-    data: playlistsData, 
-    isLoading: isPlaylistsLoading, 
-    isError: isPlaylistsError, 
-  } = useQuery(["GetPlaylists", showPlaylists], () => GetPlaylists(), {
-    refetchOnWindowFocus: false, enabled: showPlaylists
-  })
-  const {
-    data: albumsData, 
-    isLoading: isAlbumsLoading, 
-    isError: isAlbumsError, 
-  }  = useQuery(['GetAlbums', showAlbums], () => GetAlbums({}), {
-    refetchOnWindowFocus: false, enabled: showAlbums
-  })
-  const {
-    data: genresData, 
-    isLoading: isGenresLoading, 
-    isError: isGenresError, 
-  }  = useQuery(['GetGenres', showGenres], () => GetGenres(), {
-    refetchOnWindowFocus: false, enabled: showGenres
-  })
 
   useEffect(() => {
-    if(isUndefined(type) && (isUndefined(mask) || isEmpty(mask))) {
-      router.push(`/search?type=${tabs[3].route}`)
+    if(isUndefined(tab) && (isUndefined(mask) || isEmpty(mask))) {
+      router.push(`/search?tab=${tabs[3].route}`)
     }
     else if(!isUndefined(mask) && !isEmpty(mask)) goSearch()
     setRecentSearchData(parse(getFromStorage('recentSearchData')!) ?? [])
   }, [])
 
   useEffect(() => {
-    if(isViewAll){
-      goSearch()
-    }
+    if(isViewAll)
+    goSearch()
   }, [isViewAll])
 
   useEffect(() => {
@@ -234,7 +310,12 @@ const Search = () => {
       
     }else setRecentSearchData(localSearches)
 
-  }, [searchValue])
+
+    if(isEmpty(searchValue) && isViewAll) {
+      router.push(`/search?tab=${tabs[3].route}`)
+    }
+
+  }, [searchValue, isViewAll])
 
   useEffect(() => {
     if(!CheckObjOrArrForNull(recentSearchData) && openRecents) setOpenRecents(false)
@@ -261,7 +342,7 @@ const Search = () => {
     }
     document.addEventListener('keydown', onKeyDown)
     return () => {
-       document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('keydown', onKeyDown)
     }
   }, [activeSuggestionIndex, recentSearchData, inputRef])
 
@@ -320,7 +401,7 @@ const Search = () => {
         dataToSend = {...dataToSend, type: all as string}
       }
       setSearchDataLoading(true)
-      console.log("dataToSend", dataToSend)
+      // console.log("dataToSend", dataToSend)
       const response = await searchSong(dataToSend)
       if(response.statusCode === 200){
         const {
@@ -366,7 +447,7 @@ const Search = () => {
 
   const searchOnIClick = useCallback(() => {
     if(isEmpty(searchValue)){
-      router.push(`search?type=${tabs[3].route}`)
+      router.push(`search?tab=${tabs[3].route}`)
     }else {
       goSearch()
     }
@@ -435,7 +516,7 @@ const Search = () => {
           baseUrl='search'
           searchMenu
           tabs={tabs}
-          pathname={type}
+          pathname={tab}
           fixedTopNull
           scrollYPosition={73}
         />
@@ -444,14 +525,15 @@ const Search = () => {
 
         {
           showArtists && (
-            isArtistsLoading  ?  loader('artist') :  
+            isArtistsLoading ?  loader('artist') :  
               isArtistsError ? errorDiv : 
               <div className={styles.recomendations}>
                 <h3 className={styles.songCardTitle}>Artists</h3>
                   <div className={styles.grid_wrapper}>
                     {
-                      artistsData?.data?.rows?.map((artist:any) => (
-                        <StandardCard 
+                      artistsList?.map((artist:any) => (
+                        <StandardCard
+                          ref={lastArtistRef}
                           key={artist.id}
                           id={artist.id}
                           artistId={artist.id}
@@ -474,8 +556,9 @@ const Search = () => {
                 <h3 className={styles.songCardTitle}>Playlists</h3>
                 <div className={styles.grid_wrapper}>
                   {
-                    playlistsData?.data?.rows?.map(playlist => (
+                    playlistsList?.map(playlist => (
                       <StandardCard 
+                        ref={lastPlaylistRef}
                         key={playlist.id}
                         id={playlist.id}
                         playlistId={playlist.id}
@@ -492,14 +575,15 @@ const Search = () => {
 
         {
           showAlbums && (
-            isAlbumsLoading ?  loader('album') :  
-            isAlbumsError ? errorDiv : 
+            isAlbomsLoading ?  loader('album') :  
+            isAlbomsError ? errorDiv : 
               <div className={styles.recomendations}>
                 <h3 className={styles.songCardTitle}>Albums</h3>
                 <div className={styles.grid_wrapper}>
                   {
-                    albumsData?.data?.rows?.map(album => (
+                    albomsList?.map(album => (
                       <StandardCard 
+                        ref={lasAlbomRef}
                         key={album.id}
                         id={album.id}
                         albomId={album.id}
@@ -517,7 +601,7 @@ const Search = () => {
 
         {
           showGenres && (
-            isGenresLoading ?  loader('genre') :  
+            isGenresLoading || isFetching ?  loader('genre') :  
             isGenresError ? errorDiv : 
               <div className={styles.recomendations}>
                 <h3 className={styles.songCardTitle}>Genres</h3>
@@ -540,7 +624,7 @@ const Search = () => {
         }
 
         {
-          showFoundData && CheckObjOrArrForNull(songs) && (
+          showFoundData && CheckObjOrArrForNull(songsSearch) && (
             <div className={styles.recomendations}>
               <h3 className={styles.songCardTitle}>
                 Songs
@@ -549,9 +633,9 @@ const Search = () => {
                 </Link>
               </h3>
               <SongList 
-                data={songs} 
+                data={songsSearch} 
                 // onLike={handleLike}
-                onPlay={(index) => dispatch(setCurrentSong({data: songs, index, id: songs[index]?.id}))}
+                onPlay={(index) => dispatch(setCurrentSong({data: songsSearch, index, id: songsSearch[index]?.id}))}
                 fetchStatuses={{
                   isLoading: false, isError: false
                 }}
@@ -562,7 +646,7 @@ const Search = () => {
 
       {
         showFoundData && (
-          isSearchDataLoading ? loader('artist', true) : CheckObjOrArrForNull(artists) ? (
+          isSearchDataLoading ? loader('artist', true) : CheckObjOrArrForNull(artistsSearch) ? (
             <div className={styles.recomendations}>
               <h3 className={styles.songCardTitle}>
                 Artists
@@ -580,7 +664,7 @@ const Search = () => {
                     breakpoints={standardCardBreaksPoints}
                   >
                     {
-                        artists?.map(artist => (
+                        artistsSearch?.map(artist => (
                           <SwiperSlide key={artist.id}>
                           <StandardCard 
                             id={artist.id}
@@ -594,7 +678,7 @@ const Search = () => {
                       }
                   </Swiper> : 
                   <div>
-                    {artists?.map(artist => (
+                    {artistsSearch?.map(artist => (
                       <ArtistsList 
                         key={artist.id}
                         id={artist.id}
@@ -612,7 +696,7 @@ const Search = () => {
 
       {
         showFoundData && (
-          isSearchDataLoading ? loader('album', true) : CheckObjOrArrForNull(albums) ? (
+          isSearchDataLoading ? loader('album', true) : CheckObjOrArrForNull(albumsSearch) ? (
             <div className={styles.recomendations}>
               <h3 className={styles.songCardTitle}>
                 Albums
@@ -628,7 +712,7 @@ const Search = () => {
                   breakpoints={standardCardBreaksPoints}
                 >
                   {
-                      albums?.map(album => (
+                      albumsSearch?.map(album => (
                         <SwiperSlide key={album.id}>
                         <StandardCard 
                           id={album.id}
@@ -649,7 +733,7 @@ const Search = () => {
 
       {
         showFoundData && (
-          isSearchDataLoading ? loader('playlist', true) : CheckObjOrArrForNull(playlists) ? (
+          isSearchDataLoading ? loader('playlist', true) : CheckObjOrArrForNull(playlistsSearch) ? (
             <div className={styles.recomendations}>
               <h3 className={styles.songCardTitle}>
                 Playlists
@@ -665,7 +749,7 @@ const Search = () => {
                   breakpoints={standardCardBreaksPoints}
                 >
                   {
-                    playlists?.map(playlist => (
+                    playlistsSearch?.map(playlist => (
                       <SwiperSlide key={playlist.id}>
                         <StandardCard 
                           id={playlist.id}

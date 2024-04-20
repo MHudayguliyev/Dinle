@@ -27,23 +27,19 @@ export default function PagesLayout({
   const dispatch = useAppDispatch()
   const toggleSideMenuRef:any = useRef(null)
   const listContentRef:any = useRef(null)
-  const toggleLyricsRef:any = useRef(null)
-  const lyricsContentRef:any = useRef(null)
 
   const [show, setShow] = useClickOutside(listContentRef, toggleSideMenuRef, 'mousedown')
-  const [showLyrics] = useClickOutside(lyricsContentRef, toggleLyricsRef, 'mousedown')
+  const [showLyrics, setShowLyrics] = useState<boolean>(false)
   const [hideSidebar, setHideSidebar] = useState<boolean>(false)
 
   const showAuthModal = useAppSelector(state => state.authReducer.showAuthModal)
   const isAudioPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
 
   useEffect(() => {
-    if(lyricsContentRef){
-      if(showLyrics)
-      dispatch(setIsBlockOverflow(true))
-      else dispatch(setIsBlockOverflow(false))
-    }
-  }, [lyricsContentRef, showLyrics])
+    if(showLyrics)
+    dispatch(setIsBlockOverflow(true))
+    else dispatch(setIsBlockOverflow(false))
+  }, [showLyrics])
 
   return (
     <div className={styles.layout__container}  tabIndex={1}>
@@ -65,18 +61,15 @@ export default function PagesLayout({
           show={showAuthModal}
           close={() => dispatch(closeModal())}
         />
-        <LyricsMenu 
-          show={showLyrics}
-          contentRef={lyricsContentRef}
-        />
+        <LyricsMenu show={showLyrics}/>
         <SideMenu show={show} setShow={setShow} contentRef={listContentRef}/>
       </div>
 
       <AudioPlayer 
         toggleSideMenuRef={toggleSideMenuRef}
-        toggleLyricsRef={toggleLyricsRef}
         showSideMenu={show}
         showLyricsMenu={showLyrics}
+        onToggleLyrics={() => setShowLyrics(!showLyrics)}
       />
 
     </div>
