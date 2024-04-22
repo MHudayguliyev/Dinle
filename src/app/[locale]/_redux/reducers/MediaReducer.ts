@@ -18,6 +18,9 @@ const initialState: InitialState = {
     isSongPlaying: false,
     isAudioPlayerOpen: false, 
     isShuffle: false, 
+
+    videoData: [], 
+    videoIndex: -1,
 }
 
 const MediaReducer = createSlice({
@@ -64,6 +67,10 @@ const MediaReducer = createSlice({
         shuffle: (state, action) => {
             state.isSongPlaying = true
             state.songIndex = action.payload === state.songIndex ? action.payload + 1 : action.payload
+        }, 
+        setCurrentVideo: (state, action) => {
+            state.videoData = action.payload.data
+            state.videoIndex = action.payload.index
         }
     }
 })
@@ -73,6 +80,7 @@ export const {
     setSongIndex, 
     addToQueue,
     setIsShuffle, 
-    shuffle
+    shuffle, 
+    setCurrentVideo
 } = MediaReducer.actions
 export default MediaReducer.reducer

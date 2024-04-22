@@ -25,7 +25,7 @@ import { getHomeItems, GetBanners } from '@app/_api/Queries/Getters';
 import Button from '@app/_compLibrary/Button';
 //redux 
 import { useAppDispatch } from '@hooks/redux_hooks';
-import { setCurrentSong, addToQueue } from '@redux/reducers/MediaReducer';
+import { setCurrentSong, addToQueue, setCurrentVideo } from '@redux/reducers/MediaReducer';
 //comps
 import BottomSheet from '@components/Bottomsheet/Bottomsheet'
 import InfoMenu from '@components/InfoMenu/InfoMenu';
@@ -54,7 +54,6 @@ export default function Home() {
   } = useQuery('GetBanners', () => GetBanners(), {
     refetchOnWindowFocus: false
   })
-  console.log("banners", banners)
   const {
     data: homeItems, 
     isLoading, 
@@ -148,7 +147,7 @@ export default function Home() {
               data?.map((homeItem) => {
                 if(homeItem.id === 'banner') return null
                 const artist = homeItem.id === 'artists'
-                const top10 = homeItem.id === 'top-10-songs'
+                const top10 = homeItem.id === 'top10songs'
                 const playlist = homeItem.id === 'playlists'
                 const albom = homeItem.id === 'alboms'
                 const clip = homeItem.id === 'clips' || homeItem.id === 'karaoke' || homeItem.id === 'concerts' || homeItem.id === 'shows' || homeItem.id === 'videos' || homeItem.id === 'news'
@@ -164,6 +163,7 @@ export default function Home() {
                           albom ? '/search?tab=album' : 
                           `viewall/${homeItem.id}`
                         } 
+                        scroll
                       >
                         <span>View all</span>
                         <ChevronRightI />
@@ -196,10 +196,12 @@ export default function Home() {
                             return (
                               <SwiperSlide key={rowIndex}>
                                 <StandardCard 
-                                  id={top10 ? (rowIndex + 1).toString() : row.id}
+                                  id={row.id}
+                                  top10Id={rowIndex + 1}
                                   artistId={(artist || albom) ? row?.id : row?.artistId}
                                   playlistId={playlist ? row.id : row?.playlistId}
                                   albomId={albom ? row.id : row?.albomId}
+                                  videoId={row.id}
                                   title={row.title}
                                   description={row.description}
                                   image={row.cover}
@@ -209,9 +211,12 @@ export default function Home() {
                                   alboms={albom}
                                   videoCard={clip}
                                   hideMoreI={albom}
-                                  standard={homeItem.type === 'playlist'}
-                                  onPlay={() => {
-                                    if(homeItem.type === 'playlist') dispatch(setCurrentSong({ data: homeItem?.rows, id: row.id, index: rowIndex }))
+                                  standard={homeItem.type === 'playlist' || homeItem.type === 'top-playlist'}
+                                  onPlay={(id) => {
+                                    if((homeItem.type === 'playlist' || homeItem.type === 'top-playlist') || top10) 
+                                    dispatch(setCurrentSong({ data: homeItem?.rows, id: row.id, index: rowIndex }))
+                                    else if(clip)
+                                    dispatch(setCurrentVideo({ data: homeItem.rows, index: rowIndex }))
                                   }}
                                   onOpenBottomSheet={() => {
                                     setSongId(row.id)

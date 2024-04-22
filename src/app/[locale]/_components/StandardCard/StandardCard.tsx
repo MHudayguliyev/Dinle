@@ -24,10 +24,12 @@ import Equalizer from '@app/_assets/lottie/equalizer.json'
 
 interface StandardProps {
     id: string
+    top10Id?: number
     artistId?: string
     playlistId?: string 
     albomId?: string 
     genreId?: string
+    videoId?: string
     image?: StaticImageData | string
     onPlay?: (id: string) => void
     onOpenBottomSheet?: () => void
@@ -60,10 +62,12 @@ const cn = classNames.bind(styles)
 const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref): JSX.Element => {
     const {
         id,
+        top10Id,
         artistId = "",
         playlistId = "",  
         albomId = "", 
         genreId = "",
+        videoId = "", 
         image, 
         title, 
         description, 
@@ -111,7 +115,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
     const routeMem = useMemo(() => {
         const route = `
             ${artists ? `/artist/${artistId}` : playlists ? `/playlist/${playlistId}` : alboms ? `/album/${albomId}` : 
-            genres ? `/genre/${genreId}` : ""}
+            genres ? `/genre/${genreId}` : videoCard ? `/video/${videoId}` : ""}
         `
         return route
     }, [
@@ -124,6 +128,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         genres, 
         alboms, 
         playlists,
+        videoCard
     ])
 
   return (
@@ -156,7 +161,8 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                 card_for_artist: artists,
                 card_for_genres: genres, 
                 card_for_video: videoCard,
-                withActiveBg: (!artists && !genres && !playlists && !alboms && !standard && !videoCard) || (songData[songIndex]?.id === id), 
+                withActiveBg: (!artists && !genres && !playlists && !alboms && !standard && !videoCard && !top10) || 
+                (songData[songIndex]?.id === id), 
                 hoverable: !artists && !genres && !videoCard
             })}>
             {
@@ -191,7 +197,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                         {recentSearched && <Image src={close} alt='close-recent-found' className={styles.closeFound}/>}
         
                         <div className={styles.image_container}>
-                            <CustomLink href={routeMem}>
+                            <CustomLink href={routeMem} onClick={(e) => e.preventDefault()}>
                                 {
                                     !artists && (
                                         <Image src={songFavicon} alt='songFavicon' className={styles.song_favicon}/>
@@ -216,7 +222,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                             {
                             top10 ?
                                 <div className={styles.top10Place}>
-                                    {id}
+                                    {top10Id}
                                 </div> : ""
                             }
                             <div className={styles.main_content}>
@@ -238,7 +244,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                                         title: true, 
                                         paddLeft: isSongPlaying && songData[songIndex]?.id === id
                                     })}>
-                                        <CustomLink onClick={stopPropagation} href={playlists ? `/playlist/${playlistId}` : artists ? `/artist/${artistId}` : alboms ? `/album/${albomId}` : ``}>
+                                        <CustomLink onClick={stopPropagation} href={playlists ? `/playlist/${playlistId}` : artists ? `/artist/${artistId}` : alboms ? `/album/${albomId}` : videoCard ? `/video/${videoId}` : ""}>
                                             {title}
                                         </CustomLink>
                                     </div>

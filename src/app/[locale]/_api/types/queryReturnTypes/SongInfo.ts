@@ -33,11 +33,12 @@ interface SongInfo {
             title: string 
         }
     }[]
-    genres: Genres[]
+    genres: Genres['data']
     count: {
         followers: number 
         likers: number 
         listeners: number
+        downloads: number
     }
 }
 export default SongInfo

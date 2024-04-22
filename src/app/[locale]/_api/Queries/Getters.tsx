@@ -41,7 +41,7 @@ export const getSongs = async (data: {
         url: '/client/songs', 
         data: {
             page: data.page ?? 1,
-            pageSize: data.pageSize ?? 20,
+            pageSize: data.pageSize ?? 10,
             search: data.search ?? "",
             artistId: data.artistId ?? "",
             playlistId: data.playlistId ?? "",
@@ -62,7 +62,6 @@ export const GetPlaylists = async (pageSize = 20, page = 1): Promise<Playlists> 
     })
 }
 export const GetArtists = async (page = 1): Promise<Artists> => {
-    console.log('page', page)
     return api.patch({
         url: '/artists', 
         data: {
@@ -72,13 +71,12 @@ export const GetArtists = async (page = 1): Promise<Artists> => {
         }
     })
 }
-export const GetArtist = async (artistId: string): Promise<Artist> => {
+export const GetArtist = async (artistId: string, page = 1, pageSize = 10): Promise<Artist> => {
     return api.patchDynamic({
         url: '/artists/one', 
         data: {
             artistId,
-            page: 1,
-            pageSize: 10
+            page,pageSize
         }
     })
 }

@@ -216,7 +216,16 @@ const AudioPlayer = (props: AudioPlayerProps) => {
             toggleShuffle()
             break;
           case 'r': 
-            // setIsRepeat(!isRepeat)
+            if(isRepeat) {
+              setIsRepeat(false)
+              setContinueAfterAll(false)
+            }else if(continueAfterAll){
+              setContinueAfterAll(false)
+              setIsRepeat(true)
+            }else {
+              setIsRepeat(false)
+              setContinueAfterAll(true)
+            }
             break;
           default:
             break;
@@ -230,7 +239,8 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     isSongPlaying,
     timeProgress, 
     isShuffle, 
-    isRepeat,
+    isRepeat, 
+    continueAfterAll, 
     songs, 
     volume
   ])
@@ -439,7 +449,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     />
   ), [menuRef, songId, showMenu, setShowMenu])
 
-
   return (
     <>
       {
@@ -473,7 +482,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                       </CustomLink>
                     </div>
                     <p>
-                      <CustomLink href=''>
+                      <CustomLink href={`/artist/${song.artistId}`}>
                         {song?.description}
                       </CustomLink>
                     </p>
@@ -606,7 +615,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                           <div className={styles.listContent}>
                             <div className={styles.running}>
                                 {
-                                    isSongPlaying && song?.id === item.id ? 
+                                    Equalizer && isSongPlaying && song?.id === item.id ? 
                                     <LottieI 
                                         icon={Equalizer} 
                                         width={20} 

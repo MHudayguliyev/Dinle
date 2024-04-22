@@ -15,6 +15,7 @@ import dateRange from '@app/_assets/icons/date_range.svg'
 import listeners from '@app/_assets/icons/listener.svg';
 import user from '@app/_assets/icons/user.svg'
 import musicHeart from '@app/_assets/icons/music_heart.svg'
+import download from '@app/_assets/icons/download.svg'
 import ArrowI from '../icons/arrow/icon'
 import PrevNext from '@components/icons/prevNext/icon'
 //types
@@ -46,9 +47,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
   const fetchSongInfo = useMemo(() => show && fetchMode === 'song' && !!id ,[id, show, fetchMode])
 
   const {
-    data, 
-    isLoading, 
-    isError
+    data
   } = useQuery(['GetArtistInfo', fetchArtistInfo], () => GetArtistInfo(id), {
       refetchOnWindowFocus: false, enabled: fetchArtistInfo
   })
@@ -57,6 +56,10 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
   } = useQuery(['GetSongInfo', fetchSongInfo], () => GetSongInfo(id), {
     refetchOnWindowFocus: false, enabled: fetchSongInfo
   })
+
+  useEffect(() => {
+    console.log("data", data)
+  }, [data])
 
   return (
     <>
@@ -113,22 +116,18 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
 
               <div className={styles.statDetails}>
 
-                <div className={styles.detail}>
+                {
+                  fetchArtistInfo && 
+                  <div className={styles.detail}>
                     <div className={styles.theLeft}>
                         <Image src={music} alt='music'/>
                         <div className={styles.head}>Aýdym:</div>
                     </div>
                     <div className={styles.theRight}>
-                        {
-                          fetchSongInfo ? (
-                            // song?.artist?.count?.followers 
-                            ""
-                          ): (
-                            data?.count?.songs
-                          )
-                        }
+                      {data?.count?.songs}
                     </div>
-                </div>
+                  </div>
+                }
                 <div className={styles.detail}>
                     <div className={styles.theLeft}>
                         <Image src={music} alt='album'/>
@@ -212,9 +211,22 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                         <div className={styles.head}>Like Любимые треки</div>
                       </div>
                       <div className={styles.theRight}>
-                        {fetchSongInfo ? song?.count?.likers : data?.count?.songLikers}
+                        {fetchSongInfo ? song?.count?.likers : data?.count.songListeners}
                       </div>
                   </div>
+
+                  {
+                    fetchSongInfo && 
+                    <div className={styles.detail}>
+                      <div className={styles.theLeft}>
+                        <Image src={download} alt='download'/>
+                        <div className={styles.head}>Jemi ýüklenen</div>
+                      </div>
+                      <div className={styles.theRight}>
+                        {song?.count?.downloads}
+                      </div>
+                    </div>
+                  }
 
                 </div>
               </div>
@@ -252,24 +264,6 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                       }
                     </Swiper>
 
-{/*                     
-                    <div className={styles.grid_wrapper}>
-                      {
-                        song?.duets?.map((artist, index) => (
-                          <div className={styles.artist} key={index}>
-                            <Image src={artist.artist.cover} width='400' height='400' alt='artist'/>
-                            <div className={styles.name}>
-                              <CustomLink href={`/artist/${artist.artist.id}`}>
-                                {artist.artist.title}
-                              </CustomLink>
-                            </div>
-                            <div className={styles.artistType}>
-                              {artist.type}
-                            </div>
-                          </div>
-                        ))
-                      }
-                    </div> */}
                   </div>
                 )
               }

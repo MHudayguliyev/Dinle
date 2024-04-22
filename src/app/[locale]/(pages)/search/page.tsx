@@ -4,7 +4,8 @@ import Image from 'next/image';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
-import InfiniteScroll from 'react-infinite-scroller';
+//react mic
+import { ReactMic } from 'react-mic';
 // lib
 
 import Input from '@app/_compLibrary/Input'
@@ -21,6 +22,7 @@ import styles from './page.module.scss'
 import SearchI from '@components/icons/search/icon';
 import notFound from '@app/_assets/icons/not_found.svg';
 import PrevNext from '@components/icons/prevNext/icon'
+import ShazamI from '@app/_components/icons/shazam/icon';
 
 //utils
 import { CheckObjOrArrForNull, delay, isEmpty, isUndefined, parse } from '@app/_utils/helpers';
@@ -457,6 +459,11 @@ const Search = () => {
     if(CheckObjOrArrForNull(recentSearchData) && !openRecents) setOpenRecents(true)
   }, [recentSearchData, openRecents])
 
+  // console.log('nab', navigator.mediaDevices, navigator.mediaDevices.getUserMedia({ audio: true }))
+
+
+
+  // setupAudio()
 
   return (
     <>
@@ -484,6 +491,8 @@ const Search = () => {
               onChange={e => 
                 setSearchValue(e.target.value)
               }
+              rightIcon={<ShazamI />}
+              hideEndIcon={!isEmpty(searchValue)}
               onLeftClick={searchOnIClick}
               onRightClick={() => setOpenShazam(true)}
               onKeyDown={handleKeyDown}
@@ -682,7 +691,6 @@ const Search = () => {
                       <ArtistsList 
                         key={artist.id}
                         id={artist.id}
-                        // artistId={artist.id} //later
                         image={artist.cover}
                         name={artist.title}
                       />

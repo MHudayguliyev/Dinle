@@ -2,7 +2,7 @@
 import React, {useMemo, useState, useRef, useCallback, useEffect} from 'react'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useQuery } from 'react-query'
+import { useQuery, useInfiniteQuery } from 'react-query'
 //lib 
 import Tab from '@app/_compLibrary/Tab'
 import Button from '@app/_compLibrary/Button'
@@ -39,35 +39,18 @@ import { TabMenuTypes } from '@app/_types'
 import { isUndefined, CheckObjOrArrForNull, copyLink, isAuthorized, findIndex } from '@app/_utils/helpers'
 //toast 
 import toast from 'react-hot-toast'
-import authToken, { refreshAccessToken } from '@app/_api/Services/auth_token'
-import CheckI from '@app/_components/icons/check/icon'
+import { refreshAccessToken } from '@app/_api/Services/auth_token'
 import FollowCheckI from '@app/_components/icons/followCheck/icon'
-import HeartIcon from '@app/_components/icons/heart/icon'
-import HeartFilledI from '@app/_components/icons/heartFilled/icon'
 import { isAxiosError } from 'axios'
+import useObserve from '@app/_hooks/useObserve'
+import Albums from '@app/_api/types/queryReturnTypes/Albums'
 
 const cn = classNames.bind(styles)
 const Artist = ({params}: {params: {each: string}}) => {
     const dispatch = useAppDispatch()
     const router = useRouter()
     const searchParam = useSearchParams()
-    const searchType = searchParam.get('type')
-
-    //selectors 
-    const song = useAppSelector(state => state.mediaReducer.songData)
-    const songIndex = useAppSelector(state => state.mediaReducer.songIndex)
-    const isSongPlaying = useAppSelector(state => state.mediaReducer.isSongPlaying)
-
-    const headerRef:any = useRef(null)
-    const contentRef:any = useRef(null)
-    const toggleRef:any = useRef(null)
-    const [showMenu, setShowMenu] = useClickOutside(contentRef, toggleRef, 'mousedown')
-    const [width] = useWindowSize()
-
-    const [fetchMode, setFetchMode] = useState<'artist' | 'song'>('artist')
-    const [dynamicId, setDynamicId] = useState<string>("")
-    const [rows, setRows] = useState<Songs['rows']>()
-
+    const tab = searchParam.get('tab')
     const tabs: TabMenuTypes[] = [
         {
           route: 'song', label: {
@@ -83,27 +66,87 @@ const Artist = ({params}: {params: {each: string}}) => {
           }
         } 
     ]
+
+    const artistId = useMemo(() => params.each ,[params.each])
+    const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab])
+    const showAlbums = useMemo(() => tab === tabs[2].route,[tab])
+
+    //selectors 
+    const song = useAppSelector(state => state.mediaReducer.songData)
+    const songIndex = useAppSelector(state => state.mediaReducer.songIndex)
+    const isSongPlaying = useAppSelector(state => state.mediaReducer.isSongPlaying)
+
+    const songsObserver = useRef<IntersectionObserver>();
+    const albomsObserver = useRef<IntersectionObserver>();
+
+    const headerRef:any = useRef(null)
+    const contentRef:any = useRef(null)
+    const toggleRef:any = useRef(null)
+    const [showMenu, setShowMenu] = useClickOutside(contentRef, toggleRef, 'mousedown')
+    const [width] = useWindowSize()
+
+    const [fetchMode, setFetchMode] = useState<'artist' | 'song'>('artist')
+    const [dynamicId, setDynamicId] = useState<string>("")
+    const [rows, setRows] = useState<Songs['rows']>([])
+    const [alboms, setAlboms] = useState<Albums['data']['rows']>([])
+
     const { scrolly } = useWindowScrollPositions()
-    const id = useMemo(() => params.each ,[params.each])
 
-    //queries 
     const {
-        data, 
-        isLoading, 
+        data: songsData, 
+        hasNextPage, 
+        isFetching, 
         isError, 
+        isLoading,
+        fetchNextPage, 
         refetch: refetchArtist
-    } = useQuery(['GetArtist', id], () => GetArtist(id), {
-        refetchOnWindowFocus: false, enabled: !!id
+    } = useInfiniteQuery({
+        queryKey: ['GetArtist', artistId], 
+        queryFn: ({pageParam}) => GetArtist(artistId, pageParam), 
+        getNextPageParam: (lastPage, allPages) => {
+            // return lastPage.data.songs ? allPages.length + 1 : undefined;   //later activate
+        }, 
+        enabled: !!artistId
     })
-    // console.log('data', data)
+    const lastSongRef = useObserve({
+        observer: songsObserver, 
+        hasNextPage, isFetching, 
+        isLoading, fetchNextPage, 
+    })
+    const dataList = useMemo(():any => {
+        const getList = (type: 'songs' | 'alboms') => {
+            // @ts-ignore
+            return songsData?.pages.reduce((acc, page) => {
+                return [...acc, ...page.data[type]];
+            }, [])
+        }
+        if(showSongs) return getList('songs')
+        else if(showAlbums) return getList('alboms')
+    }, [songsData,showSongs, showAlbums]);
+    const credentials = useMemo(() => {
+        if(CheckObjOrArrForNull(songsData)){
+            const pagesData = songsData?.pages?.[0]?.data
+            const obj = {
+                cover: pagesData?.artist?.cover, 
+                count: pagesData?.artist?.count, 
+                isFollowing: pagesData?.artist?.following, 
+                title: pagesData?.artist?.title
+            }
+            return obj
+        }
+    }, [songsData])
 
+    
     useEffect(() => {
-        if(!isLoading && !isError) setRows(data?.data?.songs)
-    }, [data])
-
+        if(CheckObjOrArrForNull(dataList)){
+            if(showSongs) setRows(dataList)
+            else if(showAlbums) setAlboms(dataList)
+        }
+    }, [dataList, showSongs, showAlbums])
+    
     useEffect(() => {
-        if(!!id) setDynamicId(id)
-    }, [id])
+        if(!!artistId) setDynamicId(artistId)
+    }, [artistId])
 
     useEffect(() => {
         const opacity = Math.min(1, scrolly / window.innerHeight)
@@ -122,16 +165,16 @@ const Artist = ({params}: {params: {each: string}}) => {
     }
 
     const handleCopyLink = useCallback(() => {
-        copyLink(`/artist/${id}${!isUndefined(searchType) ? `?type=${searchType}` : ""}`)?.then((mode) => {
+        copyLink(`/artist/${artistId}${!isUndefined(tab) ? `?tab=${tab}` : ""}`)?.then((mode) => {
             if(mode === 'desktop') toast.success('Link is copied.')
         })
-    }, [id, searchType])
+    }, [artistId, tab])
 
     const handleFollow = useCallback(async () => {
         if(!isAuthorized()) return dispatch(setShowAuthModal(true))
 
         try {
-            const response = await likeArtist(id)
+            const response = await likeArtist(artistId)
             // console.log('res', response)
             if(response.success){
                 toast.success(response.data.message)
@@ -144,7 +187,7 @@ const Artist = ({params}: {params: {each: string}}) => {
                 }
             }else console.log('follow error', error)
         }
-    }, [id])
+    }, [artistId])
 
     const handleLike = useCallback(async(songId: string) => {
         if(!isAuthorized()) return dispatch(setShowAuthModal(true))
@@ -163,22 +206,15 @@ const Artist = ({params}: {params: {each: string}}) => {
     }, [])
 
     const handleClick = useCallback(() => {
-        if(dynamicId !== id) setDynamicId(id)
+        if(dynamicId !== artistId) setDynamicId(artistId)
         setFetchMode('artist')
         setShowMenu(!showMenu)
-    }, [dynamicId, id, showMenu])
-
-
+    }, [dynamicId, artistId, showMenu])
 
     const playBtn = useCallback((topFixed = false) => {
         const currentSongId = song?.[songIndex]?.id
         const rowIndex = findIndex(rows, currentSongId)
         const rowSongId = rows?.[rowIndex!]?.id
-        
-        // console.log("rowIndex",rowIndex)
-        // console.log("currentSongId", currentSongId)
-        // console.log("rowSongId", rowSongId)
-
 
         const playFN = () => {
             if(CheckObjOrArrForNull(rows)){
@@ -215,9 +251,7 @@ const Artist = ({params}: {params: {each: string}}) => {
         scrolly
     ])
 
-    const showSongs = useMemo(() => searchType === tabs[0].route || isUndefined(searchType),[searchType])
-    const showAlbums = useMemo(() => searchType === tabs[2].route,[searchType])
-    const isFollowing = useMemo(() => data?.data?.artist?.following ?? false,[data?.data?.artist])
+    const isFollowing = useMemo(() => credentials?.isFollowing ?? false,[credentials?.isFollowing])
     const infoToggler = useMemo(() => {
         return <Info onClick={handleClick}/>
     }, [])
@@ -228,7 +262,7 @@ const Artist = ({params}: {params: {each: string}}) => {
     ),[isFollowing, handleFollow])
     const shareBtn = useMemo(() => (
         <Share onClick={handleCopyLink}/>
-    ), [id, searchType])
+    ), [artistId, tab])
     const infoMenu = useMemo(() => (
         <InfoMenu 
             show={showMenu} 
@@ -243,6 +277,9 @@ const Artist = ({params}: {params: {each: string}}) => {
         dynamicId,
         fetchMode
     ])
+    const cover = useMemo(() => (
+        <Image src={credentials?.cover ?? ""} alt='artist' width='400' height='400'/>
+    ), [credentials?.cover])
 
 
   return (
@@ -265,15 +302,15 @@ const Artist = ({params}: {params: {each: string}}) => {
         <div className={styles.presentation}>
             <div className={styles.background_gradient}></div>
             <div className={styles.background_image}>
-                <Image src={data?.data?.artist?.cover!} alt='artist' width='400' height='400'/>
+                {cover}
             </div>
             <div className={styles.wrapper}>
 
                 <div className={styles.content_box}>
-                    <Image src={data?.data?.artist?.cover!} alt='artist' width='400' height='400'/>
+                    {cover}
                     <div className={styles.artist}>
                         <div className={styles.title}>Artist</div>
-                        <div className={styles.name}>{data?.data?.artist?.title}</div>
+                        <div className={styles.name}>{credentials?.title}</div>
                     </div>
                 </div>
 
@@ -292,19 +329,17 @@ const Artist = ({params}: {params: {each: string}}) => {
         <div className={styles.presentation_mobile}>
             <div className={styles.background_gradient}></div>
             <div className={styles.background_image}>
-                <Image src={data?.data?.artist?.cover!} alt='artist' width='400' height='400'/>
+                {cover}
             </div>
             <div className={styles.mobile_presentation_wrapper}>
 
                 <div className={styles.content_box}>
-                    <Image src={data?.data?.artist?.cover!} alt='artist' width='400' height='400'/>
+                    {cover}
                 </div>
 
                 <div className={styles.the_bottom_content}>
                     <div className={styles.top}>
-                        <div className={styles.name}>
-                            {data?.data?.artist?.title}
-                        </div>
+                        <div className={styles.name}>{credentials?.title}</div>
                         <div className={styles.title}>
                             Artist
                         </div>
@@ -322,57 +357,49 @@ const Artist = ({params}: {params: {each: string}}) => {
 
 
         <Tab 
-        baseUrl={`artist/${id}`}
-        tabs={tabs}
-        pathname={searchType}
-        scrollYPosition={271}
-        fixed
+            baseUrl={`artist/${artistId}`}
+            tabs={tabs}
+            pathname={tab}
+            scrollYPosition={271}
+            fixed
         />
-
-       <div className={cn({
-            section: true, 
-            show: showSongs
-       })}>
-
-        <SongList 
-            data={rows}
-            artistId={data?.data?.artist.id}
-            fetchStatuses={{
-                isLoading, isError
-            }}
-            className={styles.songList}
-            onShowInfo={(id) => {
-                setDynamicId(id)
-                setFetchMode('song')
-                setShowMenu(true)
-            }}
-            onLike={handleLike}
-            onPlay={(index) => dispatch(setCurrentSong({data: rows, index, id: rows![index]?.id}))}
-        />
-       </div>
-
-       <div className={cn({
-            section: true,
-            show: showAlbums
-       })}>
-          
-          <div className={styles.grid_wrapper}>
-            {
-                data?.data?.alboms?.map((item, i) => (
-                    <StandardCard 
-                        key={i}
-                        id={item.id}
-                        albomId={item.id}
-                        title={item.title}
-                        image={item.cover}
-                        hideMoreI
-                        alboms
-                    />              
-                ))
-            }
-          </div>
-
-       </div>
+        {
+            showSongs && 
+            <SongList 
+                ref={lastSongRef}
+                data={rows}
+                artistId={artistId}
+                fetchStatuses={{
+                    isLoading, isError
+                }}
+                className={styles.songList}
+                onShowInfo={(id) => {
+                    setDynamicId(id)
+                    setFetchMode('song')
+                    setShowMenu(true)
+                }}
+                onLike={handleLike}
+                onPlay={(index) => dispatch(setCurrentSong({data: rows, index, id: rows![index]?.id}))}
+            />
+        }
+        {
+            showAlbums && 
+            <div className={styles.grid_wrapper}>
+                {
+                    alboms?.map((item, i) => (
+                        <StandardCard 
+                            key={i}
+                            id={item.id}
+                            albomId={item.id}
+                            title={item.title}
+                            image={item.cover}
+                            hideMoreI
+                            alboms
+                        />              
+                    ))
+                }
+            </div>
+        }
     </>
   )
 }

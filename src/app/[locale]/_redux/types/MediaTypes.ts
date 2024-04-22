@@ -1,4 +1,5 @@
 import Songs from "@app/_api/types/queryReturnTypes/Songs"
+import Video from "@app/_api/types/queryReturnTypes/Video"
 
 export interface InitialState {
     songData: Songs['rows']
@@ -16,4 +17,7 @@ export interface InitialState {
     isSongPlaying: boolean
     isAudioPlayerOpen: boolean
     isShuffle: boolean
+    
+    videoData: Video[]
+    videoIndex: number 
 }

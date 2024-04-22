@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation';
-import { useQuery } from 'react-query'
+import { useInfiniteQuery, useQuery } from 'react-query'
 import Image from 'next/image';
 //styles
 import styles from './page.module.scss'
@@ -32,11 +32,12 @@ import { setShowAuthModal } from '@app/_redux/reducers/AuthReducer';
 import useWindowSize from '@app/_hooks/useWindowSize';
 import HeartFilledI from '@app/_components/icons/heartFilled/icon';
 import toast from 'react-hot-toast';
+import useObserve from '@app/_hooks/useObserve';
 
 const cn = classNames.bind(styles)
 const Album = ({params}: {params: {each: string}}) => {
-    const router = useRouter()
     const dispatch = useAppDispatch()
+    const albomsObserver = useRef<IntersectionObserver>();
     const headerRef:any = useRef(null)
     const toggleMenuRef:any = useRef(null)
     const menuContenRef:any = useRef(null)
@@ -56,18 +57,49 @@ const Album = ({params}: {params: {each: string}}) => {
     const isShuffle = useAppSelector(state => state.mediaReducer.isShuffle)
 
     const {
-        data, 
-        isLoading, 
+        data: albomsData, 
+        hasNextPage, 
+        isFetching, 
         isError, 
+        isLoading,
+        fetchNextPage, 
         refetch: refetchAlbum
-    } = useQuery(['GetAlbum', id], () => getSongs({albomId: id}), {
-        refetchOnWindowFocus: false, enabled: !!id
+    } = useInfiniteQuery({
+        queryKey: ['GetAlbum', id], 
+        queryFn: ({pageParam}) => getSongs({ albomId: id, page: pageParam }), 
+        getNextPageParam: (lastPage, allPages) => {
+            return lastPage.data.rows.length ? allPages.length + 1 : undefined;
+        }, 
+        enabled: !!id
     })
-    // console.log("data", data)
+    const lastAlbomRef = useObserve({
+        observer: albomsObserver, 
+        hasNextPage, isFetching, 
+        isLoading, fetchNextPage, 
+    })
+    const credentials = useMemo(() => {
+        if(CheckObjOrArrForNull(albomsData)){
+            const pagesData = albomsData?.pages?.[0]?.data
+            const obj = {
+                cover: pagesData?.cover, 
+                count: pagesData?.count, 
+                isLiked: pagesData?.isLiked, 
+                title: pagesData?.title
+            }
+            return obj
+        }
+        return null
+    }, [albomsData])
+    const albomsList = useMemo(() => {
+        return albomsData?.pages.reduce((acc, page) => {
+          return [...acc, ...page.data.rows];
+        }, [])
+    }, [albomsData]);
 
     useEffect(() => {
-        if(!isLoading && !isError) setRows(data?.data?.rows)
-    }, [data?.data])
+        if(CheckObjOrArrForNull(albomsList))
+        setRows(albomsList)
+    },[albomsList])
 
     // in future, move this pieace of code to its main hook
     useEffect(() => {
@@ -149,10 +181,9 @@ const Album = ({params}: {params: {each: string}}) => {
         scrolly
     ])
 
-    const isLiked = useMemo((): boolean => data?.data?.isLiked ?? false,[data?.data])
     const heartBtn = useMemo(() => (
-        <HeartFilledI active={isLiked} onClick={handleLikeAlbum}/>
-    ), [isLiked])
+        <HeartFilledI active={credentials?.isLiked} onClick={handleLikeAlbum}/>
+    ), [credentials?.isLiked])
     const shuffleBtn = useMemo(() => (
         <ShuffleI active={isShuffle} onClick={() => dispatch(setIsShuffle(!isShuffle))}/>
     ), [isShuffle])
@@ -161,12 +192,15 @@ const Album = ({params}: {params: {each: string}}) => {
     ), [id])
     const infoMenu = useMemo(() => (
         <InfoMenu
-            id={id}
+            id={songId}
             show={openMenu}
             ref={menuContenRef} 
             close={() => setOpenMenu(false)}
         />
     ), [menuContenRef, openMenu, songId])
+    const cover = useMemo(() => (
+        <Image src={credentials?.cover ?? ""} alt='artist' width='400' height='400'/>
+    ), [credentials?.cover])
 
 
   return (
@@ -189,15 +223,15 @@ const Album = ({params}: {params: {each: string}}) => {
         <div className={styles.presentation}>
             <div className={styles.background_gradient}></div>
             <div className={styles.background_image}>
-                <Image src={data?.data?.cover} alt='artist' width='400' height='400'/>
+                {cover}
             </div>
             <div className={styles.wrapper}>
 
                 <div className={styles.content_box}>
-                    <Image src={data?.data?.cover} alt='artist' width='400' height='400'/>
+                    {cover}
                     <div className={styles.artist}>
                         <div className={styles.title}>Album</div>
-                        <div className={styles.name}>{data?.data?.title}</div>
+                        <div className={styles.name}>{credentials?.title}</div>
                     </div>
                 </div>
 
@@ -212,20 +246,20 @@ const Album = ({params}: {params: {each: string}}) => {
 
         <div className={styles.presentation_mobile}>
             <div className={styles.background_image}>
-                <Image src={data?.data?.cover} alt='artist' width='400' height='400'/>
+                {cover}
 
             </div>
             <div className={styles.mobile_presentation_wrapper}>
 
                 <div className={styles.content_box}>
-                    <Image src={data?.data?.cover} alt='artist' width='400' height='400'/>
+                    {cover}
 
                 </div>
 
                 <div className={styles.the_bottom_content}>
                     <div className={styles.top}>
                         <div className={styles.name}>
-                            {data?.data?.title}
+                            {credentials?.title}
                         </div>
                         <div className={styles.title}>
                             Album
@@ -241,6 +275,7 @@ const Album = ({params}: {params: {each: string}}) => {
         </div>
 
         <SongList 
+            ref={lastAlbomRef}
             data={rows}
             fetchStatuses={{
                 isLoading, isError
