@@ -57,12 +57,6 @@ interface StandardProps {
     /** @defaultValue false **/
     hideMoreI?: boolean
     /** @defaultValue false **/
-    hideInfo?: boolean
-    /** @defaultValue false **/
-    hideShare?: boolean
-    /** @defaultValue false **/
-    hideAddToQueue?: boolean
-    /** @defaultValue false **/
     recentSearched?: boolean
     /** @defaultValue false **/
     genres?: boolean
@@ -238,7 +232,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                         {recentSearched && <Image src={close} alt='close-recent-found' className={styles.closeFound}/>}
         
                         <div className={styles.image_container}>
-                            <CustomLink href={routeMem} onClick={(e) => e.preventDefault()}>
+                            <CustomLink href={routeMem}>
                                 {
                                     !artists && (
                                         <Image src={songFavicon} alt='songFavicon' className={styles.song_favicon}/>

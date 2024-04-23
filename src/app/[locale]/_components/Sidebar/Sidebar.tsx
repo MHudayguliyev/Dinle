@@ -1,5 +1,4 @@
 'use client'
-import React, {useEffect, useRef} from 'react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import CustomLink from '../CustomLink/CustomLink'
@@ -27,8 +26,6 @@ import { useAppSelector, useAppDispatch } from '@app/_hooks/redux_hooks'
 
 import { useQuery } from 'react-query'
 import { GetPlaylists } from '@app/_api/Queries/Getters'
-import ClosePhotoI from '../icons/closePhoto/icon'
-import { setOpenPhoto } from '@app/_redux/reducers/MediaReducer'
 
 interface SidebarProps {
     hideSidebar: boolean
@@ -37,18 +34,12 @@ interface SidebarProps {
 
 const cn = classNames.bind(styles)
 const Sidebar = (props: SidebarProps) => {
-    const dispatch = useAppDispatch()
     const pathname = usePathname()
-    const sidebarRef:any = useRef(null)
     const {
         hideSidebar, 
         setHideSidebar
     } = props
 
-    const photo = useAppSelector(state => state.mediaReducer.song)?.cover
-    const isPhotoOpen = useAppSelector(state => state.mediaReducer.isPhotoOpen)
-
-    console.log("photo", photo)
     const isAudioPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
     const activeItem = sidebar_routes.findIndex((item) => {
         if(pathname === '/search') return item.route === pathname.concat("?tab=genre")
@@ -59,16 +50,9 @@ const Sidebar = (props: SidebarProps) => {
         refetchOnWindowFocus: false
     })
 
-    useEffect(() => {
-        if(sidebarRef && sidebarRef.current) {
-            if(isPhotoOpen) sidebarRef.current.scrollTop = sidebarRef.current.scrollHeight;
-            else sidebarRef.current.scrollTop = 0;
-        }
-    }, [sidebarRef, isPhotoOpen])
-
   return (
     <>
-        <div ref={sidebarRef} className={cn({
+        <div className={cn({
             sidebar__container: true,
             playerIsOpen: isAudioPlayerOpen
         })}>
@@ -168,17 +152,6 @@ const Sidebar = (props: SidebarProps) => {
                     </Button>
                 </div>
             </div>
-
-            { isPhotoOpen && 
-                <div className={styles.photoWrapper}>
-                    <div className={styles.photo}>
-                        <Image src={photo ?? ""} alt='photo' width='400' height='400'/>
-                    </div>
-                    <div className={styles.closePhoto} onClick={() => dispatch(setOpenPhoto(false))}>
-                        <ClosePhotoI />
-                    </div>
-                </div>
-            }
         </div>
     </>
   )

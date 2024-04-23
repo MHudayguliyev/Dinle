@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import CommonModalI from '../CommonModali'
 //lib
 import Modal from '@app/_compLibrary/Modal'
@@ -7,6 +7,10 @@ import styles from './SearchModal.module.scss';
 //lottie
 import LottieI from '@components/Lottie/LottieI';
 import ShazamI from '@app/_assets/lottie/shazam.json'
+import UseTimeoutOnce from '@app/_hooks/useTimeoutOnce';
+import axios from 'axios';
+import { headers } from 'next/headers';
+import authToken from '@app/_api/Services/auth_token';
 
 interface SearchModalProps extends CommonModalI {}
 const SearchModal = (props: SearchModalProps) => {
@@ -15,45 +19,61 @@ const SearchModal = (props: SearchModalProps) => {
         close
     } = props
 
-    const [isPlaying, setIsPlaying] = useState<boolean>(true)
-
-    function setupAudio(){
-        if(typeof navigator !== 'undefined' && navigator.mediaDevices){
-          navigator.mediaDevices.getUserMedia({audio: true})
-          .then(async stream => {
-            const chunks: BlobPart[] | undefined = []
-            console.log('strre', stream)
-            const recorder = new MediaRecorder(stream)
-            recorder.ondataavailable = e => {
-              chunks.push(e.data)
-            }
-            // console.log("chunks", chunks)
-            recorder.onstop = e => {
-                const blob = new Blob(chunks, { type: 'audio/ogg; codecs=ospus' })
-                const blob1 = new Blob(chunks, { type: 'audio/wav; codecs=ospus' })
-                // const audioUrl = URL.createObjectURL(blob)
-                console.log('blob', blob)
-                console.log('blob1', blob1)
-            }
-
-            
-
-            // console.log('audioUrl', audioUrl)
-    
-          })
-        }
-      }
-
+    const audioRef:any = useRef(null)
+    const recorderRef:any = useRef(null)
+    const [hasTimedOut, setHasTimedOut] = useState<boolean>(false);
+  
       useEffect(() => {
-        if(show){
-            if(isPlaying){
-                console.log('p')
-                // setupAudio()
-            }
+        if (show && !hasTimedOut) { // Ensure timeout happens only once
+          let chunks:any = []
+          if(navigator.mediaDevices){
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(async (stream) => {
+              console.log('stream', stream)
 
+              recorderRef.current = new MediaRecorder(stream)
+              recorderRef.current.start();
+
+              console.log("rce", recorderRef)
+              recorderRef.current.ondataavailable = (e: any) => {
+                chunks.push(e.data)
+              }
+
+              recorderRef.current.onstop = async (e: any) => {
+                const blob = new Blob(chunks, { type: 'audio/wav' })
+                console.log("blob", blob)
+                const formData = new FormData()
+                formData.append('fileUrl', blob)
+
+                try {
+                  const base = 'http://95.85.125.44:4033/test/'
+                  const response = await axios.post(`${base}artists/shazam`, formData, {
+                    headers: {
+                      'Content-type': 'multipart/form-data', 
+                      'Authorization': 'Bearer ' + authToken()
+                    }, 
+                  })
+
+                  console.log('response from shazam', response)
+                } catch (error) {
+                  console.log('send audio file error', error)
+                }
+
+                chunks = []
+              }
+            })
+          }
+          const timer = setTimeout(async() => {
+            console.log('hello stoping shazam')
+            recorderRef.current.stop()
+          
+            setHasTimedOut(true); 
+          }, 5000);5
+          return () => clearTimeout(timer);
+        }else if(!show && hasTimedOut){
+          setHasTimedOut(false)
         }
-      }, [show, isPlaying])
-
+      }, [hasTimedOut, show]);
 
   return (
     <>
@@ -63,15 +83,15 @@ const SearchModal = (props: SearchModalProps) => {
             className={styles.searchModal}
             notEntireScreen
         >
+            {/* <audio ref={audioRef} controls/> */}
+
             <div className={styles.content}>
                 <div className={styles.header}>Dinle</div>
-                <div onClick={() => setIsPlaying(!isPlaying)} >
-                    <LottieI 
-                        height={126}
-                        width={126}
-                        icon={ShazamI}
-                    />
-                </div>
+                <LottieI 
+                    height={126}
+                    width={126}
+                    icon={ShazamI}
+                />
                 <p className={styles.text}>
                 “Dinle” ses arkaly aydym-sazyn gozlegini dowam et...
                 </p>

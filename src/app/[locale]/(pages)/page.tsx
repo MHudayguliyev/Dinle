@@ -87,7 +87,7 @@ export default function Home() {
 
   const authContent = useMemo(() => {
     const user = parse(getFromStorage('authUser')!)
-    const userId = user?.userId 
+    const userId = user?.username 
     return (
       <div className={styles.authContent}>
         {

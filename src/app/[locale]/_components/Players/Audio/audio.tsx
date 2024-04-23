@@ -25,7 +25,7 @@ import Input from '@compLibrary/Input';
 import { useAppDispatch, useAppSelector } from '@hooks/redux_hooks';
 import useClickOutside from '@hooks/useOutClick';
 //redux
-import { setCurrentSong, setIsSongPlaying, setSongIndex, setIsShuffle, shuffle, setOpenPhoto } from '@redux/reducers/MediaReducer';
+import { setCurrentSong, setIsSongPlaying, setSongIndex, setIsShuffle, shuffle } from '@redux/reducers/MediaReducer';
 import { setShowAuthModal } from '@redux/reducers/AuthReducer';
 import { setIsBlockOverflow } from '@redux/reducers/OverflowReducer';
 //comps
@@ -122,7 +122,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   
   //redux states 
   const isPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
-  const isPhotoOpen = useAppSelector(state => state.mediaReducer.isPhotoOpen)
   const songs = useAppSelector(state => state.mediaReducer.songData)
   const songIndex = useAppSelector(state => state.mediaReducer.songIndex)
   const isSongPlaying = useAppSelector(state => state.mediaReducer.isSongPlaying)
@@ -133,7 +132,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     if(HLS.isSupported() && !isUndefined(audioRef?.current)){
       const audio = audioRef.current;
       const hls = new HLS();
-
+      console.log("song?.link", song?.link)
       if(song?.link !== prevSongUrl){       
         hls.attachMedia(audio);
         hls.on(HLS.Events.MEDIA_ATTACHED, () => {
@@ -316,6 +315,8 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   const handleLoadedMetadata = useCallback(() => {
     if(!isUndefined(audioRef?.current))
       setDuration(audioRef?.current?.duration)
+
+    console.log('audioRef?.current?.duration', audioRef?.current?.duration)
   }, [audioRef])
 
   const handleMuteUnmute = useCallback(() => {
@@ -496,7 +497,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
             <div className={styles.content}>
               <div className={styles.musicInfo}>
                 <div className={styles.artistInfo}>
-                  <div className={styles.songImg} onClick={() => dispatch(setOpenPhoto(!isPhotoOpen))}>
+                  <div className={styles.songImg} >
                     <Image 
                       src={song?.cover ?? ""} 
                       alt='artist' 
