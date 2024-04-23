@@ -24,6 +24,7 @@ export default function PagesLayout({
 }: {
   children: React.ReactNode, 
 }) {
+  const basePath = usePathname()
   const dispatch = useAppDispatch()
   const toggleSideMenuRef:any = useRef(null)
   const listContentRef:any = useRef(null)
@@ -34,6 +35,10 @@ export default function PagesLayout({
 
   const showAuthModal = useAppSelector(state => state.authReducer.showAuthModal)
   const isAudioPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
+
+  useEffect(() => {
+    if(showLyrics) setShowLyrics(false)
+  }, [basePath])
 
   useEffect(() => {
     if(showLyrics)

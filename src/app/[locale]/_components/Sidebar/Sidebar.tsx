@@ -82,7 +82,7 @@ const Sidebar = (props: SidebarProps) => {
                 </div>
             </div>
 
-            <div className={styles.premium}>
+            {/* <div className={styles.premium}>
                 <div className={styles.header}>
                     <Image src={premiumIcon} alt='premium'/>
                     <div>Premium</div>
@@ -90,7 +90,7 @@ const Sidebar = (props: SidebarProps) => {
                 <Button color='linearGradient' roundedSm className={styles.buyPremium}>
                     Satyn almak
                 </Button>
-            </div>
+            </div> */}
 
             <div className={styles.theBottom}>
                 <CustomLink href='/liked' className={styles.header}>
@@ -109,7 +109,6 @@ const Sidebar = (props: SidebarProps) => {
                         </div>
                         <div className={styles.content}>
                             <div>Favorim</div>
-                            <span>Playlist ⋅ 2,169 songs</span>
                         </div>
                     </CustomLink>
                     {
@@ -141,13 +140,13 @@ const Sidebar = (props: SidebarProps) => {
                     DOWNLOAD APP
                 </div>
                 <div className={styles.btnGroup}>
-                    <Button color='lightDarkSecond' roundedSm border='light' noPadding startIcon={<Android />}>
+                    <Button className={styles.downloadBtn} color='lightDarkSecond' roundedSm border='light' noPadding startIcon={<Android />}>
                         <div className={styles.btnContent}>
                             <div className={styles.getItOn}>GET IT ON</div>
                             <div className={styles.platformName}>Google Play</div>
                         </div>
                     </Button>
-                    <Button color='lightDarkSecond' roundedSm border='light' noPadding startIcon={<Apple />}> 
+                    <Button className={styles.downloadBtn} color='lightDarkSecond' roundedSm border='light' noPadding startIcon={<Apple />}> 
                         <div className={styles.btnContent}>
                             <div className={styles.getItOn}>Download on the</div>
                             <div className={styles.platformName}>App Store</div>

@@ -482,7 +482,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                       </CustomLink>
                     </div>
                     <p>
-                      <CustomLink href={`/artist/${song.artistId}`}>
+                      <CustomLink href={`/artist/${song.artistId}`} onClick={e => e.stopPropagation()}>
                         {song?.description}
                       </CustomLink>
                     </p>
@@ -548,7 +548,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                       </CustomLink>
                     </div>
                     <p>
-                      <CustomLink href=''>
+                      <CustomLink href={`/artist/${song.artistId}`} onClick={e => e.stopPropagation()}>
                         {song?.description}
                       </CustomLink>
                     </p>
@@ -642,7 +642,13 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                   mobLyrics: true, 
                   show: showMobLyrics
                 })}>
-                    <p>{song?.lyrics ?? ""}</p>
+                    <p>
+                    {
+                      song?.lyrics?.split('\n').map(item => (
+                        <p>{item}</p>
+                      ))
+                    }
+                    </p>
                 </div>
 
                 <div className={styles.playerControls}>
@@ -655,7 +661,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                         </CustomLink>
                       </div>
                       <p>
-                        <CustomLink href=''>
+                        <CustomLink href={`/artist/${song.artistId}`} onClick={e => e.stopPropagation()}>
                           {song?.description}
                         </CustomLink>
                       </p>

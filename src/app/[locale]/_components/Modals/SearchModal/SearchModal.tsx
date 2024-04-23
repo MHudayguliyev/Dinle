@@ -48,7 +48,7 @@ const SearchModal = (props: SearchModalProps) => {
         if(show){
             if(isPlaying){
                 console.log('p')
-                setupAudio()
+                // setupAudio()
             }
 
         }

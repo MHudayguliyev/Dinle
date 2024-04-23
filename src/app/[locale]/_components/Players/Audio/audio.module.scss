@@ -105,6 +105,10 @@
     font-size: $fontSizeBig + px;
     line-height: $lineHeightBig + px;
     @include Mixin.wordOverflow;
+
+    a:hover {
+      text-decoration: underline;
+    }
   }
 
   @media screen and (max-width: $md) {

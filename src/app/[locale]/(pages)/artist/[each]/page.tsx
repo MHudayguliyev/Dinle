@@ -104,7 +104,7 @@ const Artist = ({params}: {params: {each: string}}) => {
         queryKey: ['GetArtist', artistId], 
         queryFn: ({pageParam}) => GetArtist(artistId, pageParam), 
         getNextPageParam: (lastPage, allPages) => {
-            // return lastPage.data.songs ? allPages.length + 1 : undefined;   //later activate
+            return lastPage.data.songs ? allPages.length + 1 : undefined;   //later activate
         }, 
         enabled: !!artistId
     })
@@ -138,6 +138,7 @@ const Artist = ({params}: {params: {each: string}}) => {
 
     
     useEffect(() => {
+        console.log("dataList", dataList)
         if(CheckObjOrArrForNull(dataList)){
             if(showSongs) setRows(dataList)
             else if(showAlbums) setAlboms(dataList)

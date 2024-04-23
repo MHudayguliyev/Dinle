@@ -21,6 +21,11 @@ import { useAppSelector } from '@app/_hooks/redux_hooks'
 //lottie
 import LottieI from '@components/Lottie/LottieI';
 import Equalizer from '@app/_assets/lottie/equalizer.json'
+//icons
+import InfoSmI from '../icons/infoSm/icon';
+import ShareSmI from '../icons/shareSm/icon';
+import ReadMoreI from '../icons/readMore/icon';
+import { ActionsType } from '@app/_types';
 
 interface StandardProps {
     id: string
@@ -51,6 +56,12 @@ interface StandardProps {
     videoCard?: boolean
     /** @defaultValue false **/
     hideMoreI?: boolean
+    /** @defaultValue false **/
+    hideInfo?: boolean
+    /** @defaultValue false **/
+    hideShare?: boolean
+    /** @defaultValue false **/
+    hideAddToQueue?: boolean
     /** @defaultValue false **/
     recentSearched?: boolean
     /** @defaultValue false **/
@@ -131,6 +142,35 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         videoCard
     ])
 
+    const actionsData = useMemo(() => {
+        const data = [
+            {
+                value: 'info', 
+                label: {en: 'Maglumat', ru: 'Maglumat', tm: 'Maglumat'}, 
+                icon: <InfoSmI />
+            }, 
+            {
+                value: 'share', 
+                label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+                icon: <ShareSmI />
+            }, 
+            {
+                value: 'queue', 
+                label: {en: 'Indiki aydyma gos', ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
+                icon: <ReadMoreI />
+            }, 
+        ]
+
+        if(videoCard){
+            for(let i = 0; i < data.length; i++){
+                const item = data[i]
+                if(item.value === 'info' || item.value === 'queue')
+                data.splice(i, 1)
+            }
+        }
+        return data
+    }, [videoCard])
+
   return (
    <>
     {
@@ -181,6 +221,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                                     <SongActions 
                                         ref={contentRef}
                                         open={show}
+                                        actionsData={actionsData}
                                         onClick={(value) => {
                                         if(value === 'info' && onOpenInfoMenu) {
                                             onOpenInfoMenu()

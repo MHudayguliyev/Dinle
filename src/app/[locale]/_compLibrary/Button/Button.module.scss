@@ -3,8 +3,8 @@
 
 .baseStyle {
     font-family: "Roboto Flex", sans-serif;
-    font-size: $fontSizeMedium;
-    font-weight: $fontWeightBold;
+    font-size: $fontSizeMedium + px;
+    font-weight: $fontWeightRegular;
     cursor: pointer;
     border: none;
     outline: none;
@@ -18,6 +18,11 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+
+  span {
+    display: flex;
+    align-items: center;
+  }
  }
 
  .noPadding {

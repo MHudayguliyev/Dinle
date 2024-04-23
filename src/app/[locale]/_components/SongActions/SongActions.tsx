@@ -1,14 +1,15 @@
-import React, {useState, useEffect, CSSProperties, useMemo, useCallback}from 'react'
-//images
-
+import React, {CSSProperties, useMemo, useCallback}from 'react'
 //styles 
 import styles from './SongActions.module.scss';
 import classNames from 'classnames/bind';
-import Image from 'next/image';
 import { capitalize } from '@app/_utils/helpers';
-import InfoSmI from '../icons/infoSm/icon';
-import ShareSmI from '../icons/shareSm/icon';
-import ReadMoreI from '../icons/readMore/icon';
+import { Localization } from '@app/_types';
+
+type ActionsType = {
+    value: string 
+    label: Localization
+    icon: React.ReactNode
+}
 
 interface SongActionsProps {
     open: boolean
@@ -18,6 +19,8 @@ interface SongActionsProps {
     /** @defaultValue bottomRight  **/
     transformOrigin?: 'bottomRight' | 'bottomLeft' | 'topRight' | 'topLeft'
     className?: string
+    actionsData: ActionsType[]
+
 }
 const cn = classNames.bind(styles)
 const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, ref): JSX.Element => {
@@ -28,32 +31,26 @@ const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, r
         close, 
         onClick, 
         className = "", 
+        actionsData
     } = props
 
-    const [active, setActive] = useState<number>(-1)
-
-    useEffect(() => {
-        if(!open && active !== -1)
-            setActive(-1)
-    }, [open])
-
-    const actions = [
-        {
-            value: 'info', 
-            title: 'Maglumat', 
-            icon: <InfoSmI />
-        }, 
-        {
-            value: 'share', 
-            title: 'Paylasmak', 
-            icon: <ShareSmI />
-        }, 
-        {
-            value: 'queue', 
-            title: 'Add to queue', 
-            icon: <ReadMoreI />
-        }
-    ]
+    // const actions = [
+    // {
+    //     value: 'info', 
+    //     title: 'Maglumat', 
+    //     icon: <InfoSmI />
+    // }, 
+    //     {
+    //         value: 'share', 
+    //         title: 'Paylasmak', 
+    //         icon: <ShareSmI />
+    //     }, 
+    //     {
+    //         value: 'queue', 
+    //         title: 'Add to queue', 
+    //         icon: <ReadMoreI />
+    //     }
+    // ]
 
     const handleClick = useCallback((event: any, action:any) => {
         event.stopPropagation()
@@ -62,18 +59,18 @@ const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, r
 
     const content = useMemo(() => {
         return (
-            actions.map((action, i) => (
+            actionsData?.map((action, i) => (
                 <div className={styles.action} key={i} onClick={(e) => handleClick(e, action)}>
                     <div className={cn({
                         title: true,
                     })}>
-                        {action.title}
+                        {action.label.tm}
                     </div>
                     <>{action.icon}</>
                 </div>
             ))
         )
-    }, [actions, active])
+    }, [actionsData])
 
   return (
     <>

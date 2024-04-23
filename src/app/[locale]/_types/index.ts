@@ -32,3 +32,8 @@ export type CopyLinkTypes = {
     /** @default desktop **/
     mode?: 'mobile' | 'desktop'
 }
+export type ActionsType = {
+    value: string 
+    label: Localization
+    icon: React.ReactNode
+}

@@ -210,7 +210,7 @@ export default function Home() {
                                   playlists={playlist}
                                   alboms={albom}
                                   videoCard={clip}
-                                  hideMoreI={albom}
+                                  hideMoreI={albom || playlist}
                                   standard={homeItem.type === 'playlist' || homeItem.type === 'top-playlist'}
                                   onPlay={(id) => {
                                     if((homeItem.type === 'playlist' || homeItem.type === 'top-playlist') || top10) 

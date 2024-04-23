@@ -17,6 +17,10 @@ import { useAppSelector, useAppDispatch } from '@app/_hooks/redux_hooks';
 import { setCurrentSong } from '@app/_redux/reducers/MediaReducer';
 import useWindowSize from '@app/_hooks/useWindowSize';
 import InfoMenu from '../InfoMenu/InfoMenu';
+import InfoSmI from '../icons/infoSm/icon';
+import ShareSmI from '../icons/shareSm/icon';
+import ReadMoreI from '../icons/readMore/icon';
+import PrevNextI from '../icons/prevNext/icon';
 
 interface SideMenuProps<T> {
     show: boolean
@@ -55,6 +59,24 @@ const SideMenu = (props: SideMenuProps<HTMLDivElement>) => {
         setShow(false)
     }, [])
 
+    const actionsData = [
+        {
+            value: 'info', 
+            label: {en: 'Maglumat', ru: 'Maglumat', tm: 'Maglumat'}, 
+            icon: <InfoSmI />
+        }, 
+        {
+            value: 'share', 
+            label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+            icon: <ShareSmI />
+        }, 
+        {
+            value: 'queue', 
+            label: {en: 'Indiki aydyma gos', ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
+            icon: <ReadMoreI />
+        }, 
+    ]
+
   return (
     <>
         <InfoMenu 
@@ -68,7 +90,9 @@ const SideMenu = (props: SideMenuProps<HTMLDivElement>) => {
             showMenu: show
         })} ref={contentRef}>
             <div className={styles.list}>
-            
+                <div className={styles.head}>
+                    <PrevNextI mode='prev' onClick={() => setShow(false)}/>
+                </div>
                 {
                     songs?.map((item, index) => (
                         <div key={item.id} className={cn({
@@ -117,6 +141,7 @@ const SideMenu = (props: SideMenuProps<HTMLDivElement>) => {
                                     bottom: '-100%'
                                 }}
                                 onClick={(value) => openMenu(value, item.id)}
+                                actionsData={actionsData}
                             />
 
                             <Bottomsheet 

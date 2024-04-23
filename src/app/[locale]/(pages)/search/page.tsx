@@ -54,6 +54,8 @@ import Artists from '@app/_api/types/queryReturnTypes/Artists';
 import useObserve from '@app/_hooks/useObserve';
 import Playlists from '@app/_api/types/queryReturnTypes/Playlists';
 import Albums from '@app/_api/types/queryReturnTypes/Albums';
+import CustomLink from '@app/_components/CustomLink/CustomLink';
+import ChevronRightI from '@app/_components/icons/chevronRight/icon';
 
 const cn = classNames.bind(styles)
 const Search = () => {
@@ -284,7 +286,7 @@ const Search = () => {
     )
   }, [])
   const arrowRight = useMemo(() => (
-    <ArrowRightI/>
+    <ChevronRightI />
   ), [])
 
 
@@ -397,13 +399,20 @@ const Search = () => {
         search: searchValue,
       };
 
+      console.log("isViewAll", isViewAll)
+
       if(!isViewAll){
         router.push(`/search?mask=${searchValue}`, { scroll: false })
       }else {
         dataToSend = {...dataToSend, type: all as string}
       }
+
       setSearchDataLoading(true)
-      // console.log("dataToSend", dataToSend)
+      setAlbums([])
+      setArtists([])
+      setSongs([])
+      setPlaylists([])
+
       const response = await searchSong(dataToSend)
       if(response.statusCode === 200){
         const {
@@ -439,12 +448,11 @@ const Search = () => {
   const handleKeyDown = useCallback((e: any) => {
     if(e.keyCode === 13){
       if(isEmpty(searchValue)){
-        router.push(`search?type=${tabs[3].route}`)
+        router.push(`search?tab=${tabs[3].route}`)
       }else {
         goSearch()
       } 
-    }else if(e.keyCode === 32) //prevent propagation of audio player on space click
-    e.stopPropagation()
+    }else if(e.keyCode === 32) e.stopPropagation()
   }, [router, searchValue, goSearch])
 
   const searchOnIClick = useCallback(() => {
@@ -458,12 +466,6 @@ const Search = () => {
   const openRecentBoxFN = useCallback(() => {
     if(CheckObjOrArrForNull(recentSearchData) && !openRecents) setOpenRecents(true)
   }, [recentSearchData, openRecents])
-
-  // console.log('nab', navigator.mediaDevices, navigator.mediaDevices.getUserMedia({ audio: true }))
-
-
-
-  // setupAudio()
 
   return (
     <>
@@ -507,7 +509,9 @@ const Search = () => {
                 recentSearchData?.map((searchData, i) => (
                   <div className={cn({
                     searchData: true, 
-                    active: activeSuggestionIndex === i
+                    active: activeSuggestionIndex === i, 
+                    borderTopRadius: i === 0, 
+                    borderBottomRadius: i === recentSearchData.length - 1
                   })} key={i} onClick={() => {
                     setSearchValue(searchData.title)
                     inputRef?.current?.focus()
@@ -635,12 +639,13 @@ const Search = () => {
         {
           showFoundData && CheckObjOrArrForNull(songsSearch) && (
             <div className={styles.recomendations}>
-              <h3 className={styles.songCardTitle}>
-                Songs
-                <Link href={`/search?mask=${searchValue}&all=songs`}>
+              <div className={styles.songCardTitle}>
+                <h3>Songs</h3>
+                <CustomLink href={`/search?mask=${searchValue}&all=songs`}>
+                  <span>View all</span>
                   {arrowRight}
-                </Link>
-              </h3>
+                </CustomLink>
+              </div>
               <SongList 
                 data={songsSearch} 
                 // onLike={handleLike}
@@ -657,12 +662,13 @@ const Search = () => {
         showFoundData && (
           isSearchDataLoading ? loader('artist', true) : CheckObjOrArrForNull(artistsSearch) ? (
             <div className={styles.recomendations}>
-              <h3 className={styles.songCardTitle}>
-                Artists
-                <Link href={`/search?mask=${searchValue}&all=artists`}>
+              <div className={styles.songCardTitle}>
+                <h3>Artists</h3>
+                <CustomLink href={`/search?mask=${searchValue}&all=artists`}>
+                  <span>View all</span>
                   {arrowRight}
-                </Link>
-              </h3>
+                </CustomLink>
+              </div>
                 {
                   width >=768 ? 
                   <Swiper
@@ -706,34 +712,35 @@ const Search = () => {
         showFoundData && (
           isSearchDataLoading ? loader('album', true) : CheckObjOrArrForNull(albumsSearch) ? (
             <div className={styles.recomendations}>
-              <h3 className={styles.songCardTitle}>
-                Albums
-                <Link href={`/search?mask=${searchValue}&all=alboms`}>
+              <div className={styles.songCardTitle}>
+                <h3>Alboms</h3>
+                <CustomLink href={`/search?mask=${searchValue}&all=alboms`}>
+                  <span>View all</span>
                   {arrowRight}
-                </Link>
-              </h3>
-                <Swiper
-                  navigation
-                  modules={[ Navigation ]}
-                  slidesPerView={6}
-                  spaceBetween={2}
-                  breakpoints={standardCardBreaksPoints}
-                >
-                  {
-                      albumsSearch?.map(album => (
-                        <SwiperSlide key={album.id}>
-                        <StandardCard 
-                          id={album.id}
-                          albomId={album.id}
-                          title={album.title}
-                          image={album.cover}
-                          alboms
-                          hideMoreI
-                        />
-                        </SwiperSlide>
-                      ))
-                    }
-                </Swiper>
+                </CustomLink>
+              </div>
+              <Swiper
+                navigation
+                modules={[ Navigation ]}
+                slidesPerView={6}
+                spaceBetween={2}
+                breakpoints={standardCardBreaksPoints}
+              >
+                {
+                    albumsSearch?.map(album => (
+                      <SwiperSlide key={album.id}>
+                      <StandardCard 
+                        id={album.id}
+                        albomId={album.id}
+                        title={album.title}
+                        image={album.cover}
+                        alboms
+                        hideMoreI
+                      />
+                      </SwiperSlide>
+                    ))
+                  }
+              </Swiper>
             </div>
         ) : ""
         ) 
@@ -743,33 +750,34 @@ const Search = () => {
         showFoundData && (
           isSearchDataLoading ? loader('playlist', true) : CheckObjOrArrForNull(playlistsSearch) ? (
             <div className={styles.recomendations}>
-              <h3 className={styles.songCardTitle}>
-                Playlists
-                <Link href={`/search?mask=${searchValue}&all=playlists`}>
+              <div className={styles.songCardTitle}>
+                <h3>Playlists</h3>
+                <CustomLink href={`/search?mask=${searchValue}&all=playlists`}>
+                  <span>View all</span>
                   {arrowRight}
-                </Link>
-              </h3>
-                <Swiper
-                  navigation
-                  modules={[ Navigation ]}
-                  slidesPerView={6}
-                  spaceBetween={2}
-                  breakpoints={standardCardBreaksPoints}
-                >
-                  {
-                    playlistsSearch?.map(playlist => (
-                      <SwiperSlide key={playlist.id}>
-                        <StandardCard 
-                          id={playlist.id}
-                          playlistId={playlist.id}
-                          title={playlist.title!}
-                          image={playlist.cover}
-                          playlists
-                        />
-                      </SwiperSlide>
-                    ))
-                  }
-                </Swiper>
+                </CustomLink>
+              </div>
+              <Swiper
+                navigation
+                modules={[ Navigation ]}
+                slidesPerView={6}
+                spaceBetween={2}
+                breakpoints={standardCardBreaksPoints}
+              >
+                {
+                  playlistsSearch?.map(playlist => (
+                    <SwiperSlide key={playlist.id}>
+                      <StandardCard 
+                        id={playlist.id}
+                        playlistId={playlist.id}
+                        title={playlist.title!}
+                        image={playlist.cover}
+                        playlists
+                      />
+                    </SwiperSlide>
+                  ))
+                }
+              </Swiper>
             </div>
         ) : ""
         ) 

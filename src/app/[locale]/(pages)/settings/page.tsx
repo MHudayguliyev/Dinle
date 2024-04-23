@@ -73,7 +73,7 @@ const Settings = () => {
                         <MoreSm />
                     </div>
 
-                    <CustomLink href='/history' className={styles.item}>
+                    {/* <CustomLink href='/history' className={styles.item}>
                         <div className={styles.thePaymentLeft}>
                             <div className={styles.header}>Toleg podpiskasy</div>
                             <div className={styles.phone}>Tolenen wagty:12.12.2023</div>
@@ -88,7 +88,7 @@ const Settings = () => {
                         </div>
 
                         <ArrowI />
-                    </CustomLink>
+                    </CustomLink> */}
                 </div>
 
 
@@ -104,7 +104,7 @@ const Settings = () => {
                         />
                     </div>
                     
-                    <div className={styles.item}>
+                    <div className={`${styles.item} ${styles.addCursor}`} onClick={() => setOpenLangMenu(true)}>
                         <div className={styles.theLeft}>
                             <GlobusI />
                             <div className={styles.header}>Language</div>
@@ -112,12 +112,12 @@ const Settings = () => {
                         
                         <div className={styles.theRight}>
                             <div className={styles.phone}>English</div>
-                            <ArrowI onClick={() => setOpenLangMenu(true)}/>
+                            <ArrowI/>
                         </div>
                     </div>
                 </div>
 
-                <div>
+                {/* <div>
                     <CustomLink href='/devices' className={styles.item}>
                         <div className={styles.theLeft}>
                             <List active={false}/>
@@ -125,7 +125,7 @@ const Settings = () => {
                         </div>
                         <ArrowI />
                     </CustomLink>
-                </div>
+                </div> */}
 
                 <div>
                     <CustomLink href='' className={styles.item}>
