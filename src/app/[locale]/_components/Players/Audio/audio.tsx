@@ -25,7 +25,7 @@ import Input from '@compLibrary/Input';
 import { useAppDispatch, useAppSelector } from '@hooks/redux_hooks';
 import useClickOutside from '@hooks/useOutClick';
 //redux
-import { setCurrentSong, setIsSongPlaying, setSongIndex, setIsShuffle, shuffle } from '@redux/reducers/MediaReducer';
+import { setCurrentSong, setIsSongPlaying, setSongIndex, setIsShuffle, shuffle, setOpenPhoto } from '@redux/reducers/MediaReducer';
 import { setShowAuthModal } from '@redux/reducers/AuthReducer';
 import { setIsBlockOverflow } from '@redux/reducers/OverflowReducer';
 //comps
@@ -41,6 +41,9 @@ import { likeSong } from '@api/Queries/Post';
 //utils
 import authToken from '@api/Services/auth_token';
 import CustomLink from '@components/CustomLink/CustomLink';
+import InfoSmI from '@app/_components/icons/infoSm/icon';
+import ShareSmI from '@app/_components/icons/shareSm/icon';
+import ReadMoreI from '@app/_components/icons/readMore/icon';
 
 function handleBufferProgress(e: any) {
   const audio = e.currentTarget;
@@ -119,6 +122,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   
   //redux states 
   const isPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
+  const isPhotoOpen = useAppSelector(state => state.mediaReducer.isPhotoOpen)
   const songs = useAppSelector(state => state.mediaReducer.songData)
   const songIndex = useAppSelector(state => state.mediaReducer.songIndex)
   const isSongPlaying = useAppSelector(state => state.mediaReducer.isSongPlaying)
@@ -448,6 +452,24 @@ const AudioPlayer = (props: AudioPlayerProps) => {
       close={() => setShowMenu(false)}
     />
   ), [menuRef, songId, showMenu, setShowMenu])
+  
+  const actionsData = [
+    {
+        value: 'info', 
+        label: {en: 'Maglumat', ru: 'Maglumat', tm: 'Maglumat'}, 
+        icon: <InfoSmI />
+    }, 
+    {
+        value: 'share', 
+        label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+        icon: <ShareSmI />
+    }, 
+    {
+        value: 'queue', 
+        label: {en: 'Indiki aydyma gos', ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
+        icon: <ReadMoreI />
+    }, 
+]
 
   return (
     <>
@@ -474,7 +496,14 @@ const AudioPlayer = (props: AudioPlayerProps) => {
             <div className={styles.content}>
               <div className={styles.musicInfo}>
                 <div className={styles.artistInfo}>
-                  <Image src={song?.cover ?? artist} alt='artist' width='400' height='400' className={styles.songImg}/>
+                  <div className={styles.songImg} onClick={() => dispatch(setOpenPhoto(!isPhotoOpen))}>
+                    <Image 
+                      src={song?.cover ?? ""} 
+                      alt='artist' 
+                      width='400' 
+                      height='400' 
+                    />
+                  </div>
                   <div className={styles.songInfo}>
                     <div className={styles.song}>
                       <CustomLink href=''>
@@ -540,7 +569,14 @@ const AudioPlayer = (props: AudioPlayerProps) => {
               <div className={styles.mobileMusicInfo}>
 
                 <div className={styles.artistInfo}> 
-                  <Image src={song?.cover ?? artist} alt='artist' width='400' height='400' className={styles.songImg}/>
+                  <div className={styles.songImg}>
+                    <Image 
+                      src={song?.cover ?? ""} 
+                      alt='artist' 
+                      width='400' 
+                      height='400' 
+                    />
+                  </div>
                   <div className={styles.songInfo}>
                     <div className={styles.song}>
                       <CustomLink href=''>
@@ -703,7 +739,8 @@ const AudioPlayer = (props: AudioPlayerProps) => {
 
             <div className={cn({bottomGradient: showMobPlaylist})}></div>
 
-            <Bottomsheet 
+            <Bottomsheet
+              actionsData={actionsData} 
               open={showBottomsheet}
               close={() => setShowBottomsheet(false)}
               onClick={openMenu}

@@ -35,6 +35,9 @@ import CustomLink from '@components/CustomLink/CustomLink';
 import useClickOutside from '@hooks/useOutClick';
 import { getFromStorage } from '@app/_utils/storage';
 import { isAuthorized, parse } from '@app/_utils/helpers';
+import InfoSmI from '@app/_components/icons/infoSm/icon';
+import ShareSmI from '@app/_components/icons/shareSm/icon';
+import ReadMoreI from '@app/_components/icons/readMore/icon';
 
 const cn = classNames.bind(styles)
 export default function Home() {
@@ -109,6 +112,24 @@ export default function Home() {
       </div>
     )
   }, [isAuthenticated, openDropdown, dropdownContentRef, dropdownToggleRef])
+
+  const actionsData = [
+    {
+        value: 'info', 
+        label: {en: 'Maglumat', ru: 'Maglumat', tm: 'Maglumat'}, 
+        icon: <InfoSmI />
+    }, 
+    {
+        value: 'share', 
+        label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+        icon: <ShareSmI />
+    }, 
+    {
+        value: 'queue', 
+        label: {en: 'Indiki aydyma gos', ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
+        icon: <ReadMoreI />
+    }, 
+]
 
   return (
     <>
@@ -244,7 +265,8 @@ export default function Home() {
             }
       </div>
 
-      <BottomSheet 
+      <BottomSheet
+        actionsData={actionsData} 
         open={showBottomSheet}
         close={() => setShowBottomSheet(false)}
         onClick={(value) => {

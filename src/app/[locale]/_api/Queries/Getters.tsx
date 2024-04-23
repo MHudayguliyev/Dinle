@@ -108,24 +108,24 @@ export const GetGenres = async (): Promise<Genres> => {
         data: {}
     })
 }
-export const GetFavoriteSongs = async (): Promise<LikedSongs> => {
+export const GetFavoriteSongs = async (page = 0, pageSize = 10): Promise<LikedSongs> => {
     return api.getPrivate<LikedSongs>({
-        url: '/client/favorite-songs'
+        url: `/client/favorite-songs?page=${page}&pageSize=${pageSize}`
     })
 }
-export const GetFavoriteArists = async(): Promise<LikedArtists> => {
+export const GetFavoriteArists = async(page = 0, pageSize = 10): Promise<LikedArtists> => {
     return api.getPrivate<LikedArtists>({
-        url: '/client/favorite-artists'
+        url: `/client/favorite-artists?page=${page}&pageSize=${pageSize}`
     })
 }
-export const GetFavoritePlaylists = async (): Promise<LikedPlaylists> => {
+export const GetFavoritePlaylists = async (page = 0, pageSize = 10): Promise<LikedPlaylists> => {
     return api.getPrivate<LikedPlaylists>({
-        url: '/client/favorite-playlists'
+        url: `/client/favorite-playlists?page=${page}&pageSize=${pageSize}`
     })
 }
-export const GetFavoriteAlboms = async (): Promise<Albums['data']> => {
+export const GetFavoriteAlboms = async (page = 0, pageSize = 10): Promise<Albums['data']> => {
     return api.getPrivate<Albums['data']>({
-        url: '/client/favorite-alboms'
+        url: `/client/favorite-alboms?page=${page}&pageSize=${pageSize}`
     })
 }
 export const GetDevices = async (): Promise<Devices[]> => {

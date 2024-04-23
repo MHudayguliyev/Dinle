@@ -115,9 +115,9 @@ const ViewAll = () => {
       isRefetching: isSongsRefetcing
     } = useInfiniteQuery({
       queryKey: ['FavoriteSongs', showSongs], 
-      queryFn: ({pageParam}) => GetFavoriteSongs(), 
+      queryFn: ({pageParam}) => GetFavoriteSongs(pageParam), 
       getNextPageParam: (lastPage, allPages) => {
-        // return lastPage.rows.length ? allPages.length + 1 : undefined;
+        return lastPage.rows.length ? allPages.length + 1 : undefined;
       }, 
       enabled: showSongs
     })
@@ -131,9 +131,9 @@ const ViewAll = () => {
       isRefetching: isArtistsRefetcing
     } = useInfiniteQuery({
       queryKey: ['FavoriteArtists', showArtists], 
-      queryFn: ({pageParam}) => GetFavoriteArists(), 
+      queryFn: ({pageParam}) => GetFavoriteArists(pageParam), 
       getNextPageParam: (lastPage, allPages) => {
-        // return lastPage.rows.length ? allPages.length + 1 : undefined;
+        return lastPage.rows.length ? allPages.length + 1 : undefined;
       }, 
       enabled: showArtists
     })
@@ -147,9 +147,9 @@ const ViewAll = () => {
       isRefetching: isAlbomsRefetcing
     } = useInfiniteQuery({
       queryKey: ['FavoriteAlboms', showAlboms], 
-      queryFn: ({pageParam}) => GetFavoriteAlboms(), 
+      queryFn: ({pageParam}) => GetFavoriteAlboms(pageParam), 
       getNextPageParam: (lastPage, allPages) => {
-        // return lastPage.rows.length ? allPages.length + 1 : undefined;
+        return lastPage.rows.length ? allPages.length + 1 : undefined;
       }, 
       enabled: showAlboms
     })
@@ -163,9 +163,9 @@ const ViewAll = () => {
       isRefetching: isPlaylistsRefetcing
     } = useInfiniteQuery({
       queryKey: ['FavoritePlaylists', showPlaylists], 
-      queryFn: ({pageParam}) => GetFavoritePlaylists(), 
+      queryFn: ({pageParam}) => GetFavoritePlaylists(pageParam), 
       getNextPageParam: (lastPage, allPages) => {
-        // return lastPage.rows.length ? allPages.length + 1 : undefined;
+        return lastPage.rows.length ? allPages.length + 1 : undefined;
       }, 
       enabled: showPlaylists
     })
@@ -457,7 +457,7 @@ const ViewAll = () => {
 
       {
         showArtists && 
-        isArtistsLoading || isArtistsRefetcing ? loader('artist') : 
+        isArtistsLoading ? loader('artist') : 
         <div className={styles.grid_wrapper}>
           {
             artistsList?.map(artist => (
@@ -476,7 +476,7 @@ const ViewAll = () => {
 
       {
         showAlboms && 
-        isAlbomsLoading || isAlbomsRefetcing ? loader('albom') : 
+        isAlbomsLoading ? loader('albom') : 
         <div className={styles.grid_wrapper}>
           {
             albomsList?.map(albom => (
@@ -496,7 +496,7 @@ const ViewAll = () => {
 
       {
         showPlaylists && 
-        isPlaylistsLoading || isPlaylistsRefetcing ? loader('playlist') : 
+        isPlaylistsLoading ? loader('playlist') : 
         <div className={styles.grid_wrapper}>
           {
             playlistsList?.map(playlist => (
@@ -507,6 +507,7 @@ const ViewAll = () => {
                 image={playlist.cover}
                 title={playlist.title}
                 playlists
+                hideMoreI
               />
             ))
           }

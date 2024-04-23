@@ -145,6 +145,7 @@ const SideMenu = (props: SideMenuProps<HTMLDivElement>) => {
                             />
 
                             <Bottomsheet 
+                                actionsData={actionsData}
                                 open={showBottomsheet}
                                 close={() => setShowBottomsheet(false)}
                             />

@@ -17,7 +17,7 @@ const sidebar_routes: SidebarRoutes = [
         ru: 'Search',
         tm: 'Search'
       },
-      route: '/search?type=genre',
+      route: '/search?tab=genre',
       icon: "search",
       sub: []
     },

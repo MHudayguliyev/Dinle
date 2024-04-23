@@ -22,6 +22,9 @@ import useWindowSize from '@app/_hooks/useWindowSize'
 import Preloader from '@app/_compLibrary/Preloader'
 
 import { CheckObjOrArrForNull } from '@app/_utils/helpers'
+import InfoSmI from '../icons/infoSm/icon';
+import ShareSmI from '../icons/shareSm/icon';
+import ReadMoreI from '../icons/readMore/icon';
 
 interface SongListProps {
     data: Songs['rows'] | any
@@ -79,6 +82,23 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
 
     const header = [
         '#', 'Ady', 'Albom', "Hereketler", 
+    ]
+    const actionsData = [
+        {
+            value: 'info', 
+            label: {en: 'Maglumat', ru: 'Maglumat', tm: 'Maglumat'}, 
+            icon: <InfoSmI />
+        }, 
+        {
+            value: 'share', 
+            label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+            icon: <ShareSmI />
+        }, 
+        {
+            value: 'queue', 
+            label: {en: 'Indiki aydyma gos', ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
+            icon: <ReadMoreI />
+        }, 
     ]
 
     const stopPropagation = (e: any) => e.stopPropagation();
@@ -175,6 +195,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
 
                                     <SongActions 
                                         ref={actionsContentRef}
+                                        actionsData={actionsData}
                                         open={showActions && toggleI === song.id}
                                         close={() => setShowActions(false)}
                                         onClick={(value) => {
@@ -184,6 +205,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                                     />
 
                                     <Bottomsheet 
+                                        actionsData={actionsData}
                                         open={showBottomsheet && toggleI === song.id}
                                         close={() => setShowBottomsheet(false)}
                                         onClick={(value) => {
