@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import MediaReducer from './reducers/MediaReducer';
 import AuthReducer from './reducers/AuthReducer';
 import OverflowReducer from './reducers/OverflowReducer';
+import SidebarReducer from './reducers/SidebarReducer';
 
 const store = configureStore({
     reducer: {
         mediaReducer: MediaReducer, 
         authReducer: AuthReducer, 
         overflowReducer: OverflowReducer, 
+        sidebarReducer: SidebarReducer
     }, 
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}) 
 })

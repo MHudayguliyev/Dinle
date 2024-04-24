@@ -8,33 +8,14 @@
     padding: 10px 20px;
 }
 
-.section {
-    display: none;
-}
-.show {
-    display: block;
-    margin-top: 20px;
-    animation: animateFn 1s linear;
-}
-
-.header {
-    --opacity: 0;
-    height: 80px;
-    width: calc(100% - 244px);
-    padding: 10px 20px;
-    position: fixed;
-    top: 0;
-    z-index: GShapes.$fixedHeaderZIndex;
-    display: flex;
-    align-items: center;
-
+.topHeader {
     .opts {
         display: flex;
         align-items: center;
         gap: 20px;
     }
 
-    .actions, .topPlay {
+    .actions, .topPlay  {
         display: none;
     }
 
@@ -51,30 +32,6 @@
             align-items: center;
             gap: 10px;
         }
-    }
-
-    &:before {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #17171780;
-        z-index: -1;
-        opacity: var(--opacity);
-    }
-    &:after {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -2;
-        opacity: var(--opacity);
     }
 }
 

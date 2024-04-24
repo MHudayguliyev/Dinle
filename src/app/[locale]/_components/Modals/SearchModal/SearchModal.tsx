@@ -40,7 +40,7 @@ const SearchModal = (props: SearchModalProps) => {
               }
 
               recorderRef.current.onstop = async (e: any) => {
-                const blob = new Blob(chunks, { type: 'audio/webm' })
+                const blob = new Blob(chunks, { type: 'audio/wav' })
                 console.log("blob", blob)
                 const formData = new FormData()
                 formData.append('fileUrl', blob)

@@ -4,13 +4,13 @@ import CommonIProps from '../CommonIProps'
 interface ArrowRightIProps extends CommonIProps {}
 const ArrowRightI = ({className = ""}: ArrowRightIProps) => {
   return (
-    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0_6018_18026)">
-    <path d="M4.41016 3.09L10.3202 9L4.41016 14.91L6.00016 16.5L13.5002 9L6.00016 1.5L4.41016 3.09Z" fill="#C1C1C1"/>
+    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_8644_30213)">
+    <path d="M5.72699 11.06L8.78033 8L5.72699 4.94L6.66699 4L10.667 8L6.66699 12L5.72699 11.06Z" fill="white"/>
     </g>
     <defs>
-    <clipPath id="clip0_6018_18026">
-    <rect width="18" height="18" fill="white"/>
+    <clipPath id="clip0_8644_30213">
+    <rect width="16" height="16" fill="white" transform="matrix(-1 0 0 1 16 0)"/>
     </clipPath>
     </defs>
     </svg>

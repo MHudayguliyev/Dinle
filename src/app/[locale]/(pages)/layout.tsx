@@ -17,6 +17,10 @@ import { closeModal } from '@app/_redux/reducers/AuthReducer'
 import { setIsBlockOverflow } from '@redux/reducers/OverflowReducer'
 //comps
 import LyricsMenu from '@app/_components/LyricsMenu/LyricsMenu'
+import ArrowRightI from '@app/_components/icons/arrowRight/icon'
+import ArrowLeftI from '@app/_components/icons/arrowLeft/icon'
+import { setToggleSidebar } from '@app/_redux/reducers/SidebarReducer'
+import Button from '@app/_compLibrary/Button'
 
 const cn = classNames.bind(styles)
 export default function PagesLayout({
@@ -35,6 +39,7 @@ export default function PagesLayout({
 
   const showAuthModal = useAppSelector(state => state.authReducer.showAuthModal)
   const isAudioPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
+  const sidebarFolded = useAppSelector(state => state.sidebarReducer.sidebarFolded)
 
   useEffect(() => {
     if(showLyrics) setShowLyrics(false)
@@ -47,7 +52,7 @@ export default function PagesLayout({
   }, [showLyrics])
 
   return (
-    <div className={styles.layout__container}  tabIndex={1}>
+    <div className={styles.layout__container}>
       <Sidebar 
         hideSidebar={hideSidebar}
         setHideSidebar={setHideSidebar}
@@ -58,7 +63,14 @@ export default function PagesLayout({
       })}>
         <div className={cn({
           layoutChildren: true, 
+          sidebarFolded: sidebarFolded
         })}>
+          {
+            sidebarFolded && 
+            <Button color='lightDark' roundedSm className={styles.openSidebar} onClick={() => dispatch(setToggleSidebar(false))}>
+              <ArrowRightI /> 
+            </Button>
+          }
           {children}
         </div>
         

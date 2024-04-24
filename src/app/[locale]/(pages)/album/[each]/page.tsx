@@ -32,12 +32,12 @@ import useWindowSize from '@app/_hooks/useWindowSize';
 import HeartFilledI from '@app/_components/icons/heartFilled/icon';
 import toast from 'react-hot-toast';
 import useObserve from '@app/_hooks/useObserve';
+import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 
 const cn = classNames.bind(styles)
 const Album = ({params}: {params: {each: string}}) => {
     const dispatch = useAppDispatch()
     const albomsObserver = useRef<IntersectionObserver>();
-    const headerRef:any = useRef(null)
     const toggleMenuRef:any = useRef(null)
     const menuContenRef:any = useRef(null)
 
@@ -99,15 +99,6 @@ const Album = ({params}: {params: {each: string}}) => {
         if(CheckObjOrArrForNull(albomsList))
         setRows(albomsList)
     },[albomsList])
-
-    // in future, move this pieace of code to its main hook
-    useEffect(() => {
-        const opacity = Math.min(1, scrolly / window.innerHeight)
-        if(headerRef && headerRef.current)
-        headerRef.current?.style?.setProperty(
-            '--opacity', opacity
-        )
-    }, [scrolly, headerRef])
 
     const handleCopyLink = useCallback(() => {
         copyLink(`/album/${id}`)?.then((mode) => {
@@ -205,19 +196,24 @@ const Album = ({params}: {params: {each: string}}) => {
   return (
     <>
         {infoMenu}
-        <div className={styles.header} ref={headerRef}>
-            <div className={styles.opts}>
-                <PrevNext  mode='prev'/>
-                <PrevNext  mode='next'/>
-                {playBtn(true)}
 
-            </div>
-            <div className={styles.actions}>
-                {shuffleBtn}
-                {shareBtn}
-                {heartBtn}
-            </div>
-        </div>
+        <TopNavbar 
+            className={styles.topHeader}
+            renderOptions={() => (
+                <div className={styles.opts}>
+                    <PrevNext  mode='prev'/>
+                    <PrevNext  mode='next'/>
+                    {playBtn(true)}  
+                </div>
+            )}
+            renderActions={() => (
+                <div className={styles.actions}>
+                    {shuffleBtn}
+                    {shareBtn}
+                    {heartBtn}
+                </div>
+            )}
+        />
 
         <div className={styles.presentation}>
             <div className={styles.background_gradient}></div>

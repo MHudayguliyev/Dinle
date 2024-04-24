@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from 'react'
 //styles
 import styles from './TopNavbar.module.scss'
 import { useWindowScrollPositions } from '@app/_hooks/useWindowOffset'
+//hooks
+import { useAppSelector } from '@app/_hooks/redux_hooks'
 
 interface TopNavbarProps {
     renderOptions: () => React.ReactNode
@@ -17,6 +19,8 @@ const TopNavbar = (props: TopNavbarProps) => {
     } = props
     const headerRef:any = useRef(null)
     const { scrolly } = useWindowScrollPositions()
+    const sidebarFolded = useAppSelector(state => state.sidebarReducer.sidebarFolded)
+
 
     useEffect(() => {
         const opacity = Math.min(1, scrolly / window.innerHeight)
@@ -29,7 +33,7 @@ const TopNavbar = (props: TopNavbarProps) => {
 
   return (
     <div >
-        <div className={`${styles.header} ${className}`} ref={headerRef}>
+        <div className={`${styles.header} ${sidebarFolded ? styles.sidebarFolded : ""} ${className}`} ref={headerRef}>
             {renderOptions && renderOptions()}
             {renderActions && renderActions()}
         </div>

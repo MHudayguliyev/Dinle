@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import Image from 'next/image';
-import { useInfiniteQuery, useQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 //styles
 import styles from './page.module.scss'
 import classNames from 'classnames/bind'
@@ -34,11 +34,11 @@ import { CheckObjOrArrForNull, copyLink, isAuthorized, findIndex } from '@utils/
 import toast from 'react-hot-toast';
 import { setShowAuthModal } from '@app/_redux/reducers/AuthReducer';
 import useObserve from '@app/_hooks/useObserve';
+import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 
 const cn = classNames.bind(styles)
 const Playlist = ({params}: {params: {each: string}}) => {
     const dispatch = useAppDispatch()
-    const headerRef:any = useRef(null)
     const toggleMenuRef:any = useRef(null)
     const menuContenRef:any = useRef(null)
     const playlistsRef = useRef<IntersectionObserver>();
@@ -97,14 +97,6 @@ const Playlist = ({params}: {params: {each: string}}) => {
     useEffect(() => {
         if(CheckObjOrArrForNull(playlistsList)) setRows(playlistsList)
     }, [playlistsList])
-
-    useEffect(() => {
-        const opacity = Math.min(1, scrolly / window.innerHeight)
-        if(headerRef && headerRef.current)
-        headerRef.current?.style?.setProperty(
-            '--opacity', opacity
-        )
-    }, [scrolly, headerRef])
 
     const handleCopyLink = useCallback(() => {
         copyLink(`/playlist/${id}`)?.then((mode) => {
@@ -200,18 +192,23 @@ const Playlist = ({params}: {params: {each: string}}) => {
   return (
     <>
         {infoMenu}
-        <div className={styles.header} ref={headerRef}>
-            <div className={styles.opts}>
-                <PrevNext  mode='prev'/>
-                <PrevNext  mode='next'/>
-                {playBtn(true)}
-            </div>
-            <div className={styles.actions}>
-                {shuffleBtn}
-                {shareBtn}
-                {heartBtn}
-            </div>
-        </div>
+        <TopNavbar 
+            className={styles.topHeader}
+            renderOptions={() => (
+                <div className={styles.opts}>
+                    <PrevNext  mode='prev'/>
+                    <PrevNext  mode='next'/>
+                    {playBtn(true)}  
+                </div>
+            )}
+            renderActions={() => (
+                <div className={styles.actions}>
+                    {shuffleBtn}
+                    {shareBtn}
+                    {heartBtn}
+                </div>
+            )}
+        />
 
         <div className={styles.presentation}>
             <div className={styles.background_gradient}></div>

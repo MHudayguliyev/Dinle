@@ -9,6 +9,8 @@ import classNames from 'classnames/bind';
 import useWindowSize from '@hooks/useWindowSize'
 import { useWindowScrollPositions } from '@app/_hooks/useWindowOffset'
 import { isUndefined } from '@app/_utils/helpers';
+//redux-hooks
+import { useAppSelector } from '@app/_hooks/redux_hooks';
 
 type TabProps = {
   tabs: TabMenuTypes[]
@@ -34,9 +36,11 @@ const Tab = (props: TabProps) => {
     fixedTopNull, 
   }= props
 
+  const sidebarFolded = useAppSelector(state => state.sidebarReducer.sidebarFolded)
   const [width] = useWindowSize()
   const { scrolly } = useWindowScrollPositions()
   const scrollPositionFixed = useMemo(() =>  width <= 768 && scrollYPosition ? scrollYPosition + 10 : scrollYPosition,[scrollYPosition, scrolly, width]) 
+
 
   return (
     <div className={cn({
@@ -46,7 +50,8 @@ const Tab = (props: TabProps) => {
       <div className={cn({
         wrapper: true, 
         fixed: (!isUndefined(scrollPositionFixed) && scrolly >= scrollPositionFixed! && fixed), 
-        fixedTopNull: (!isUndefined(scrollPositionFixed) && scrolly >= scrollPositionFixed! && fixedTopNull)
+        fixedTopNull: (!isUndefined(scrollPositionFixed) && scrolly >= scrollPositionFixed! && fixedTopNull), 
+        sidebarFolded: sidebarFolded
       })}>
         {
           tabs.map(tab => (

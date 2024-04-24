@@ -5,7 +5,7 @@
 .header {
     --opacity: 0;
     height: 80px;
-    width: calc(100% - 244px);
+    width: calc(100% - $sidebarWidth);
     padding: 10px 20px;
     position: fixed;
     top: 0;
@@ -36,5 +36,16 @@
         z-index: -2;
         background: linear-gradient(0deg, #DB6795 0%, #B13A6A 100%);
         opacity: var(--opacity);
+    }
+
+    @media screen and (max-width: $md) {
+        width: 100%;
+    }
+}
+
+.sidebarFolded {
+    width: calc(100% - $sidebarFoldedWidth);
+    @media screen and (max-width: $md) {
+        width: 100%;
     }
 }

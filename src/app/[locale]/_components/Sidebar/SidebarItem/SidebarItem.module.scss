@@ -73,4 +73,15 @@
       color: var(--text-color);
     }
 }
+
+.sidebarFolded {
+  @media screen and (min-width: $md) {
+    .sidebar__item_inner{
+      width: 36px;
+    }
+    .title {
+      display: none;
+    }
+  }
+}
  

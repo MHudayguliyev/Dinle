@@ -31,11 +31,11 @@ import { CheckObjOrArrForNull, copyLink, findIndex } from '@app/_utils/helpers';
 import useWindowSize from '@app/_hooks/useWindowSize';
 import toast from 'react-hot-toast';
 import useObserve from '@app/_hooks/useObserve';
+import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 
 const cn = classNames.bind(styles)
 const Genre = ({params}: {params: {each: string}}) => {
     const dispatch = useAppDispatch()
-    const headerRef:any = useRef(null)
     const toggleMenuRef:any = useRef(null)
     const menuContenRef:any = useRef(null)
     const genresRef = useRef<IntersectionObserver>();
@@ -96,14 +96,6 @@ const Genre = ({params}: {params: {each: string}}) => {
     useEffect(() => {
         if(CheckObjOrArrForNull(genresList)) setRows(genresList)
     }, [genresList])
-
-    useEffect(() => {
-        const opacity = Math.min(1, scrolly / window.innerHeight)
-        if(headerRef && headerRef.current)
-        headerRef.current?.style?.setProperty(
-            '--opacity', opacity
-        )
-    }, [scrolly, headerRef])
 
     const handleCopyLink = useCallback(() => {
         copyLink(`/genre/${id}`)?.then((mode) => {
@@ -181,17 +173,22 @@ const Genre = ({params}: {params: {each: string}}) => {
   return (
     <>
         {infoMenu}
-        <div className={styles.header} ref={headerRef}>
-            <div className={styles.opts}>
-                <PrevNext  mode='prev'/>
-                <PrevNext  mode='next'/>
-                {playBtn(true)}
-            </div>
-            <div className={styles.actions}>
-                {shuffleBtn}
-                {shareBtn}
-            </div>
-        </div>
+        <TopNavbar 
+            className={styles.topHeader}
+            renderOptions={() => (
+                <div className={styles.opts}>
+                    <PrevNext  mode='prev'/>
+                    <PrevNext  mode='next'/>
+                    {playBtn(true)}  
+                </div>
+            )}
+            renderActions={() => (
+                <div className={styles.actions}>
+                    {shuffleBtn}
+                    {shareBtn}
+                </div>
+            )}
+        />
 
         <div className={styles.presentation}>
             <div className={styles.background_gradient}></div>

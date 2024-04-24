@@ -45,8 +45,8 @@ import useObserve from '@app/_hooks/useObserve';
 import Artists from '@app/_api/types/queryReturnTypes/Artists';
 import LikedSongs from '@app/_api/types/queryReturnTypes/LikedSongs';
 import Albums from '@app/_api/types/queryReturnTypes/Albums';
-import Playlist from '@app/_api/types/queryReturnTypes/Playlist';
 import LikedPlaylists from '@app/_api/types/queryReturnTypes/LikedPlaylists';
+import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 
 const cn = classNames.bind(styles)
 const ViewAll = () => {
@@ -54,8 +54,6 @@ const ViewAll = () => {
     const artistsObserver = useRef<IntersectionObserver>();
     const playlistsObserver = useRef<IntersectionObserver>();
     const albomsObserver = useRef<IntersectionObserver>();
-    const clipsObserver = useRef<IntersectionObserver>();
-
 
     const dispatch = useAppDispatch()
     const searchParam = useSearchParams()
@@ -97,7 +95,6 @@ const ViewAll = () => {
     const isSongPlaying = useAppSelector(state => state.mediaReducer.isSongPlaying)
     const isShuffle = useAppSelector(state => state.mediaReducer.isShuffle)
 
-    const headerRef:any = useRef(null)
     const toggleRef: any = useRef(null)
     const contentRef: any = useRef(null)
     const [showInfoMenu, setShowInfoMenu] = useClickOutside(contentRef, toggleRef, 'mousedown')
@@ -230,148 +227,144 @@ const ViewAll = () => {
     if(CheckObjOrArrForNull(songsList)) setSongsRow(songsList)
   }, [songsList])
 
-  useEffect(() => {
-    const opacity = Math.min(1, scrolly / window.innerHeight)
-    if(headerRef && headerRef.current)
-    headerRef.current?.style?.setProperty(
-      '--opacity', opacity
+  const handleLike = useCallback(async (id: string) => {
+    try {
+      const repsonse = await likeSong(id)
+      console.log("res", repsonse)
+      if(repsonse.statusCode === 200 && repsonse.success)
+      setSongsRow(prevRows => prevRows.filter(row => row.id !== id))
+    } catch (error) {
+      console.log(error)
+    }
+  }, [setSongsRow])
+
+  const loader = useCallback((tab: 'artist' | 'playlist' | 'albom' | 'genre', withTopShimmer = false) => {
+    return (
+      <>
+      {withTopShimmer && <span className={styles.topShimmer}></span>}
+        <div className={styles.grid_wrapper}>
+          {
+            [1,2,3,4,5].map(item => (
+              <StandardCard 
+                id=""
+                key={item}
+                shimmer
+                artists={tab === 'artist'}
+                playlists={tab === 'playlist'}
+                alboms={tab === 'albom'}
+                genres={tab === 'genre'}
+                title=''
+              />
+            ))
+          }
+        </div>
+      </>
     )
-  }, [scrolly, headerRef])
+  }, [])
+  
+  const toggleShuffle = useCallback(() => dispatch(setIsShuffle(!isShuffle)), [isShuffle])
 
-
-    const handleLike = useCallback(async (id: string) => {
-      try {
-        const repsonse = await likeSong(id)
-        console.log("res", repsonse)
-        if(repsonse.statusCode === 200 && repsonse.success)
-        setSongsRow(prevRows => prevRows.filter(row => row.id !== id))
-      } catch (error) {
-        console.log(error)
-      }
-    }, [setSongsRow])
-
-    const loader = useCallback((tab: 'artist' | 'playlist' | 'albom' | 'genre', withTopShimmer = false) => {
-      return (
-        <>
-        {withTopShimmer && <span className={styles.topShimmer}></span>}
-          <div className={styles.grid_wrapper}>
-            {
-              [1,2,3,4,5].map(item => (
-                <StandardCard 
-                  id=""
-                  key={item}
-                  shimmer
-                  artists={tab === 'artist'}
-                  playlists={tab === 'playlist'}
-                  alboms={tab === 'albom'}
-                  genres={tab === 'genre'}
-                  title=''
-                />
-              ))
-            }
-          </div>
-        </>
-      )
-    }, [])
-    
-    const toggleShuffle = useCallback(() => dispatch(setIsShuffle(!isShuffle)), [isShuffle])
-
-    const songIds = useMemo(() => {
-      return {
-        currentSongId: song?.[songIndex]?.id, 
-        rowSongId: songsRow?.[songIndex]?.id
-      }
-    }, [  
-      song, 
-      songIndex, 
-      songsRow
-    ])
-    const shareBtn = useMemo(() => (
-      <Share onClick={() => 
-        copyLink('/liked')?.then((mode) => {
-          if(mode === 'desktop') toast.success('Link is copied.')
-        })
-      }/>
-    ), [])
-    const infoMenu = useMemo(() => (
-      <InfoMenu
-        id={songId} 
-        ref={contentRef}
-        show={showInfoMenu}
-        close={() => setShowInfoMenu(false)}
-        fetchMode='song'
-      />
-    ), [
-      songId, 
-      contentRef, 
-      showInfoMenu, 
-    ])
-
-    const playFN = useCallback(() => {
-      const {
-        currentSongId, 
-        rowSongId
-      } = songIds
-      if(CheckObjOrArrForNull(songsRow)){
-        const index = (songIndex !== -1 && songIndex <= songsRow!?.length - 1 && currentSongId === rowSongId) ? songIndex : 0
-        dispatch(setCurrentSong({
-          data: songsRow, index, id: songsRow[index]?.id
-        }))
-      }
-    }, [
-      songsRow, 
-      songIndex, 
-      songIds
-    ])
-
-    const playBtn = useCallback((topFixed = false, extraSm = false) => {
-      const {
-        currentSongId, 
-        rowSongId
-      } = songIds
-      
-      const disabled = (showArtists || showPlaylists)
-      const foundSameId = songsRow?.some(row => row.id === currentSongId)
-      const isPlaying = isSongPlaying && (currentSongId === rowSongId || foundSameId)
-      const styles = cn({
-          topPlay: topFixed, 
-          showPlayTop: scrolly >= 248 
-      })
-      
-      return (
-          <>
-              {
-                width <= 768 && extraSm ? 
-                <PlayExtraSm mode={isPlaying ? 'pause' : 'play'} disable={disabled}/> : 
-                width <= 768 ? 
-                <PlaySm disable={disabled} className={styles} onClick={playFN}  mode={isPlaying ? 'pause' : 'play'}/> : 
-                <PlayLg disable={disabled} className={styles} onClick={playFN} mode={isPlaying ? 'pause' : 'play'}
-                /> 
-              }
-          </>
-      )
-  }, [
-      songIds,  
-      isSongPlaying, 
-      width, 
-      scrolly, 
-      showArtists, 
-      showPlaylists
+  const songIds = useMemo(() => {
+    return {
+      currentSongId: song?.[songIndex]?.id, 
+      rowSongId: songsRow?.[songIndex]?.id
+    }
+  }, [  
+    song, 
+    songIndex, 
+    songsRow
   ])
+  const shareBtn = useMemo(() => (
+    <Share onClick={() => 
+      copyLink('/liked')?.then((mode) => {
+        if(mode === 'desktop') toast.success('Link is copied.')
+      })
+    }/>
+  ), [])
+  const infoMenu = useMemo(() => (
+    <InfoMenu
+      id={songId} 
+      ref={contentRef}
+      show={showInfoMenu}
+      close={() => setShowInfoMenu(false)}
+      fetchMode='song'
+    />
+  ), [
+    songId, 
+    contentRef, 
+    showInfoMenu, 
+  ])
+
+  const playFN = useCallback(() => {
+    const {
+      currentSongId, 
+      rowSongId
+    } = songIds
+    if(CheckObjOrArrForNull(songsRow)){
+      const index = (songIndex !== -1 && songIndex <= songsRow!?.length - 1 && currentSongId === rowSongId) ? songIndex : 0
+      dispatch(setCurrentSong({
+        data: songsRow, index, id: songsRow[index]?.id
+      }))
+    }
+  }, [
+    songsRow, 
+    songIndex, 
+    songIds
+  ])
+
+  const playBtn = useCallback((topFixed = false, extraSm = false) => {
+    const {
+      currentSongId, 
+      rowSongId
+    } = songIds
+    
+    const disabled = (showArtists || showPlaylists)
+    const foundSameId = songsRow?.some(row => row.id === currentSongId)
+    const isPlaying = isSongPlaying && (currentSongId === rowSongId || foundSameId)
+    const styles = cn({
+        topPlay: topFixed, 
+        showPlayTop: scrolly >= 248 
+    })
+    
+    return (
+        <>
+            {
+              width <= 768 && extraSm ? 
+              <PlayExtraSm mode={isPlaying ? 'pause' : 'play'} disable={disabled}/> : 
+              width <= 768 ? 
+              <PlaySm disable={disabled} className={styles} onClick={playFN}  mode={isPlaying ? 'pause' : 'play'}/> : 
+              <PlayLg disable={disabled} className={styles} onClick={playFN} mode={isPlaying ? 'pause' : 'play'}
+              /> 
+            }
+        </>
+    )
+}, [
+    songIds,  
+    isSongPlaying, 
+    width, 
+    scrolly, 
+    showArtists, 
+    showPlaylists
+])
 
   return (
     <>
       {infoMenu}
-      <div className={styles.header} ref={headerRef}>
-        <div className={styles.opts}>
-          <PrevNext  mode='prev'/>
-          <PrevNext  mode='next'/>
-          {playBtn(true)}
-        </div>
-        <div className={styles.share}>
-          {shareBtn}
-        </div>
-      </div>
+      <TopNavbar 
+        className={styles.topHeader}
+        renderOptions={() => (
+            <div className={styles.opts}>
+                <PrevNext  mode='prev'/>
+                <PrevNext  mode='next'/>
+                {playBtn(true)}  
+            </div>
+        )}
+        renderActions={() => (
+            <div className={styles.actions}>
+              {shareBtn}
+            </div>
+        )}
+      />
 
       <div className={styles.presentation}>
         <div className={styles.gradient}></div>

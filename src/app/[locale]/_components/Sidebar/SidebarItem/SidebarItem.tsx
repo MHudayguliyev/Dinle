@@ -12,6 +12,7 @@ type SidebarItemProps = {
     title: string
     icon: IconTypes
     active: boolean
+    sidebarFolded: boolean
 }
 const cn = classNames.bind(styles)
 const SidebarItem = (props: SidebarItemProps) => {
@@ -19,12 +20,14 @@ const SidebarItem = (props: SidebarItemProps) => {
         title, 
         icon, 
         active, 
+        sidebarFolded, 
     } = props
 
   return (
     <div className={cn({
         sidebar__item: true, 
-        hideElement: icon === 'playlist' || icon === 'settings'
+        hideElement: icon === 'playlist' || icon === 'settings', 
+        sidebarFolded: sidebarFolded
     })}>
         <div className={cn({
             sidebar__item_inner: true, 
