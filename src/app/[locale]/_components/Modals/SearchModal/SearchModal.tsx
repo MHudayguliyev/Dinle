@@ -40,19 +40,21 @@ const SearchModal = (props: SearchModalProps) => {
               }
 
               recorderRef.current.onstop = async (e: any) => {
-                const blob = new Blob(chunks, { type: 'audio/wav' })
+                console.log('chunks', chunks)
+                const blob = new Blob(chunks, { type: 'audio/webm' })
                 console.log("blob", blob)
                 const formData = new FormData()
                 formData.append('fileUrl', blob)
 
                 try {
                   const base = 'http://95.85.125.44:4033/test/'
-                  const response = await axios.post(`${base}artists/shazam`, formData, {
+                  const response = await axios.post(`${base}artists/shazam`, formData,  {
                     headers: {
                       'Content-type': 'multipart/form-data', 
                       'Authorization': 'Bearer ' + authToken()
                     }, 
                   })
+
 
                   console.log('response from shazam', response)
                 } catch (error) {
@@ -68,7 +70,7 @@ const SearchModal = (props: SearchModalProps) => {
             recorderRef.current.stop()
           
             setHasTimedOut(true); 
-          }, 5000);5
+          }, 15000);
           return () => clearTimeout(timer);
         }else if(!show && hasTimedOut){
           setHasTimedOut(false)
