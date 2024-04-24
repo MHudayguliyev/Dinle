@@ -1,7 +1,7 @@
-@mixin grid($repeat: 3, $gap: 16px) {
+@mixin grid($cols: 3, $gap: 16px) {
     display: -ms-grid; /* IE 10+ prefix */
     display: grid;
-    grid-template-columns: repeat($repeat, 1fr);
+    grid-template-columns: $cols;
     gap: $gap;
 }
 @mixin flexible($justify: start, $align: start, $dir: row, $wrap: nowrap, $gap: 0) {

@@ -40,7 +40,7 @@ const SearchModal = (props: SearchModalProps) => {
               }
 
               recorderRef.current.onstop = async (e: any) => {
-                const blob = new Blob(chunks, { type: 'audio/wav' })
+                const blob = new Blob(chunks, { type: 'audio/webm' })
                 console.log("blob", blob)
                 const formData = new FormData()
                 formData.append('fileUrl', blob)
@@ -68,7 +68,7 @@ const SearchModal = (props: SearchModalProps) => {
             recorderRef.current.stop()
           
             setHasTimedOut(true); 
-          }, 5000);5
+          }, 15000);
           return () => clearTimeout(timer);
         }else if(!show && hasTimedOut){
           setHasTimedOut(false)

@@ -1,6 +1,7 @@
 @use '../../../_styles/globalTypography.scss' as*;
 @use '../../../_styles/globalBreakPoints.scss'as *;
 @use '../../../_styles/globalShapes.scss' as GShapes;
+@use '../../../_styles/globalMixins.scss' as GMixin;
 
 .the_top {
     height: 64px;
@@ -39,7 +40,18 @@
     gap: 20px;
 }
 
-.lists {
+.lists, .gridBox {
     margin-top: 64px;
     padding: 10px 20px;
+}
+
+.gridBox {
+    --gap: 20px;
+    @include GMixin.grid($cols: repeat(4, 1fr), $gap: var(--gap));
+    @media screen and (max-width: $lg) {
+        @include GMixin.grid($cols: repeat(3, 1fr), $gap: var(--gap));
+    }
+    @media screen and (max-width: $sm) {
+        @include GMixin.grid($cols: repeat(2, 1fr), $gap: var(--gap));
+    }
 }

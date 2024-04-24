@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation';
 import { useQuery } from 'react-query';
 //api 
 import { GetArtistInfo, GetSongInfo } from '@app/_api/Queries/Getters';
@@ -42,7 +43,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
     id, 
     fetchMode = 'song'
   } = props
-
+  const router = useRouter()
   const fetchArtistInfo = useMemo(() => show && fetchMode === 'artist' && !!id ,[id, show, fetchMode])
   const fetchSongInfo = useMemo(() => show && fetchMode === 'song' && !!id ,[id, show, fetchMode])
 
@@ -56,10 +57,6 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
   } = useQuery(['GetSongInfo', fetchSongInfo], () => GetSongInfo(id), {
     refetchOnWindowFocus: false, enabled: fetchSongInfo
   })
-
-  useEffect(() => {
-    console.log("data", data)
-  }, [data])
 
   return (
     <>
@@ -152,9 +149,9 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                   <div className={styles.theRight}>
                       <div className={styles.genres}>
                       {fetchSongInfo && song?.genres?.map(genre => <span key={genre.genreId}>{genre.name + ', '}</span>)}
-                      {fetchArtistInfo && song?.genres?.map(genre => <span key={genre.genreId}>{genre.name + ', '}</span>)}
+                      {/* {fetchArtistInfo && data?.genres?.map(genre => <span key={genre.}>{genre.name + ', '}</span>)} */}
                       </div>
-                      <ArrowI />
+                      <ArrowI onClick={() => router.push(`/search?tab=genre&songId=${song?.id}`)}/>
                   </div>
                 </div>
                 

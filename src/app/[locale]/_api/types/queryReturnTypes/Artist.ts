@@ -1,5 +1,6 @@
 import Albums from "./Albums"
 import Songs from "./Songs"
+import Video from "./Video"
 
 interface Artist {
     data: {
@@ -18,6 +19,7 @@ interface Artist {
         }
         songs: Songs['rows']
         alboms: Albums['data']['rows']
+        clips: Video[]
     }
 }
 export default Artist

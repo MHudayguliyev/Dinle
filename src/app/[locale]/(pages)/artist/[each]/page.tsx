@@ -44,6 +44,10 @@ import FollowCheckI from '@app/_components/icons/followCheck/icon'
 import { isAxiosError } from 'axios'
 import useObserve from '@app/_hooks/useObserve'
 import Albums from '@app/_api/types/queryReturnTypes/Albums'
+import Video from '@app/_api/types/queryReturnTypes/Video'
+import Bottomsheet from '@app/_components/Bottomsheet/Bottomsheet'
+import ShareSmI from '@app/_components/icons/shareSm/icon'
+import TopNavbar from '@app/_components/TopNavbar/TopNavbar'
 
 const cn = classNames.bind(styles)
 const Artist = ({params}: {params: {each: string}}) => {
@@ -57,19 +61,20 @@ const Artist = ({params}: {params: {each: string}}) => {
             en: 'Songs', tm: 'Songs', ru:'Songs'
           }
         }, 
-        {route: 'playlist', label: {
-          en: 'Playlist', tm:'Playlist', ru: 'Playlist'
-        }}, 
         {
           route: 'album', label: {
             en: 'Albums', tm:'Albums', ru: 'Albums'
           }
-        } 
+        }, 
+        {route: 'video', label: {
+            en: 'Clips', tm:'Clips', ru: 'Clips'
+        }}, 
     ]
 
     const artistId = useMemo(() => params.each ,[params.each])
     const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab])
-    const showAlbums = useMemo(() => tab === tabs[2].route,[tab])
+    const showAlbums = useMemo(() => tab === tabs[1].route,[tab])
+    const showClips = useMemo(() => tab === tabs[2].route, [tab])
 
     //selectors 
     const song = useAppSelector(state => state.mediaReducer.songData)
@@ -85,10 +90,12 @@ const Artist = ({params}: {params: {each: string}}) => {
     const [showMenu, setShowMenu] = useClickOutside(contentRef, toggleRef, 'mousedown')
     const [width] = useWindowSize()
 
+    const [showBottomSheet, setShowBottomSheet] = useState<boolean>(false)
     const [fetchMode, setFetchMode] = useState<'artist' | 'song'>('artist')
     const [dynamicId, setDynamicId] = useState<string>("")
     const [rows, setRows] = useState<Songs['rows']>([])
     const [alboms, setAlboms] = useState<Albums['data']['rows']>([])
+    const [clips, setClips] = useState<Video[]>([])
 
     const { scrolly } = useWindowScrollPositions()
 
@@ -104,7 +111,9 @@ const Artist = ({params}: {params: {each: string}}) => {
         queryKey: ['GetArtist', artistId], 
         queryFn: ({pageParam}) => GetArtist(artistId, pageParam), 
         getNextPageParam: (lastPage, allPages) => {
-            return lastPage.data.songs ? allPages.length + 1 : undefined;   //later activate
+            if(lastPage.data?.songs?.length < 10) return 
+            return allPages.length + 1
+            // return lastPage.data.songs ? allPages.length + 1 : undefined; 
         }, 
         enabled: !!artistId
     })
@@ -114,7 +123,7 @@ const Artist = ({params}: {params: {each: string}}) => {
         isLoading, fetchNextPage, 
     })
     const dataList = useMemo(():any => {
-        const getList = (type: 'songs' | 'alboms') => {
+        const getList = (type: 'songs' | 'alboms' | 'clips') => {
             // @ts-ignore
             return songsData?.pages.reduce((acc, page) => {
                 return [...acc, ...page.data[type]];
@@ -122,7 +131,8 @@ const Artist = ({params}: {params: {each: string}}) => {
         }
         if(showSongs) return getList('songs')
         else if(showAlbums) return getList('alboms')
-    }, [songsData,showSongs, showAlbums]);
+        else if(showClips) return getList('clips')
+    }, [songsData,showSongs, showAlbums, showClips]);
     const credentials = useMemo(() => {
         if(CheckObjOrArrForNull(songsData)){
             const pagesData = songsData?.pages?.[0]?.data
@@ -135,15 +145,15 @@ const Artist = ({params}: {params: {each: string}}) => {
             return obj
         }
     }, [songsData])
-
     
     useEffect(() => {
         console.log("dataList", dataList)
         if(CheckObjOrArrForNull(dataList)){
             if(showSongs) setRows(dataList)
             else if(showAlbums) setAlboms(dataList)
+            else if(showClips) setClips(dataList)
         }
-    }, [dataList, showSongs, showAlbums])
+    }, [dataList, showSongs, showAlbums, showClips])
     
     useEffect(() => {
         if(!!artistId) setDynamicId(artistId)
@@ -282,23 +292,35 @@ const Artist = ({params}: {params: {each: string}}) => {
         <Image src={credentials?.cover ?? ""} alt='artist' width='400' height='400'/>
     ), [credentials?.cover])
 
+    const actionsData = [
+        {
+            value: 'share', 
+            label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+            icon: <ShareSmI />
+        }
+    ]
+
 
   return (
     <>
         {infoMenu}
 
-        <div className={styles.header} ref={headerRef}>
-            <div className={styles.opts}>
-                <PrevNext  mode='prev'/>
-                <PrevNext  mode='next'/>
-
-                {playBtn(true)}  
-            </div>
-            <div className={styles.actions}>
-                {infoToggler}
-                {shareBtn}
-            </div>
-        </div>
+        <TopNavbar 
+            className={styles.topHeader}
+            renderOptions={() => (
+                <div className={styles.opts}>
+                    <PrevNext  mode='prev'/>
+                    <PrevNext  mode='next'/>
+                    {playBtn(true)}  
+                </div>
+            )}
+            renderActions={() => (
+                <div className={styles.actions}>
+                    {infoToggler}
+                    {shareBtn}
+                </div>
+            )}
+        />
 
         <div className={styles.presentation}>
             <div className={styles.background_gradient}></div>
@@ -306,7 +328,6 @@ const Artist = ({params}: {params: {each: string}}) => {
                 {cover}
             </div>
             <div className={styles.wrapper}>
-
                 <div className={styles.content_box}>
                     {cover}
                     <div className={styles.artist}>
@@ -314,16 +335,13 @@ const Artist = ({params}: {params: {each: string}}) => {
                         <div className={styles.name}>{credentials?.title}</div>
                     </div>
                 </div>
-
                 <div className={styles.actions}>
                     {playBtn()}  
                     {followBtn}
                     {shareBtn}
                     {infoToggler}
                 </div>
-
             </div>
-
         </div>
 
 
@@ -401,6 +419,31 @@ const Artist = ({params}: {params: {each: string}}) => {
                 }
             </div>
         }
+        {
+            showClips && 
+            <div className={styles.clips_wrapper}>
+                {
+                    clips?.map((item, i) => (
+                        <StandardCard 
+                            key={i}
+                            id={item.id}
+                            videoId={item.id}
+                            title={item.title}
+                            image={item.cover}
+                            videoCard
+                            videoDuration={item.duration}
+                            onOpenBottomSheet={() => setShowBottomSheet(true)}
+                        />              
+                    ))
+                }
+            </div>
+        }
+
+        <Bottomsheet 
+            actionsData={actionsData}
+            open={showBottomSheet}
+            close={() => setShowBottomSheet(false)}
+        />
     </>
   )
 }

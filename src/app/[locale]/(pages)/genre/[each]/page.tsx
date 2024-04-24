@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation';
-import { useQuery } from 'react-query'
+import { useQuery, useInfiniteQuery } from 'react-query'
 import Image from 'next/image';
 //styles
 import styles from './page.module.scss'
@@ -30,14 +30,15 @@ import { setCurrentSong, setIsShuffle } from '@app/_redux/reducers/MediaReducer'
 import { CheckObjOrArrForNull, copyLink, findIndex } from '@app/_utils/helpers';
 import useWindowSize from '@app/_hooks/useWindowSize';
 import toast from 'react-hot-toast';
+import useObserve from '@app/_hooks/useObserve';
 
 const cn = classNames.bind(styles)
 const Genre = ({params}: {params: {each: string}}) => {
-    const router = useRouter()
     const dispatch = useAppDispatch()
     const headerRef:any = useRef(null)
     const toggleMenuRef:any = useRef(null)
     const menuContenRef:any = useRef(null)
+    const genresRef = useRef<IntersectionObserver>();
 
     const { scrolly } = useWindowScrollPositions()
     const [width] = useWindowSize()
@@ -53,18 +54,48 @@ const Genre = ({params}: {params: {each: string}}) => {
     const isSongPlaying = useAppSelector(state => state.mediaReducer.isSongPlaying)
     const isShuffle = useAppSelector(state => state.mediaReducer.isShuffle)
 
+    //query
     const {
-        data, 
-        isLoading, 
-        isError
-    } = useQuery(['GetGenre', id], () => getSongs({genreId: id}), {
-        refetchOnWindowFocus: false, enabled: !!id
+        data: genresData, 
+        hasNextPage, 
+        isFetching, 
+        isError, 
+        isLoading,
+        fetchNextPage, 
+    } = useInfiniteQuery({
+        queryKey: ['GetGenre', id], 
+        queryFn: ({pageParam}) => getSongs({genreId: id, page: pageParam}), 
+        enabled: !!id
     })
-    // console.log('data', data)
+    const lastGenreRef = useObserve({
+        observer: genresRef, 
+        hasNextPage, isFetching, 
+        isLoading, fetchNextPage, 
+    })
+    const credentials = useMemo(() => {
+        if(CheckObjOrArrForNull(genresData)){
+            const pagesData = genresData?.pages?.[0]?.data
+            const obj = {
+                cover: pagesData?.cover, 
+                count: pagesData?.count, 
+                isLiked: pagesData?.isLiked, 
+                title: pagesData?.title, 
+                duration: pagesData?.duration, 
+                producedAt: pagesData?.producedAt
+            }
+            return obj
+        }
+        return null
+    }, [genresData])
+    const genresList = useMemo(() => {
+        return genresData?.pages.reduce((acc, page) => {
+          return [...acc, ...page.data.rows];
+        }, [])
+    }, [genresData]);
 
     useEffect(() => {
-        if(!isLoading && !isError) setRows(data?.data?.rows)
-    }, [data?.data])
+        if(CheckObjOrArrForNull(genresList)) setRows(genresList)
+    }, [genresList])
 
     useEffect(() => {
         const opacity = Math.min(1, scrolly / window.innerHeight)
@@ -137,13 +168,15 @@ const Genre = ({params}: {params: {each: string}}) => {
     ), [id])
     const infoMenu = useMemo(() => (
         <InfoMenu
-            id={id}
+            id={songId}
             show={openMenu}
             ref={menuContenRef} 
             close={() => setOpenMenu(false)}
         />
     ), [menuContenRef, openMenu, songId])
-
+    const cover = useMemo(() => (
+        <Image src={credentials?.cover ?? ""} alt='artist' width='400' height='400'/>
+    ), [credentials?.cover])
 
   return (
     <>
@@ -163,15 +196,15 @@ const Genre = ({params}: {params: {each: string}}) => {
         <div className={styles.presentation}>
             <div className={styles.background_gradient}></div>
             <div className={styles.background_image}>
-                <Image src={data?.data?.cover} alt='artist' width='400' height='400'/>
+                {cover}
             </div>
             <div className={styles.wrapper}>
 
                 <div className={styles.content_box}>
-                    <Image src={data?.data?.cover} alt='artist' width='400' height='400'/>
+                    {cover}
                     <div className={styles.artist}>
                         <div className={styles.title}>Genre</div>
-                        <div className={styles.name}>{data?.data?.title}</div>
+                        <div className={styles.name}>{credentials?.title}</div>
                     </div>
                 </div>
 
@@ -185,19 +218,17 @@ const Genre = ({params}: {params: {each: string}}) => {
 
         <div className={styles.presentation_mobile}>
             <div className={styles.background_image}>
-                <Image src={data?.data?.cover} alt='artist' width='400' height='400'/>
+                {cover}
             </div>
             <div className={styles.mobile_presentation_wrapper}>
 
                 <div className={styles.content_box}>
-                    <Image src={data?.data?.cover} alt='artist' width='400' height='400'/>
+                    {cover}
                 </div>
 
                 <div className={styles.the_bottom_content}>
                     <div className={styles.top}>
-                        <div className={styles.name}>
-                            {data?.data?.title}
-                        </div>
+                        <div className={styles.name}>{credentials?.title}</div>
                         <div className={styles.title}>
                             Genre
                         </div>
@@ -212,6 +243,7 @@ const Genre = ({params}: {params: {each: string}}) => {
         </div>
 
         <SongList 
+            ref={lastGenreRef}
             data={rows}
             fetchStatuses={{
                 isLoading, isError
