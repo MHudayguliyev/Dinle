@@ -267,7 +267,6 @@
 
 .card_for_artist_list {
     @media screen and (max-width: $md) {
-        border: 1px solid red;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -325,6 +324,22 @@
 .card_for_video {
     .image_container {
         padding-top: 60%;
+        position: relative;
+
+        .videoDuration {
+            color: var(--text-color);
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            width: 80px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border-radius: 5px;
+            padding: 2px 4px;
+        }
     }
 }
 

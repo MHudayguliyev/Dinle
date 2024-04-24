@@ -26,6 +26,8 @@ import InfoSmI from '../icons/infoSm/icon';
 import ShareSmI from '../icons/shareSm/icon';
 import ReadMoreI from '../icons/readMore/icon';
 import { ActionsType } from '@app/_types';
+import PlayExtraSm from '../icons/playExtraSm/icon';
+import { isEmpty, isUndefined } from '@app/_utils/helpers';
 
 interface StandardProps {
     id: string
@@ -35,6 +37,7 @@ interface StandardProps {
     albomId?: string 
     genreId?: string
     videoId?: string
+    newsId?: string
     image?: StaticImageData | string
     onPlay?: (id: string) => void
     onOpenBottomSheet?: () => void
@@ -42,6 +45,7 @@ interface StandardProps {
     onAddToQueue?: () => void
     title:string
     description?:string
+    videoDuration?: number 
     /** @defaultValue false **/
     standard?: boolean
     /** @defaultValue false **/
@@ -54,6 +58,8 @@ interface StandardProps {
     alboms?: boolean
     /** @defaultValue false **/
     videoCard?: boolean
+    /** @defaultValue false **/
+    newsCard?: boolean
     /** @defaultValue false **/
     hideMoreI?: boolean
     /** @defaultValue false **/
@@ -72,10 +78,12 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         playlistId = "",  
         albomId = "", 
         genreId = "",
-        videoId = "", 
+        videoId = "",
+        newsId = "",  
         image, 
         title, 
         description, 
+        videoDuration, 
         standard = false, 
         artists = false, 
         top10 = false, 
@@ -85,6 +93,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         playlists = false, 
         alboms = false, 
         videoCard = false, 
+        newsCard = false, 
         shimmer = false, 
         onPlay, 
         onOpenBottomSheet, 
@@ -120,7 +129,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
     const routeMem = useMemo(() => {
         const route = `
             ${artists ? `/artist/${artistId}` : playlists ? `/playlist/${playlistId}` : alboms ? `/album/${albomId}` : 
-            genres ? `/genre/${genreId}` : videoCard ? `/video/${videoId}` : ""}
+            genres ? `/genre/${genreId}` : newsCard ? `/news/${newsId}` : videoCard ? `/video/${videoId}` : ""}
         `
         return route
     }, [
@@ -129,6 +138,8 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         playlistId, 
         albomId, 
         genreId, 
+        newsId, 
+        newsCard,
         artists, 
         genres, 
         alboms, 
@@ -243,6 +254,12 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                                     main_image: true, 
                                     artistI: artists
                                 })}/>
+                                {videoCard && !isUndefined(videoDuration) && 
+                                    <div className={styles.videoDuration}>
+                                        <PlayExtraSm mode='play'/>
+                                        <span>{videoDuration}</span>
+                                    </div>
+                                }
                                 <div className={styles.actions}>
                                     {
                                         !artists && !playlists && !alboms &&  <PlayPause className={styles.play} state='play' onClick={playSong}/>
@@ -279,7 +296,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                                         title: true, 
                                         paddLeft: isSongPlaying && songData[songIndex]?.id === id
                                     })}>
-                                        <CustomLink onClick={stopPropagation} href={playlists ? `/playlist/${playlistId}` : artists ? `/artist/${artistId}` : alboms ? `/album/${albomId}` : videoCard ? `/video/${videoId}` : ""}>
+                                        <CustomLink onClick={stopPropagation} href={routeMem}>
                                             {title}
                                         </CustomLink>
                                     </div>

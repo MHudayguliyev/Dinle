@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import Image from 'next/image';
-import { useQuery } from 'react-query'
+import { useInfiniteQuery, useQuery } from 'react-query'
 //styles
 import styles from './page.module.scss'
 import classNames from 'classnames/bind'
@@ -33,14 +33,15 @@ import { CheckObjOrArrForNull, copyLink, isAuthorized, findIndex } from '@utils/
 //react-hot-toast
 import toast from 'react-hot-toast';
 import { setShowAuthModal } from '@app/_redux/reducers/AuthReducer';
+import useObserve from '@app/_hooks/useObserve';
 
 const cn = classNames.bind(styles)
 const Playlist = ({params}: {params: {each: string}}) => {
-
     const dispatch = useAppDispatch()
     const headerRef:any = useRef(null)
     const toggleMenuRef:any = useRef(null)
     const menuContenRef:any = useRef(null)
+    const playlistsRef = useRef<IntersectionObserver>();
 
     const { scrolly } = useWindowScrollPositions()
     const [width] = useWindowSize()
@@ -55,20 +56,47 @@ const Playlist = ({params}: {params: {each: string}}) => {
     const [rows, setRows] = useState<PlaylistType['rows']>()
     const [songId, setSongId] = useState<string>("")
     const [openMenu, setOpenMenu]= useClickOutside(menuContenRef, toggleMenuRef, 'mousedown')
-
     const {
-        data, 
-        isLoading, 
+        data: playlistsData, 
+        hasNextPage, 
+        isFetching, 
         isError, 
+        isLoading,
+        fetchNextPage, 
         refetch: refetchPlaylist
-    } = useQuery(['GetPlaylist', id], () => getSongs({playlistId: id}), {
-        refetchOnWindowFocus: false, enabled: !!id
+    } = useInfiniteQuery({
+        queryKey: ['GetGenre', id], 
+        queryFn: ({pageParam}) => getSongs({playlistId: id, page: pageParam}), 
+        enabled: !!id
     })
-    // console.log("data", data)
-
+    const lastPlaylistRef = useObserve({
+        observer: playlistsRef, 
+        hasNextPage, isFetching, 
+        isLoading, fetchNextPage, 
+    })
+    const credentials = useMemo(() => {
+        if(CheckObjOrArrForNull(playlistsData)){
+            const pagesData = playlistsData?.pages?.[0]?.data
+            const obj = {
+                cover: pagesData?.cover, 
+                count: pagesData?.count, 
+                isLiked: pagesData?.isLiked, 
+                title: pagesData?.title, 
+                duration: pagesData?.duration, 
+                producedAt: pagesData?.producedAt
+            }
+            return obj
+        }
+        return null
+    }, [playlistsData])
+    const playlistsList = useMemo(() => {
+        return playlistsData?.pages.reduce((acc, page) => {
+          return [...acc, ...page.data.rows];
+        }, [])
+    }, [playlistsData]);
     useEffect(() => {
-        if(!isLoading && !isError) setRows(data?.data?.rows)
-    }, [data?.data])
+        if(CheckObjOrArrForNull(playlistsList)) setRows(playlistsList)
+    }, [playlistsList])
 
     useEffect(() => {
         const opacity = Math.min(1, scrolly / window.innerHeight)
@@ -149,14 +177,12 @@ const Playlist = ({params}: {params: {each: string}}) => {
         scrolly
     ])
 
-    const isLiked = useMemo((): boolean => data?.data?.isLiked ?? false,[data?.data])
-    // console.log("data?.data", data?.data)
     const shuffleBtn = useMemo(() => (
         <ShuffleI active={isShuffle} onClick={() => dispatch(setIsShuffle(!isShuffle))}/>
     ), [isShuffle])
     const heartBtn = useMemo(() => (
-        <HeartFilledI active={isLiked} onClick={handleLikePlaylist}/>
-    ), [isLiked])
+        <HeartFilledI active={credentials?.isLiked} onClick={handleLikePlaylist}/>
+    ), [credentials?.isLiked])
     const shareBtn = useMemo(() => (
         <Share onClick={handleCopyLink}/>
     ), [id])
@@ -168,8 +194,9 @@ const Playlist = ({params}: {params: {each: string}}) => {
             close={() => setOpenMenu(false)}
         />
     ), [menuContenRef, openMenu, songId])
-
-
+    const cover = useMemo(() => (
+        <Image src={credentials?.cover ?? ""} alt='artist' width='400' height='400'/>
+    ), [credentials?.cover])
   return (
     <>
         {infoMenu}
@@ -189,17 +216,17 @@ const Playlist = ({params}: {params: {each: string}}) => {
         <div className={styles.presentation}>
             <div className={styles.background_gradient}></div>
             <div className={styles.background_image}>
-                <Image src={data?.data?.cover} alt='artist' width='400' height='400'/>
+                {cover}
             </div>
             <div className={styles.wrapper}>
 
                 <div className={styles.content_box}>
-                    <Image src={data?.data?.cover!} alt='artist' width='400' height='400'/>
+                    {cover}
                     <div className={styles.playlistInfo}>
                         <div className={styles.title}>Playlist</div>
-                        <div className={styles.name}>{data?.data?.title}</div>
+                        <div className={styles.name}>{credentials?.title}</div>
                         <div className={styles.about}>
-                            Песни {data?.data?.count} · Примерно {data?.data?.duration}
+                            Песни {credentials?.count}
                         </div>
                     </div>
                 </div>
@@ -215,21 +242,21 @@ const Playlist = ({params}: {params: {each: string}}) => {
 
         <div className={styles.presentation_mobile}>
             <div className={styles.background_image}>
-                <Image src={data?.data?.cover!} alt='artist' width='400' height='400'/>
+                {cover}
+
             </div>
             <div className={styles.mobile_presentation_wrapper}>
 
                 <div className={styles.content_box}>
-                    <Image src={data?.data?.cover!} alt='artist' width='400' height='400'/>
+                    {cover}
                 </div>
 
                 <div className={styles.the_bottom_content}>
                     <div className={styles.top}>
-                        <div className={styles.name}>
-                            {data?.data?.title}
-                        </div>
+                        <div className={styles.name}>{credentials?.title}</div>
+
                         <div className={styles.about}>
-                            Песни {data?.data?.count} · Примерно {data?.data?.duration}
+                            Песни {credentials?.count}
                         </div>
                         <div className={styles.title}>
                             Playlist
@@ -245,6 +272,7 @@ const Playlist = ({params}: {params: {each: string}}) => {
         </div>
 
         <SongList 
+            ref={lastPlaylistRef}
             data={rows}
             fetchStatuses={{
                 isLoading, isError

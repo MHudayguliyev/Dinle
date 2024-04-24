@@ -1,3 +1,4 @@
+import { isUndefined } from "@app/_utils/helpers";
 import { api } from "../Services/api_helpers";
 import Albums from "../types/queryReturnTypes/Albums";
 import Artist from "../types/queryReturnTypes/Artist";
@@ -12,6 +13,8 @@ import LikedPlaylists from "../types/queryReturnTypes/LikedPlaylists";
 import LikedSongs from "../types/queryReturnTypes/LikedSongs";
 import Playlists from "../types/queryReturnTypes/Playlists";
 import SongInfo from "../types/queryReturnTypes/SongInfo";
+import ArtNews from "../types/queryReturnTypes/ArtNews";
+import AllNews from "../types/queryReturnTypes/AllNews";
 
 export const GetBanners = async (): Promise<Banners[]> => {
     return api.get<Banners[]>({
@@ -102,9 +105,9 @@ export const GetAlbums = async (data: {
         }
     })
 }
-export const GetGenres = async (): Promise<Genres> => {
+export const GetGenres = async (songId?: string): Promise<Genres> => {
     return api.patch({
-        url: '/client/genres', 
+        url: `/client/genres${songId ? `?songId=${songId}` : ""}`, 
         data: {}
     })
 }
@@ -131,5 +134,16 @@ export const GetFavoriteAlboms = async (page = 0, pageSize = 10): Promise<Albums
 export const GetDevices = async (): Promise<Devices[]> => {
     return api.getPrivate<Devices[]>({
         url: '/auth/devices'
+    })
+}
+export const GetArtNews = async (page = 0, pageSize = 10): Promise<AllNews> => {
+    return api.patch({
+        url: 'client/news', 
+        data: {page, pageSize}
+    })
+}
+export const GetOneArtNews = async (newsId: string): Promise<ArtNews> => {
+    return api.get<ArtNews>({
+        url: `client/news/${newsId}`
     })
 }

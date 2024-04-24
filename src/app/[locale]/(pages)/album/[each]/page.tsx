@@ -1,7 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
-import { useRouter } from 'next/navigation';
-import { useInfiniteQuery, useQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 import Image from 'next/image';
 //styles
 import styles from './page.module.scss'

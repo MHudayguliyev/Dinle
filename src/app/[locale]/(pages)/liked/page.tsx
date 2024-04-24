@@ -68,9 +68,9 @@ const ViewAll = () => {
           en: 'Songs', tm: 'Songs', ru:'Songs'
         }
       }, 
-      {route: 'clip', label: {
-        en: 'Clips', tm:'Clips', ru: 'Clips'
-      }}, 
+      // {route: 'clip', label: {
+      //   en: 'Clips', tm:'Clips', ru: 'Clips'
+      // }}, 
       {
         route: 'artist', label: {
           en: 'Artists', tm:'Artists', ru: 'Artists'
@@ -85,9 +85,9 @@ const ViewAll = () => {
     ]
 
     const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab])
-    const showClips = useMemo(() => tab === tabs[1].route,[tab])
-    const showArtists = useMemo(() => tab === tabs[2].route,[tab])
-    const showAlboms = useMemo(() => tab === tabs[3].route,[tab])
+    // const showClips = useMemo(() => tab === tabs[1].route,[tab])
+    const showArtists = useMemo(() => tab === tabs[1].route,[tab])
+    const showAlboms = useMemo(() => tab === tabs[2].route,[tab])
     const showPlaylists = useMemo(() => tab === tabs[tabs.length - 1].route,[tab])
     
 

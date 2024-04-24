@@ -4,10 +4,7 @@ import Image from 'next/image';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
-//react mic
-import { ReactMic } from 'react-mic';
 // lib
-
 import Input from '@app/_compLibrary/Input'
 import Button from '@app/_compLibrary/Button'
 import Tab from '@app/_compLibrary/Tab';
@@ -76,6 +73,8 @@ const Search = () => {
   const tab = searchParam.get('tab')
   const mask = searchParam.get('mask')
   const all = searchParam.get('all')
+  const songId =  searchParam.get('songId')
+
   const tabs: TabMenuTypes[] = [
     {
       route: 'artist', label: {
@@ -166,7 +165,7 @@ const Search = () => {
     isFetching,  
     isError: isGenresError, 
     isLoading: isGenresLoading,
-  } = useQuery(['Genres', showGenres], () => GetGenres(),{
+  } = useQuery(['Genres', showGenres], () => GetGenres(songId ? songId : undefined),{
     refetchOnWindowFocus: false, enabled: showGenres
   })
 
@@ -578,6 +577,7 @@ const Search = () => {
                         title={playlist.title}
                         image={playlist.cover}
                         playlists
+                        hideMoreI
                       />
                     ))
                   }
@@ -773,6 +773,7 @@ const Search = () => {
                         title={playlist.title!}
                         image={playlist.cover}
                         playlists
+                        hideMoreI
                       />
                     </SwiperSlide>
                   ))

@@ -223,6 +223,7 @@ export default function Home() {
                                   playlistId={playlist ? row.id : row?.playlistId}
                                   albomId={albom ? row.id : row?.albomId}
                                   videoId={row.id}
+                                  newsId={row.id}
                                   title={row.title}
                                   description={row.description}
                                   image={row.cover}
@@ -231,6 +232,8 @@ export default function Home() {
                                   playlists={playlist}
                                   alboms={albom}
                                   videoCard={clip}
+                                  newsCard={homeItem.id === 'news'}
+                                  videoDuration={clip ? row.duration : undefined}
                                   hideMoreI={albom || playlist}
                                   standard={homeItem.type === 'playlist' || homeItem.type === 'top-playlist'}
                                   onPlay={(id) => {

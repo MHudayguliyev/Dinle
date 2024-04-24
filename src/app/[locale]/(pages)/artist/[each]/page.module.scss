@@ -8,33 +8,14 @@
     padding: 10px 20px;
 }
 
-.section {
-    display: none;
-}
-.show {
-    display: block;
-    margin-top: 20px;
-    animation: animateFn 1s linear;
-}
-
-.header {
-    --opacity: 0;
-    height: 80px;
-    width: calc(100% - 244px);
-    padding: 10px 20px;
-    position: fixed;
-    top: 0;
-    z-index: GShapes.$fixedHeaderZIndex;
-    display: flex;
-    align-items: center;
-
+.topHeader {
     .opts {
         display: flex;
         align-items: center;
         gap: 20px;
     }
 
-    .actions, .topPlay {
+    .actions, .topPlay  {
         display: none;
     }
 
@@ -51,31 +32,6 @@
             align-items: center;
             gap: 10px;
         }
-    }
-
-    &:before {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #17171780;
-        z-index: -1;
-        opacity: var(--opacity);
-    }
-    &:after {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -2;
-        background: linear-gradient(0deg, #DB6795 0%, #B13A6A 100%);
-        opacity: var(--opacity);
     }
 }
 
@@ -236,15 +192,23 @@
 }
 
 .grid_wrapper {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 15px;
+    --gap: 15px
     padding: 0 20px;
+    @include GMixin.grid($cols: repeat(5, 1fr), $gap: var(--gap));
+
 
     @media screen and (max-width: $md){
-        grid-template-columns: repeat(3, 1fr);
+        @include GMixin.grid($cols: repeat(3, 1fr), $gap: var(--gap));
     }
     @media screen and (max-width:$sm) {
-        grid-template-columns: repeat(1, 1fr);
+        @include GMixin.grid($cols: repeat(1, 1fr), $gap: var(--gap));
+    }
+}
+.clips_wrapper {
+    --gap: 10px;
+    padding: 0 20px;
+    @include GMixin.grid($cols: repeat(3, 1fr), $gap: var(--gap));
+    @media screen and (max-width:$sm) {
+        @include GMixin.grid($cols: repeat(2, 1fr), $gap: var(--gap));
     }
 }

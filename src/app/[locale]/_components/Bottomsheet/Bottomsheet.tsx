@@ -1,13 +1,10 @@
 import React, {useCallback} from 'react'
-import Image from 'next/image'
 //styles
 import classNames from 'classnames/bind'
 import styles from './Bottomsheet.module.scss'
-//images
-import InfoSmI from '../icons/infoSm/icon';
-import ShareSmI from '../icons/shareSm/icon';
+//icons
 import MobileRectI from '../icons/mobileRect/icon'
-import ReadMoreI from '../icons/readMore/icon';
+//types
 import { Localization } from '@app/_types';
 
 type ActionsType = {
