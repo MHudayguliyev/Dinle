@@ -43,7 +43,6 @@ const Sidebar = (props: SidebarProps) => {
     //redux states
     const isAudioPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
     const sidebarFolded = useAppSelector(state => state.sidebarReducer.sidebarFolded)
-    console.log("sidebarFolded", sidebarFolded)
     const activeItem = sidebar_routes.findIndex((item) => {
         if(pathname === '/search') return item.route === pathname.concat("?tab=genre")
         return item.route === pathname

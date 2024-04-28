@@ -16,11 +16,13 @@ const LyricsMenu = (props: LyricsMenuProps) => {
       contentRef
     } = props
     const lyrics = useAppSelector(state => state.mediaReducer.song)?.lyrics
+    const sidebarFolded = useAppSelector(state => state.sidebarReducer.sidebarFolded)
 
   return (
     <div className={cn({
         wrapper: true, 
-        showLyrics: show
+        showLyrics: show, 
+        sidebarFolded: sidebarFolded
       })} ref={contentRef}>
           {
             lyrics.split('\n').map(item => (

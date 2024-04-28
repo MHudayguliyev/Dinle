@@ -64,7 +64,8 @@ const Otp = (props: OtpTypes) => {
 
     const handleKeyDown = (e: any) => {
         const keyCode = e.keyCode || e.which;
-        if (keyCode === 32 || !/[0-9\b]/.test(String.fromCharCode(keyCode))) {
+        const isNumpadKey = keyCode >= 96 && keyCode <= 105;
+        if (keyCode === 32 || !/[0-9\b]/.test(String.fromCharCode(keyCode)) && !isNumpadKey) {
             e.preventDefault();
         }
     }

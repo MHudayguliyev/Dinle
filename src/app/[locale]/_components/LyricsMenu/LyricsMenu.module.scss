@@ -55,3 +55,9 @@
         bottom: 155px;
     }
 }
+.sidebarFolded {
+    width: calc(100% - $sidebarFoldedWidth);
+    @media screen and (max-width: $md) {
+        width: 100%;
+    }
+}

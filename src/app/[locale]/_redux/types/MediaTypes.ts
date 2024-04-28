@@ -17,7 +17,4 @@ export interface InitialState {
     isSongPlaying: boolean
     isAudioPlayerOpen: boolean
     isShuffle: boolean
-    
-    videoData: Video[]
-    videoIndex: number 
 }

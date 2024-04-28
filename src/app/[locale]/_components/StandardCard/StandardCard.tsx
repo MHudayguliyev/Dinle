@@ -61,6 +61,8 @@ interface StandardProps {
     /** @defaultValue false **/
     newsCard?: boolean
     /** @defaultValue false **/
+    showCard?: boolean
+    /** @defaultValue false **/
     hideMoreI?: boolean
     /** @defaultValue false **/
     recentSearched?: boolean
@@ -94,6 +96,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         alboms = false, 
         videoCard = false, 
         newsCard = false, 
+        showCard = false, 
         shimmer = false, 
         onPlay, 
         onOpenBottomSheet, 
@@ -129,7 +132,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
     const routeMem = useMemo(() => {
         const route = `
             ${artists ? `/artist/${artistId}` : playlists ? `/playlist/${playlistId}` : alboms ? `/album/${albomId}` : 
-            genres ? `/genre/${genreId}` : newsCard ? `/news/${newsId}` : videoCard ? `/video/${videoId}` : ""}
+            genres ? `/genre/${genreId}` : newsCard ? `/news/${newsId}` : videoCard ? `/clips/${videoId}${showCard ? "?type=show" : ""}` : ""}
         `
         return route
     }, [

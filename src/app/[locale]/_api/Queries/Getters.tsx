@@ -15,6 +15,8 @@ import Playlists from "../types/queryReturnTypes/Playlists";
 import SongInfo from "../types/queryReturnTypes/SongInfo";
 import ArtNews from "../types/queryReturnTypes/ArtNews";
 import AllNews from "../types/queryReturnTypes/AllNews";
+import Videos from "../types/queryReturnTypes/Videos";
+import Video from "../types/queryReturnTypes/Video";
 
 export const GetBanners = async (): Promise<Banners[]> => {
     return api.get<Banners[]>({
@@ -138,12 +140,53 @@ export const GetDevices = async (): Promise<Devices[]> => {
 }
 export const GetArtNews = async (page = 0, pageSize = 10): Promise<AllNews> => {
     return api.patch({
-        url: 'client/news', 
+        url: '/client/news', 
         data: {page, pageSize}
     })
 }
 export const GetOneArtNews = async (newsId: string): Promise<ArtNews> => {
     return api.get<ArtNews>({
-        url: `client/news/${newsId}`
+        url: `/client/news/${newsId}`
+    })
+}
+export const GetClips = async (args: {
+    showId?: string
+    clipId?: 'clips' | 'karaoke' | "concerts" | "videos" | string
+    page?: number 
+    pageSize?: number 
+    search?: string
+}): Promise<Videos> => {
+    const {
+        page = 0, 
+        pageSize = 10, 
+        search = "", 
+        showId = "", 
+        clipId = "clips", 
+    } = args
+
+    return api.patch<{
+        showId?: string
+        clipId?: 'clips' | 'karaoke' | "concerts" | "videos" | string
+        page?: number 
+        pageSize?: number 
+        search?: string
+    }, Videos>({
+        url: `/client/clips`, 
+        data: {
+            showId,
+            clipId, 
+            page,
+            pageSize,
+            search
+        }
+    })
+}
+export const GetClip = async (id: string, clipId?: 'clips' | 'karaoke' | "concerts" | "videos", showId = ""): Promise<{data: Video}> => {
+    console.log('showId', showId)
+    return api.patch({
+        url: '/client/clips/one', 
+        data: {
+            id, clipId, showId
+        }
     })
 }

@@ -61,20 +61,20 @@ const Artist = ({params}: {params: {each: string}}) => {
             en: 'Songs', tm: 'Songs', ru:'Songs'
           }
         }, 
+        {route: 'video', label: {
+            en: 'Clips', tm:'Clips', ru: 'Clips'
+        }}, 
         {
           route: 'album', label: {
             en: 'Albums', tm:'Albums', ru: 'Albums'
           }
-        }, 
-        {route: 'video', label: {
-            en: 'Clips', tm:'Clips', ru: 'Clips'
-        }}, 
+        }
     ]
 
     const artistId = useMemo(() => params.each ,[params.each])
     const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab])
-    const showAlbums = useMemo(() => tab === tabs[1].route,[tab])
-    const showClips = useMemo(() => tab === tabs[2].route, [tab])
+    const showClips = useMemo(() => tab === tabs[1].route, [tab])
+    const showAlbums = useMemo(() => tab === tabs[2].route,[tab])
 
     //selectors 
     const song = useAppSelector(state => state.mediaReducer.songData)
@@ -425,7 +425,7 @@ const Artist = ({params}: {params: {each: string}}) => {
                 {
                     clips?.map((item, i) => (
                         <StandardCard 
-                            key={i}
+                            key={item.id}
                             id={item.id}
                             videoId={item.id}
                             title={item.title}

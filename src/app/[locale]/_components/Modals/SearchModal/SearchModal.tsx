@@ -9,7 +9,6 @@ import LottieI from '@components/Lottie/LottieI';
 import ShazamI from '@app/_assets/lottie/shazam.json'
 import UseTimeoutOnce from '@app/_hooks/useTimeoutOnce';
 import axios from 'axios';
-import { headers } from 'next/headers';
 import authToken from '@app/_api/Services/auth_token';
 
 interface SearchModalProps extends CommonModalI {}
@@ -25,8 +24,10 @@ const SearchModal = (props: SearchModalProps) => {
   
       useEffect(() => {
         if (show && !hasTimedOut) { // Ensure timeout happens only once
+          console.log('cames in............')
           let chunks:any = []
           if(navigator.mediaDevices){
+            console.log("navigator.mediaDevices", navigator.mediaDevices)
             navigator.mediaDevices.getUserMedia({ audio: true })
             .then(async (stream) => {
               console.log('stream', stream)
@@ -66,7 +67,7 @@ const SearchModal = (props: SearchModalProps) => {
           }
           const timer = setTimeout(async() => {
             console.log('hello stoping shazam')
-            recorderRef.current.stop()
+            recorderRef?.current?.stop()
           
             setHasTimedOut(true); 
           }, 15000);

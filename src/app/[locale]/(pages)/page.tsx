@@ -8,9 +8,6 @@ import { useQuery } from 'react-query'
 import classNames from 'classnames/bind'
 import styles from './page.module.scss';
 //icons/images
-import firstBanner from '@app/_assets/images/1stbanner.png'
-import secondBanner from '@app/_assets/images/2ndbanner.png'
-import thirdBanner from '@app/_assets/images/3rdbanner.png'
 import ChevronRightI from '@app/_components/icons/chevronRight/icon';
 import UserI from '@app/_components/icons/user/icon';
 //breakpoints
@@ -25,7 +22,7 @@ import { getHomeItems, GetBanners } from '@app/_api/Queries/Getters';
 import Button from '@app/_compLibrary/Button';
 //redux 
 import { useAppDispatch } from '@hooks/redux_hooks';
-import { setCurrentSong, addToQueue, setCurrentVideo } from '@redux/reducers/MediaReducer';
+import { setCurrentSong, addToQueue } from '@redux/reducers/MediaReducer';
 //comps
 import BottomSheet from '@components/Bottomsheet/Bottomsheet'
 import InfoMenu from '@components/InfoMenu/InfoMenu';
@@ -182,6 +179,8 @@ export default function Home() {
                           artist ? '/search?tab=artist' : 
                           playlist ? '/search?tab=playlist' : 
                           albom ? '/search?tab=album' : 
+                          homeItem.id === 'clips' ? '/clips' : 
+                          // homeItem.id === 'shows' ? `/clips/${}`
                           `viewall/${homeItem.id}`
                         } 
                         scroll
@@ -232,6 +231,7 @@ export default function Home() {
                                   playlists={playlist}
                                   alboms={albom}
                                   videoCard={clip}
+                                  showCard={homeItem.id === 'shows'}
                                   newsCard={homeItem.id === 'news'}
                                   videoDuration={clip ? row.duration : undefined}
                                   hideMoreI={albom || playlist}
@@ -239,8 +239,6 @@ export default function Home() {
                                   onPlay={(id) => {
                                     if((homeItem.type === 'playlist' || homeItem.type === 'top-playlist') || top10) 
                                     dispatch(setCurrentSong({ data: homeItem?.rows, id: row.id, index: rowIndex }))
-                                    else if(clip)
-                                    dispatch(setCurrentVideo({ data: homeItem.rows, index: rowIndex }))
                                   }}
                                   onOpenBottomSheet={() => {
                                     setSongId(row.id)
