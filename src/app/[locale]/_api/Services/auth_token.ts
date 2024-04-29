@@ -36,7 +36,8 @@ export async function refreshAccessToken(){
             const tommorrow = moment(new Date()).add(1, 'days').format('YYYY-MM-DD HH:mm:ss')
             setToStorage('authUser', JSON.stringify({...obj, access_token: response.data.token, expiresAt: tommorrow}))
             return false
-        } else return true
+        } 
+        return true
     } catch (error) {
         if(axios.isAxiosError(error)){
             console.log(error.response)

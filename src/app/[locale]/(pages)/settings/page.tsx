@@ -1,6 +1,8 @@
 'use client'
 import React, {useState} from "react"
 import Image from "next/image"
+import { useLocale } from 'next-intl'
+
 //styles
 import classNames from "classnames/bind"
 import styles from './page.module.scss'
@@ -30,6 +32,8 @@ import { useAppSelector } from "@app/_hooks/redux_hooks"
 
 const cn = classNames.bind(styles)
 const Settings = () => {
+    const currentLocale = useLocale()
+
     const [checked, setChecked] = useState<boolean>(false)
     const [openLangMenu, setOpenLangMenu] = useState<boolean>(false)
     const [openModal, setOpenModal] = useState<boolean>(false)
@@ -111,7 +115,11 @@ const Settings = () => {
                         </div>
                         
                         <div className={styles.theRight}>
-                            <div className={styles.phone}>English</div>
+                            <div className={styles.phone}>
+                                {
+                                    currentLocale === 'tk' ? "Turkmen" : "Русский"
+                                }
+                            </div>
                             <ArrowI/>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { useInfiniteQuery } from 'react-query'
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 //styles
 import styles from './page.module.scss'
@@ -32,9 +33,12 @@ import toast from 'react-hot-toast';
 import useObserve from '@app/_hooks/useObserve';
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 import Preloader from '@app/_compLibrary/Preloader';
+import { refreshAccessToken } from '@app/_api/Services/auth_token';
+import { isAxiosError } from 'axios';
 
 const cn = classNames.bind(styles)
 const Genre = ({params}: {params: {each: string}}) => {
+    const router = useRouter()
     const dispatch = useAppDispatch()
     const toggleMenuRef:any = useRef(null)
     const menuContenRef:any = useRef(null)
@@ -100,7 +104,14 @@ const Genre = ({params}: {params: {each: string}}) => {
     useEffect(() => {
         if(CheckObjOrArrForNull(genresList)) setRows(genresList)
     }, [genresList])
-// console.log('genres', rows)
+
+    const refreshToken = (cb: Function) => {
+        refreshAccessToken().then(isError => {
+            console.log("is error", isError)
+            if(isError) router.replace('/login')
+            else cb()
+        })
+    }
 
     const handleCopyLink = useCallback(() => {
         copyLink(`/genre/${id}`)?.then((mode) => {
@@ -115,7 +126,11 @@ const Genre = ({params}: {params: {each: string}}) => {
             if(response.success && response.statusCode === 200)
             setRows(prev => prev?.map(row => row.id === songId ? {...row, isLiked: !row.isLiked} : row))
           } catch (error) {
-            console.log('like song error', error)
+            if(isAxiosError(error)){
+                if(error.response?.status === 401){
+                    refreshToken(() =>  handleLike(songId))
+                }
+            }else console.log('like song error', error)
           }
     }, [])
     const playBtn = useCallback((topFixed = false) => {

@@ -1,6 +1,7 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { useInfiniteQuery } from 'react-query'
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 //styles
 import styles from './page.module.scss'
@@ -34,9 +35,12 @@ import toast from 'react-hot-toast';
 import useObserve from '@app/_hooks/useObserve';
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 import Preloader from '@app/_compLibrary/Preloader';
+import { refreshAccessToken } from '@app/_api/Services/auth_token';
+import { isAxiosError } from 'axios';
 
 const cn = classNames.bind(styles)
 const Album = ({params}: {params: {each: string}}) => {
+    const router = useRouter()
     const dispatch = useAppDispatch()
     const albomsObserver = useRef<IntersectionObserver>();
     const toggleMenuRef:any = useRef(null)
@@ -101,6 +105,14 @@ const Album = ({params}: {params: {each: string}}) => {
         setRows(albomsList)
     },[albomsList])
 
+    const refreshToken = (cb: Function) => {
+        refreshAccessToken().then(isError => {
+            console.log("is error", isError)
+            if(isError) router.replace('/login')
+            else cb()
+        })
+    }
+
     const handleCopyLink = useCallback(() => {
         copyLink(`/album/${id}`)?.then((mode) => {
             if(mode === 'desktop') toast.success('Link is copied.')
@@ -109,14 +121,17 @@ const Album = ({params}: {params: {each: string}}) => {
 
     const handleLike = useCallback(async(songId: string) => {
         if(!isAuthorized()) return dispatch(setShowAuthModal(true))
-
         try {
             const response = await likeSong(songId)
-            console.log('response', response)
+            // console.log('response', response)
             if(response.success && response.statusCode === 200)
             setRows(prev => prev?.map(row => row.id === songId ? {...row, isLiked: !row.isLiked} : row))
           } catch (error) {
-            console.log('like song error', error)
+            if(isAxiosError(error)){
+                if(error.response?.status === 401){
+                    refreshToken(() =>  handleLike(songId))
+                }
+            }else console.log('like song error', error)
           }
     }, [])
 
@@ -128,7 +143,11 @@ const Album = ({params}: {params: {each: string}}) => {
             if(response.success && response.statusCode === 200)
             refetchAlbum();
         } catch (error) {
-            console.log("like album error", error)
+            if(isAxiosError(error)){
+                if(error.response?.status === 401){
+                    refreshToken(() => handleLikeAlbum())
+                }
+            }else console.log('like albom error', error)
         }
     }, [id])
 

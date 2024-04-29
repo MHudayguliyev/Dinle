@@ -37,6 +37,9 @@ interface SongListProps {
     fetchStatuses:{
         isLoading: boolean, isError: boolean
     }
+    hideHeader?: boolean
+    hideLike?: boolean
+    isResponsive?: boolean
 }
 const cn = classNames.bind(styles)
 const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): JSX.Element => {
@@ -47,7 +50,10 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
         onPlay, 
         onLike, 
         onShowInfo, 
-        fetchStatuses
+        fetchStatuses,
+        hideHeader = false, 
+        hideLike = false, 
+        isResponsive = false
     } = props
 
     const toggleActionsRef:any = useRef(null)
@@ -107,7 +113,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
   return (
     <div className={`${styles.songs} ${className}`}>
         {
-            CheckObjOrArrForNull(data) ? (
+            !hideHeader && !isResponsive && CheckObjOrArrForNull(data) ? (
                 <div className={styles.songsHeader}>
                     {header.map((col, index) => (
                         <div className={styles.col} key={index}>
@@ -123,10 +129,13 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                 data?.map((song: any, index: number) => (
                     <div ref={ref} className={styles.box} key={song.id} onClick={() => onPlay && onPlay(index)} onMouseEnter={() => setHoveredIndex(song.id)} onMouseLeave={() => setHoveredIndex("")}>
 
-                        <div className={styles.row}>
+                        <div className={cn({
+                            row: index > 0, 
+                        })}>
                             <div className={cn({
                                 listRow: true, 
-                                activeBg: runningSongId === song.id
+                                activeBg: runningSongId === song.id, 
+                                isResponsive: isResponsive
                             })}>
 
                                 <div className={styles.colNumber}>
@@ -153,7 +162,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                                             <div className={styles.musicTitleWrapper}>
                                                 {renderEqualizer(song, true)}
                                                 <div className={cn({ title: true, paddLeft: isSongPlaying && songData[songIndex]?.id === song.id })}>
-                                                    <CustomLink onClick={stopPropagation}  href={`/song/${song.id}`}>{song.title}</CustomLink>
+                                                    <CustomLink onClick={stopPropagation}  href={``}>{song.title}</CustomLink>
                                                 </div>
                                             </div>
                                             <div className={styles.description}>
@@ -164,17 +173,20 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                                 </div>
                                 <div className={styles.colAlbum}>
                                     <div className={styles.album}>
-                                        <CustomLink onClick={stopPropagation} href={`/song/${song.id}`}>{song.title}</CustomLink>
+                                        <CustomLink onClick={stopPropagation} href={``}>{song.title}</CustomLink>
                                     </div>
                                 </div>
 
                                 <div className={styles.colActions}>
                                     <div className={styles.actions}>
 
-                                        <HeartIcon active={song?.isLiked ?? false} onClick={(e) => {
-                                            e.stopPropagation()
-                                            if(onLike) onLike(song.id)
-                                        }} className={styles.heart}/>
+                                        {
+                                            !hideLike && 
+                                            <HeartIcon active={song?.isLiked ?? false} onClick={(e) => {
+                                                e.stopPropagation()
+                                                if(onLike) onLike(song.id)
+                                            }} className={styles.heart}/>
+                                        }
                                         <div className={styles.duration}>{song?.duration}</div>
                                         <More 
                                             ref={toggleActionsRef}

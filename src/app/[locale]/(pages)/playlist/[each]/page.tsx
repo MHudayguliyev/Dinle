@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import Image from 'next/image';
 import { useInfiniteQuery } from 'react-query'
+import { useRouter } from 'next/navigation';
 //styles
 import styles from './page.module.scss'
 import classNames from 'classnames/bind'
@@ -36,9 +37,12 @@ import { setShowAuthModal } from '@app/_redux/reducers/AuthReducer';
 import useObserve from '@app/_hooks/useObserve';
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 import Preloader from '@app/_compLibrary/Preloader';
+import { refreshAccessToken } from '@app/_api/Services/auth_token';
+import { isAxiosError } from 'axios';
 
 const cn = classNames.bind(styles)
 const Playlist = ({params}: {params: {each: string}}) => {
+    const router = useRouter()
     const dispatch = useAppDispatch()
     const toggleMenuRef:any = useRef(null)
     const menuContenRef:any = useRef(null)
@@ -99,6 +103,14 @@ const Playlist = ({params}: {params: {each: string}}) => {
         if(CheckObjOrArrForNull(playlistsList)) setRows(playlistsList)
     }, [playlistsList])
 
+    const refreshToken = (cb: Function) => {
+        refreshAccessToken().then(isError => {
+            console.log("is error", isError)
+            if(isError) router.replace('/login')
+            else cb()
+        })
+    }
+
     const handleCopyLink = useCallback(() => {
         copyLink(`/playlist/${id}`)?.then((mode) => {
             if(mode === 'desktop') toast.success('Link is copied.')
@@ -110,11 +122,15 @@ const Playlist = ({params}: {params: {each: string}}) => {
 
         try {
             const response = await likeSong(songId)
-            console.log('response', response)
+            // console.log('response', response)
             if(response.success && response.statusCode === 200)
             setRows(prev => prev?.map(row => row.id === songId ? {...row, isLiked: !row.isLiked} : row))
           } catch (error) {
-            console.log('like song error', error)
+            if(isAxiosError(error)){
+                if(error.response?.status === 401){
+                    refreshToken(() =>  handleLike(songId))
+                }
+            }else console.log('like song error', error)
           }
     }, [])
 
@@ -123,11 +139,15 @@ const Playlist = ({params}: {params: {each: string}}) => {
 
         try {
             const response = await likePlaylist(id);
-            console.log("resonse", response)
+            // console.log("resonse", response)
             if(response.success && response.statusCode === 200)
             refetchPlaylist()
         } catch (error) {
-            console.log("like playlist error ", error)
+            if(isAxiosError(error)){
+                if(error.response?.status === 401){
+                    refreshToken(() => handleLikePlaylist())
+                }
+            }else console.log('like playlist error', error)
         }
     }, [id])
 

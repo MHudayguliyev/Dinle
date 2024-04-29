@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 // for notification
 import { Toaster } from 'react-hot-toast';
-
+import {notFound} from 'next/navigation';
+import { NextIntlClientProvider, useMessages } from 'next-intl';
 
 import '@styles/global.scss';
 // import Swiper styles
@@ -13,7 +14,6 @@ import 'swiper/css/grid';
 //provider 
 import {ReduxProvider} from '@redux/provider';
 import OverflowSetterProvider from './_components/OverflowSetter';
-import ProfileMiddleware from './_components/ProfileMiddleware';
 const QueryProvider = dynamic(() => import('@app/_api/provider'))
 
 export const metadata: Metadata = {
@@ -23,18 +23,24 @@ export const metadata: Metadata = {
     icon: '/logo.png'
   }
 }
-
+// Can be imported from a shared config
+const locales = ['tk', 'ru'] 
 export default function RootLayout({
-  children
+  children, 
+  params: {locale}
 }: {
   children: React.ReactNode
+  params: {locale: string}
 }) {
 
+  if (!locales.includes(locale)) notFound();
+  const messages = useMessages();
+
   return (
-    <html lang="en">
+    <html lang="tk">
       <ReduxProvider>
-        <QueryProvider>
-          <ProfileMiddleware>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <QueryProvider>
             <OverflowSetterProvider>
               <Toaster
                   position="top-center"
@@ -42,8 +48,8 @@ export default function RootLayout({
                 />
                 {children}
             </OverflowSetterProvider>
-          </ProfileMiddleware>
-        </QueryProvider>
+          </QueryProvider>
+        </NextIntlClientProvider>
       </ReduxProvider>
     </html>
   )

@@ -64,7 +64,7 @@ const Login = () => {
         if(response.statusCode === 200){
           try {
             const response = await sendOtp({phone: phone})      
-            console.log('otps resiult', response)      
+            console.log('otps resiult', response)
             if(response.statusCode === 200){
               setPhone(phone)
               setMode('otp')

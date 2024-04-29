@@ -1,6 +1,7 @@
-import authToken from '@app/_api/Services/auth_token';
+import authToken, { refreshAccessToken } from '@app/_api/Services/auth_token';
 import moment from 'moment'
 import hash from 'object-hash'
+import { getFromStorage } from './storage';
 
 export const toRem = (value: number): string => {
   return (value / 16) + 'rem';;
@@ -63,10 +64,18 @@ export function formatDate(date: string){
   const formatted = moment(date).format('DD MMMM.YYYY')
   return formatted
 }
+
 export const isAuthorized = () => {
-  const token = authToken()
-  if(!token) return false
-  return true
+  const user = parse(getFromStorage('authUser')!)
+  const token = user?.access_token
+  const expiresAt = user?.expiresAt
+  const now = moment(new Date())
+  if(expiresAt && token){
+    console.log('now.isSameOrAfter(expiresAt)',now.isSameOrAfter(expiresAt))
+    if(now.isSameOrAfter(expiresAt)) return false
+    return true
+  }
+  return false
 }
 export const getUserDevice = () => {
   if(typeof navigator !== 'undefined'){

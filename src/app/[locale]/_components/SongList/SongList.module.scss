@@ -51,6 +51,15 @@
     }
 }
 
+.isResponsive {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    -ms-grid-columns: 1fr auto;
+    .colNumber, .colAlbum, .duration {
+        display: none;
+    }
+}
+
 .colNumber {
     padding: 0 14px;
 

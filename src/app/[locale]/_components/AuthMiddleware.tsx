@@ -1,9 +1,9 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import authToken from "@api/Services/auth_token"
 import moment from "moment"
 import { getFromStorage } from "@app/_utils/storage"
 import { parse } from "@app/_utils/helpers"
+import { refreshAccessToken } from "@app/_api/Services/auth_token"
 
 
 function AuthMiddleware (WrappedComponent:any){
@@ -14,19 +14,17 @@ function AuthMiddleware (WrappedComponent:any){
       if(user){
         const expiresAt = user?.expiresAt
         const now = moment(new Date())
-        console.log("expiresAt", expiresAt)
-        console.log("now", now)
-        const duration = moment.duration(now.diff(expiresAt))
-        console.log("duration", duration)
-        const hours = duration.asHours()
-        console.log("hours", hours)
-        // if()
-        // router?.push('/login')
-      }else return router?.push('/login') 
+        if(expiresAt){
+          if(now.isSameOrAfter(expiresAt)){
+            console.log("mother fucker")
+            refreshAccessToken().then(isError => {
+              if(isError) router.replace('/login')
+              else window.location.reload()
+            })
+          }
+        }else router.replace('/login')
+      }else router.replace('/login') 
     }, [])
-
-    const tom = moment(new Date()).add(1, 'days').format('YYYY-MM-DD HH:mm:ss')
-    console.log(tom)
     return <WrappedComponent {...props}/>
   }
 }

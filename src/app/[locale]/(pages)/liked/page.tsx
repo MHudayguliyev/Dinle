@@ -1,7 +1,7 @@
 'use client';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useQuery, useInfiniteQuery } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 //styles
 import styles from './page.module.scss';
 import classNames from 'classnames/bind';
@@ -33,7 +33,7 @@ import useClickOutside from '@app/_hooks/useOutClick';
 import { useWindowScrollPositions } from '@hooks/useWindowOffset'
 import useWindowSize from '@app/_hooks/useWindowSize';
 //utils
-import { CheckObjOrArrForNull, copyLink, getUserDevice, isUndefined } from '@app/_utils/helpers';
+import { CheckObjOrArrForNull, copyLink, isUndefined } from '@app/_utils/helpers';
 
 import { GetFavoriteAlboms, GetFavoriteArists, GetFavoritePlaylists, GetFavoriteSongs } from '@app/_api/Queries/Getters';
 //icons
@@ -47,6 +47,8 @@ import LikedSongs from '@app/_api/types/queryReturnTypes/LikedSongs';
 import Albums from '@app/_api/types/queryReturnTypes/Albums';
 import LikedPlaylists from '@app/_api/types/queryReturnTypes/LikedPlaylists';
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
+import { refreshAccessToken } from '@app/_api/Services/auth_token';
+import { isAxiosError } from 'axios';
 
 const cn = classNames.bind(styles)
 const ViewAll = () => {
@@ -55,6 +57,7 @@ const ViewAll = () => {
     const playlistsObserver = useRef<IntersectionObserver>();
     const albomsObserver = useRef<IntersectionObserver>();
 
+    const router = useRouter()
     const dispatch = useAppDispatch()
     const searchParam = useSearchParams()
     const tab = searchParam.get('tab')
@@ -227,14 +230,26 @@ const ViewAll = () => {
     if(CheckObjOrArrForNull(songsList)) setSongsRow(songsList)
   }, [songsList])
 
+  const refreshToken = (cb: Function) => {
+    refreshAccessToken().then(isError => {
+        console.log("is error", isError)
+        if(isError) router.replace('/login')
+        else cb()
+    })
+  }
+
   const handleLike = useCallback(async (id: string) => {
     try {
       const repsonse = await likeSong(id)
-      console.log("res", repsonse)
+      // console.log("res", repsonse)
       if(repsonse.statusCode === 200 && repsonse.success)
       setSongsRow(prevRows => prevRows.filter(row => row.id !== id))
     } catch (error) {
-      console.log(error)
+      if(isAxiosError(error)){
+        if(error.response?.status === 401){
+            refreshToken(() =>  handleLike(id))
+        }
+      }else console.log('like song error', error)
     }
   }, [setSongsRow])
 

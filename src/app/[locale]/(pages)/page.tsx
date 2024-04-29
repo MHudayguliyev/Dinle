@@ -2,7 +2,6 @@
 'use client';
 import React, {useRef, useMemo, useState, useEffect} from 'react'
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useQuery } from 'react-query'
 //styles
 import classNames from 'classnames/bind'
@@ -31,14 +30,18 @@ import CustomLink from '@components/CustomLink/CustomLink';
 //hooks
 import useClickOutside from '@hooks/useOutClick';
 import { getFromStorage } from '@app/_utils/storage';
-import { isAuthorized, parse } from '@app/_utils/helpers';
+import { delay, isAuthorized, parse } from '@app/_utils/helpers';
 import InfoSmI from '@app/_components/icons/infoSm/icon';
 import ShareSmI from '@app/_components/icons/shareSm/icon';
 import ReadMoreI from '@app/_components/icons/readMore/icon';
+import Preloader from '@app/_compLibrary/Preloader';
+
+//translations 
+import {useTranslations} from 'next-intl';
 
 const cn = classNames.bind(styles)
 export default function Home() {
-  const router = useRouter()
+  const t = useTranslations();
   const dispatch = useAppDispatch()
   const dropdownContentRef:any = useRef(null)
   const dropdownToggleRef:any = useRef(null)
@@ -47,6 +50,7 @@ export default function Home() {
   const [showBottomSheet, setShowBottomSheet] = useState<boolean>(false)
   const [showInfo, setShowInfo] = useState<boolean>(false)
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  const [isTopInfoLoading, setLoading] = useState<boolean>(true)
 
   //queries
   const {
@@ -69,9 +73,13 @@ export default function Home() {
   console.log(homeItems)
 
   useEffect(() => {
-    if(isAuthorized()) setIsAuthenticated(true)
-    else setIsAuthenticated(false)
-  }, [isAuthorized])
+    if(!isAuthorized()){
+      console.log('cames herererr')
+      setIsAuthenticated(false)
+    }else setIsAuthenticated(true)
+    delay(500).then(() => setLoading(false))
+  }, [])
+
 
   const infoMenu = useMemo(() => (
     <InfoMenu 
@@ -88,7 +96,7 @@ export default function Home() {
     return (
       <div className={styles.authContent}>
         {
-          isAuthenticated ?
+          isTopInfoLoading ? <span className={styles.loader}><Preloader /></span> : isAuthenticated ? 
           <div className={styles.wrapper}>
             <Button color='lightDark' roundedSm ref={dropdownToggleRef}>
               <UserI />
@@ -108,7 +116,7 @@ export default function Home() {
         }
       </div>
     )
-  }, [isAuthenticated, openDropdown, dropdownContentRef, dropdownToggleRef])
+  }, [isTopInfoLoading, isAuthenticated, openDropdown, dropdownContentRef, dropdownToggleRef])
 
   const actionsData = [
     {
@@ -132,7 +140,7 @@ export default function Home() {
     <>
         {infoMenu}
         <div className={styles.fixed_top}>
-          <h3>Täzelikler</h3>
+          <h3>{t('news')}</h3>
           {authContent}
         </div>
 
@@ -185,7 +193,6 @@ export default function Home() {
                         } 
                         scroll
                       >
-                        <span>View all</span>
                         <ChevronRightI />
                       </CustomLink>
                     </div>

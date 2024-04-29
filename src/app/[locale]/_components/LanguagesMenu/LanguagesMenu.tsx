@@ -1,4 +1,7 @@
-import React, { useState } from 'react'
+'use client';
+import React from 'react'
+import { useLocale } from 'next-intl'
+import { useRouter, usePathname } from '../../../../navigation'
 //styles
 import classNames from 'classnames/bind'
 import styles from './LanguagesMenu.module.scss'
@@ -23,7 +26,14 @@ const LanguagesMenu = (props: LanguagesMenuProps) => {
         leftCut
     } = props
 
-  const [selectedLang, setSelectedLang] = useState<string>("tm")
+    const router = useRouter()
+    const pathname = usePathname()
+    const currentLocale = useLocale()
+    const changeLanguage = (value: string) => {
+      if(value !== currentLocale){
+        router.replace(pathname, {locale: value as string})
+      }
+    }
 
   return (
     <div onClick={() => close()} className={cn({
@@ -43,14 +53,14 @@ const LanguagesMenu = (props: LanguagesMenuProps) => {
               lang_json.map(locale => (
                 <div className={cn({
                   locale: true, 
-                  active: selectedLang === locale.value
+                  active: locale.value === currentLocale
                 })} key={locale.value} onClick={(e) => {
                   e.stopPropagation()
-                  setSelectedLang(locale.value)
+                  changeLanguage(locale.value)
                 }}>
                   <span>{locale.label}</span>
                   <span className={cn({
-                    hideCheckI: selectedLang !== locale.value
+                    hideCheckI: currentLocale !== locale.value
                   })}><CheckI /></span>
                 </div>
               ))

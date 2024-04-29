@@ -6,6 +6,17 @@
     max-width: 557px;
     width: 100%;
     background: rgba(21, 21, 21, 1);
+    // overflow-y: auto;
+    // overflow-x: hidden;
+
+    // &::-webkit-scrollbar {
+    //     display: none;
+    // }
+}
+.songsList{
+    background-color: #111010;
+    border-radius: 10px;
+    width: 100%;
 }
 .content {
     padding: 30px;

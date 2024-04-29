@@ -26,6 +26,7 @@ type ModalProps = {
    className?: string
    style?: CSSProperties
    styleOfModalBody?:CSSProperties
+   removeOutClick?: boolean
    onClick?: () => void
    onExitFullScreen?: () => void
 }
@@ -39,6 +40,7 @@ const Modal = (props: ModalProps) => {
       fullScreen = false,
       notEntireScreen = false, 
       hideClose = false, 
+      removeOutClick = false, 
       className = '',
       style,
       styleOfModalBody, 
@@ -80,7 +82,9 @@ const Modal = (props: ModalProps) => {
             notEntireScreen: notEntireScreen, 
             notFullScreenModal: !fullScreen
          })
-      } onClick={() => close()}>
+      } onClick={() => {
+         if(!removeOutClick) close()
+      }}>
          <div className={styles.wrapper}>
             <div onClick={onClick && onClick} style={style} className={`${className} ${cn({
                   modalContent: true,
