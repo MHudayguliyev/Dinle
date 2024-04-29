@@ -48,6 +48,7 @@ import Video from '@app/_api/types/queryReturnTypes/Video'
 import Bottomsheet from '@app/_components/Bottomsheet/Bottomsheet'
 import ShareSmI from '@app/_components/icons/shareSm/icon'
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar'
+import Preloader from '@app/_compLibrary/Preloader'
 
 const cn = classNames.bind(styles)
 const Artist = ({params}: {params: {each: string}}) => {
@@ -103,6 +104,7 @@ const Artist = ({params}: {params: {each: string}}) => {
         data: songsData, 
         hasNextPage, 
         isFetching, 
+        isRefetching, 
         isError, 
         isLoading,
         fetchNextPage, 
@@ -300,7 +302,9 @@ const Artist = ({params}: {params: {each: string}}) => {
         }
     ]
 
-
+    useEffect(() => {
+        console.log("isFetching",isFetching)
+    }, [isFetching])
   return (
     <>
         {infoMenu}
@@ -384,22 +388,26 @@ const Artist = ({params}: {params: {each: string}}) => {
         />
         {
             showSongs && 
-            <SongList 
-                ref={lastSongRef}
-                data={rows}
-                artistId={artistId}
-                fetchStatuses={{
-                    isLoading, isError
-                }}
-                className={styles.songList}
-                onShowInfo={(id) => {
-                    setDynamicId(id)
-                    setFetchMode('song')
-                    setShowMenu(true)
-                }}
-                onLike={handleLike}
-                onPlay={(index) => dispatch(setCurrentSong({data: rows, index, id: rows![index]?.id}))}
-            />
+            <>
+                <SongList 
+                    ref={lastSongRef}
+                    data={rows}
+                    artistId={artistId}
+                    fetchStatuses={{
+                        isLoading, isError
+                    }}
+                    className={styles.songList}
+                    onShowInfo={(id) => {
+                        setDynamicId(id)
+                        setFetchMode('song')
+                        setShowMenu(true)
+                    }}
+                    onLike={handleLike}
+                    onPlay={(index) => dispatch(setCurrentSong({data: rows, index, id: rows![index]?.id}))}
+                />
+                {isFetching && <span className={styles.loader}><Preloader /></span>}
+            </>
+
         }
         {
             showAlbums && 

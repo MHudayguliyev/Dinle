@@ -41,7 +41,6 @@ export const getSongs = async (data: {
     pageSize?: number, 
     search?: string 
 }): Promise<any> => {
-    console.log('page', data.page)
     return api.patchDynamic({
         url: '/client/songs', 
         data: {

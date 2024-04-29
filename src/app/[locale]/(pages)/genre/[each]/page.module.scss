@@ -8,7 +8,11 @@
 .songList{
     padding: 10px 20px;
 }
-
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .topHeader {
     .opts {
         display: flex;

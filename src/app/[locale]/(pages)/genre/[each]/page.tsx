@@ -1,7 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
-import { useRouter } from 'next/navigation';
-import { useQuery, useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 import Image from 'next/image';
 //styles
 import styles from './page.module.scss'
@@ -32,6 +31,7 @@ import useWindowSize from '@app/_hooks/useWindowSize';
 import toast from 'react-hot-toast';
 import useObserve from '@app/_hooks/useObserve';
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
+import Preloader from '@app/_compLibrary/Preloader';
 
 const cn = classNames.bind(styles)
 const Genre = ({params}: {params: {each: string}}) => {
@@ -63,8 +63,12 @@ const Genre = ({params}: {params: {each: string}}) => {
         isLoading,
         fetchNextPage, 
     } = useInfiniteQuery({
-        queryKey: ['GetGenre', id], 
+        queryKey: ['Genre', id], 
         queryFn: ({pageParam}) => getSongs({genreId: id, page: pageParam}), 
+        getNextPageParam: (lastPage, allPages) => {
+            if(CheckObjOrArrForNull(lastPage.data.rows)) return allPages.length + 1;
+            return null;
+        }, 
         enabled: !!id
     })
     const lastGenreRef = useObserve({
@@ -96,6 +100,7 @@ const Genre = ({params}: {params: {each: string}}) => {
     useEffect(() => {
         if(CheckObjOrArrForNull(genresList)) setRows(genresList)
     }, [genresList])
+// console.log('genres', rows)
 
     const handleCopyLink = useCallback(() => {
         copyLink(`/genre/${id}`)?.then((mode) => {
@@ -253,6 +258,7 @@ const Genre = ({params}: {params: {each: string}}) => {
             onLike={handleLike}
             onPlay={(index) => dispatch(setCurrentSong({data: rows, index, id: rows?.[index]?.id}))}
         />
+        {isFetching && <span className={styles.loader}><Preloader /></span>}
     </>
   )
 }

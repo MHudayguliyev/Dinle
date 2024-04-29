@@ -7,6 +7,11 @@
 .songList{
     padding: 10px 20px;
 }
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .topHeader {
     .opts {
@@ -192,7 +197,7 @@
 }
 
 .grid_wrapper {
-    --gap: 15px
+    --gap: 15px;
     padding: 0 20px;
     @include GMixin.grid($cols: repeat(5, 1fr), $gap: var(--gap));
 
@@ -201,7 +206,7 @@
         @include GMixin.grid($cols: repeat(3, 1fr), $gap: var(--gap));
     }
     @media screen and (max-width:$sm) {
-        @include GMixin.grid($cols: repeat(1, 1fr), $gap: var(--gap));
+        @include GMixin.grid($cols: repeat(2, 1fr), $gap: var(--gap));
     }
 }
 .clips_wrapper {

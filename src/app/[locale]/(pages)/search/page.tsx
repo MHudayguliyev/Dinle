@@ -96,6 +96,7 @@ const Search = () => {
     }
   ]
   //states
+  const delayTime = 200;
   const [searchValue, setSearchValue] = useState<string>(mask ?? "")
   const [openShazam, setOpenShazam] = useState<boolean>(false)
   const [isSearchDataLoading, setSearchDataLoading] = useState<boolean>(false)
@@ -106,6 +107,12 @@ const Search = () => {
   const [playlistsSearch, setPlaylists] = useState<SearchType['data']['playlists']>([])
   const [recentSearchData, setRecentSearchData] = useState<{title: string}[]>([])
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(0)
+  const [isLoading, setLoading] = useState({
+    artists: false, 
+    alboms: false, 
+    playlists: false, 
+    genres: false
+  })
 
   const showFoundData = useMemo(() => isUndefined(tab) && (!isUndefined(mask) && !isEmpty(mask)),[tab, mask])
   const showArtists = useMemo(() => tab === tabs[0]?.route ,[tab])
@@ -123,12 +130,12 @@ const Search = () => {
     isLoading: isArtistsLoading,
     fetchNextPage: fetchArtistNextPage, 
   } = useInfiniteQuery({
-    queryKey: ['Artists', showArtists], 
+    queryKey: ['Artists', showArtists, isLoading.artists], 
     queryFn: ({pageParam}) => GetArtists(pageParam), 
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.data.rows.length ? allPages.length + 1 : undefined;
     }, 
-    enabled: showArtists
+    enabled: showArtists || isLoading.artists
   })
   const {
     data: playlistsData, 
@@ -138,12 +145,12 @@ const Search = () => {
     isLoading: isPlaylistsLoading,
     fetchNextPage: fetchPlaylistNextPage, 
   } = useInfiniteQuery({
-    queryKey: ['Playlists', showPlaylists], 
+    queryKey: ['Playlists', showPlaylists, isLoading.playlists], 
     queryFn: ({pageParam}) => GetPlaylists(20, pageParam), 
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.data.rows.length ? allPages.length + 1 : undefined;
     }, 
-    enabled: showPlaylists
+    enabled: showPlaylists || isLoading.playlists
   })
   const {
     data: albomsData, 
@@ -162,11 +169,10 @@ const Search = () => {
   })
   const {
     data: genresData,
-    isFetching,  
     isError: isGenresError, 
     isLoading: isGenresLoading,
-  } = useQuery(['Genres', showGenres], () => GetGenres(songId ? songId : undefined),{
-    refetchOnWindowFocus: false, enabled: showGenres
+  } = useQuery(['Genres', showGenres, isLoading.genres], () => GetGenres(songId ? songId : undefined),{
+    refetchOnWindowFocus: false, enabled: showGenres || isLoading.genres
   })
 
   //last element refs
@@ -192,26 +198,66 @@ const Search = () => {
     fetchNextPage: fetchAlbomNextPage, 
   })
 
+  const refetchData = useCallback(() => {
+    if(showArtists) {
+      setLoading(() => ({ genres: false, alboms: false, artists: true, playlists: false }))
+    }else if(showPlaylists){
+      setLoading(() => ({ genres: false, alboms: false, artists: false, playlists: true}))
+    }else if(showAlbums){
+      setLoading(() => ({ genres: false, alboms: true, artists: false, playlists: false}))
+    }else if(showGenres){
+      setLoading(() => ({ genres: true, alboms: false, artists: false, playlists: false}))
+    }
+  }, [
+    showArtists, 
+    showPlaylists, 
+    showAlbums, 
+    showGenres
+  ])
+
 
   //lists
   const artistsList = useMemo((): Artists['data']['rows'] => {
+    console.log('artistsData', artistsData)
+    delay(delayTime).then(() => {
+      setLoading(prevState => ({...prevState, artists: false}))
+    })
     // @ts-ignore
     return artistsData?.pages.reduce((acc, page) => {
       return [...acc, ...page.data.rows];
     }, [])
   }, [artistsData]);
   const playlistsList = useMemo((): Playlists['data']['rows'] => {
+    delay(delayTime).then(() => {
+      setLoading(prevState => ({...prevState, playlists: false}))
+    })
     // @ts-ignore
     return playlistsData?.pages.reduce((acc, page) => {
       return [...acc, ...page.data.rows];
     }, [])
   }, [playlistsData]);
   const albomsList = useMemo((): Albums['data']['rows'] => {
+    delay(delayTime).then(() => {
+      setLoading(prevState => ({...prevState, alboms: false}))
+    })
     // @ts-ignore
     return albomsData?.pages.reduce((acc, page) => {
       return [...acc, ...page.data.rows];
     }, [])
   }, [albomsData]);
+
+  useEffect(() => {
+    if(showGenres && (!isGenresLoading && !isGenresError) && isLoading.genres){
+      delay(delayTime).then(() => {
+        setLoading(prevState => ({...prevState, genres: false}))
+      })
+    }
+  }, [
+    isGenresLoading, 
+    isGenresError, 
+    showGenres, 
+    isLoading.genres
+  ])
 
 
   const errorDiv = useMemo(() => {
@@ -224,14 +270,19 @@ const Search = () => {
         <p className={styles.helper_txt}>
           Artistler, aýdymlar, videolar w.b
         </p>
-        <Button color='lightDark' roundedSm>
+        <Button color='lightDark' roundedSm onClick={refetchData}>
           Refresh
         </Button>
       </div>
     )
-  }, [])
+  }, [refetchData])
   const loader = useCallback((type: 'artist' | 'playlist' | 'album' | 'genre', swiperMode = false) => {
-    const arr = [1,2,3,4,5,6]
+    const arr = [1,2,3,4,5,6];
+    const renderArtists = type === 'artist'
+    const renderPlaylists = type === 'playlist'
+    const renderAlboms = type === 'album'
+    const renderGenres= type === 'genre'
+
     return (
       <div className={styles.recomendations}>
         <span className={styles.topShimmer}></span>
@@ -241,7 +292,7 @@ const Search = () => {
               navigation
               modules={[ Navigation ]}
               slidesPerView={6}
-              spaceBetween={2}
+              spaceBetween={15}
               breakpoints={standardCardBreaksPoints}
             >
               {
@@ -252,10 +303,10 @@ const Search = () => {
                     id=""
                     title=""
                     shimmer
-                    artists={type === 'artist'}
-                    playlists={type === 'playlist'}
-                    alboms={type === 'album'}
-                    genres={type === 'genre'}
+                    artists={renderArtists}
+                    playlists={renderPlaylists}
+                    alboms={renderAlboms}
+                    genres={renderGenres}
                   />
                 </SwiperSlide>
                 ))
@@ -270,10 +321,10 @@ const Search = () => {
                     id=""
                     title=""
                     shimmer
-                    artists={type === 'artist'}
-                    playlists={type === 'playlist'}
-                    alboms={type === 'album'}
-                    genres={type === 'genre'}
+                    artists={renderArtists}
+                    playlists={renderPlaylists}
+                    alboms={renderAlboms}
+                    genres={renderGenres}
                   />
                 ))
               }
@@ -283,7 +334,7 @@ const Search = () => {
 
       </div>
     )
-  }, [])
+  }, [isViewAll])
   const arrowRight = useMemo(() => (
     <ChevronRightI />
   ), [])
@@ -365,7 +416,6 @@ const Search = () => {
   const goSearch = useCallback(async () => {
     const localSearches = parse(getFromStorage('recentSearchData')!)
     if(CheckObjOrArrForNull(localSearches)){
-      console.log('localSearches',localSearches)
       let sameFound = false
       for(let i = 0; i < localSearches?.length; i++){
         const search:string = localSearches[i].title.toLowerCase()
@@ -398,7 +448,7 @@ const Search = () => {
         search: searchValue,
       };
 
-      console.log("isViewAll", isViewAll)
+      console.log("isViewAll in goSearch", isViewAll)
 
       if(!isViewAll){
         router.push(`/search?mask=${searchValue}`, { scroll: false })
@@ -423,7 +473,7 @@ const Search = () => {
         } = response.data
         console.log('rsp', response.data)
         
-        delay(200).then(() => {
+        delay(delayTime).then(() => {
           setAlbums(alboms)
           setArtists(artists)
           setSongs(songs)
@@ -465,6 +515,13 @@ const Search = () => {
   const openRecentBoxFN = useCallback(() => {
     if(CheckObjOrArrForNull(recentSearchData) && !openRecents) setOpenRecents(true)
   }, [recentSearchData, openRecents])
+
+
+  useEffect(() => {
+    if(!isViewAll && showFoundData){
+      goSearch()
+    }
+  }, [isViewAll, showFoundData])
 
   return (
     <>
@@ -537,7 +594,7 @@ const Search = () => {
 
         {
           showArtists && (
-            isArtistsLoading ?  loader('artist') :  
+            isArtistsLoading || isLoading.artists ?  loader('artist') :  
               isArtistsError ? errorDiv : 
               <div className={styles.recomendations}>
                 <h3 className={styles.songCardTitle}>Artists</h3>
@@ -562,7 +619,7 @@ const Search = () => {
 
         {
           showPlaylists && (
-            isPlaylistsLoading ?  loader('playlist') :  
+            isPlaylistsLoading || isLoading.playlists ?  loader('playlist') :  
             isPlaylistsError ? errorDiv : 
               <div className={styles.recomendations}>
                 <h3 className={styles.songCardTitle}>Playlists</h3>
@@ -588,7 +645,7 @@ const Search = () => {
 
         {
           showAlbums && (
-            isAlbomsLoading ?  loader('album') :  
+            isAlbomsLoading || isLoading.alboms ?  loader('album') :  
             isAlbomsError ? errorDiv : 
               <div className={styles.recomendations}>
                 <h3 className={styles.songCardTitle}>Albums</h3>
@@ -614,7 +671,7 @@ const Search = () => {
 
         {
           showGenres && (
-            isGenresLoading || isFetching ?  loader('genre') :  
+            isGenresLoading || isLoading.genres ?  loader('genre') :  
             isGenresError ? errorDiv : 
               <div className={styles.recomendations}>
                 <h3 className={styles.songCardTitle}>Genres</h3>
@@ -641,10 +698,13 @@ const Search = () => {
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
                 <h3>Songs</h3>
-                <CustomLink href={`/search?mask=${searchValue}&all=songs`}>
-                  <span>View all</span>
-                  {arrowRight}
-                </CustomLink>
+                {
+                  !isViewAll && 
+                  <CustomLink href={`/search?mask=${searchValue}&all=songs`}>
+                    <span>View all</span>
+                    {arrowRight}
+                  </CustomLink>
+                }
               </div>
               <SongList 
                 data={songsSearch} 
@@ -664,10 +724,13 @@ const Search = () => {
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
                 <h3>Artists</h3>
-                <CustomLink href={`/search?mask=${searchValue}&all=artists`}>
-                  <span>View all</span>
-                  {arrowRight}
-                </CustomLink>
+                {
+                  !isViewAll && 
+                  <CustomLink href={`/search?mask=${searchValue}&all=artists`}>
+                    <span>View all</span>
+                    {arrowRight}
+                  </CustomLink>
+                }
               </div>
                 {
                   width >=768 ? 
@@ -714,10 +777,13 @@ const Search = () => {
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
                 <h3>Alboms</h3>
-                <CustomLink href={`/search?mask=${searchValue}&all=alboms`}>
-                  <span>View all</span>
-                  {arrowRight}
-                </CustomLink>
+                {
+                  !isViewAll && 
+                  <CustomLink href={`/search?mask=${searchValue}&all=alboms`}>
+                    <span>View all</span>
+                    {arrowRight}
+                  </CustomLink>
+                }
               </div>
               <Swiper
                 navigation
@@ -752,10 +818,13 @@ const Search = () => {
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
                 <h3>Playlists</h3>
-                <CustomLink href={`/search?mask=${searchValue}&all=playlists`}>
-                  <span>View all</span>
-                  {arrowRight}
-                </CustomLink>
+                {
+                  !isViewAll && 
+                  <CustomLink href={`/search?mask=${searchValue}&all=playlists`}>
+                    <span>View all</span>
+                    {arrowRight}
+                  </CustomLink>
+                }
               </div>
               <Swiper
                 navigation

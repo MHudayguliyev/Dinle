@@ -33,6 +33,7 @@ import HeartFilledI from '@app/_components/icons/heartFilled/icon';
 import toast from 'react-hot-toast';
 import useObserve from '@app/_hooks/useObserve';
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
+import Preloader from '@app/_compLibrary/Preloader';
 
 const cn = classNames.bind(styles)
 const Album = ({params}: {params: {each: string}}) => {
@@ -124,7 +125,6 @@ const Album = ({params}: {params: {each: string}}) => {
 
         try {
             const response = await likeAlbum(id);
-            // console.log("res", response)
             if(response.success && response.statusCode === 200)
             refetchAlbum();
         } catch (error) {
@@ -283,6 +283,8 @@ const Album = ({params}: {params: {each: string}}) => {
             onLike={handleLike}
             onPlay={(index) => dispatch(setCurrentSong({data: rows, index, id: rows?.[index]?.id}))}
         />
+        {isFetching && <span className={styles.loader}><Preloader /></span>}
+
     </>
   )
 }

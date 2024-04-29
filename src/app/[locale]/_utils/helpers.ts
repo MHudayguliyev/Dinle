@@ -8,7 +8,7 @@ export const toRem = (value: number): string => {
 export const isEmpty = (str: string | any) => {
   if(typeof str === 'string' && typeof str !== 'undefined') return !str.trim()
 }
-export const isUndefined = (data:any) => {
+export const isUndefined = (data:any): data is undefined | null => {
   return typeof data === 'undefined' || data === null
 }
 export const randomize = (max: number) => {

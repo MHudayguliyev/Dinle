@@ -35,6 +35,7 @@ import toast from 'react-hot-toast';
 import { setShowAuthModal } from '@app/_redux/reducers/AuthReducer';
 import useObserve from '@app/_hooks/useObserve';
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
+import Preloader from '@app/_compLibrary/Preloader';
 
 const cn = classNames.bind(styles)
 const Playlist = ({params}: {params: {each: string}}) => {
@@ -282,6 +283,8 @@ const Playlist = ({params}: {params: {each: string}}) => {
             onLike={handleLike}
             onPlay={(index) => dispatch(setCurrentSong({data: rows, index, id: rows?.[index]?.id}))}
         />
+        {isFetching && <span className={styles.loader}><Preloader /></span>}
+
     </>
   )
 }
