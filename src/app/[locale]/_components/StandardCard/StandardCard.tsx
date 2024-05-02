@@ -27,7 +27,7 @@ import ShareSmI from '../icons/shareSm/icon';
 import ReadMoreI from '../icons/readMore/icon';
 import { ActionsType } from '@app/_types';
 import PlayExtraSm from '../icons/playExtraSm/icon';
-import { isEmpty, isUndefined } from '@app/_utils/helpers';
+import { isEmpty, isUndefined, secondsToMmSs } from '@app/_utils/helpers';
 
 interface StandardProps {
     id: string
@@ -154,17 +154,17 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         const data = [
             {
                 value: 'info', 
-                label: {en: 'Maglumat', ru: 'Maglumat', tm: 'Maglumat'}, 
+                label: {ru: 'Maglumat', tk: 'Maglumat'}, 
                 icon: <InfoSmI />
             }, 
             {
                 value: 'share', 
-                label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+                label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
                 icon: <ShareSmI />
             }, 
             {
                 value: 'queue', 
-                label: {en: 'Indiki aydyma gos', ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
+                label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
                 icon: <ReadMoreI />
             }, 
         ]
@@ -260,7 +260,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                                 {videoCard && !isUndefined(videoDuration) && 
                                     <div className={styles.videoDuration}>
                                         <PlayExtraSm mode='play'/>
-                                        <span>{videoDuration}</span>
+                                        <span>{secondsToMmSs(videoDuration)}</span>
                                     </div>
                                 }
                                 <div className={styles.actions}>

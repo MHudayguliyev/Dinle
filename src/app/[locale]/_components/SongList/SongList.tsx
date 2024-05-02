@@ -92,17 +92,17 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
     const actionsData = [
         {
             value: 'info', 
-            label: {en: 'Maglumat', ru: 'Maglumat', tm: 'Maglumat'}, 
+            label: {ru: 'Maglumat', tk: 'Maglumat'}, 
             icon: <InfoSmI />
         }, 
         {
             value: 'share', 
-            label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+            label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
             icon: <ShareSmI />
         }, 
         {
             value: 'queue', 
-            label: {en: 'Indiki aydyma gos', ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
+            label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
             icon: <ReadMoreI />
         }, 
     ]
@@ -162,7 +162,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                                             <div className={styles.musicTitleWrapper}>
                                                 {renderEqualizer(song, true)}
                                                 <div className={cn({ title: true, paddLeft: isSongPlaying && songData[songIndex]?.id === song.id })}>
-                                                    <CustomLink onClick={stopPropagation}  href={``}>{song.title}</CustomLink>
+                                                    <CustomLink  href={``}>{song.title}</CustomLink>
                                                 </div>
                                             </div>
                                             <div className={styles.description}>
@@ -173,7 +173,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                                 </div>
                                 <div className={styles.colAlbum}>
                                     <div className={styles.album}>
-                                        <CustomLink onClick={stopPropagation} href={``}>{song.title}</CustomLink>
+                                        <CustomLink href={``}>{song.title}</CustomLink>
                                     </div>
                                 </div>
 

@@ -10,7 +10,7 @@ import ShuffleI from '@components/icons/shuffle/icon';
 import RepeatI from '@components/icons/repeat/icon';
 import TextI from '@components/icons/text/icon';
 import Volume from '@components/icons/volume/icon';
-import Device from '@components/icons/device/icon';
+// import Device from '@components/icons/device/icon';
 import List from '@components/icons/list/icon';
 import ArrowBottomI from '@components/icons/arrowBottom/icon';
 import MoreSm from '@components/icons/moreSm/icon';
@@ -39,7 +39,6 @@ import HLS from 'hls.js'
 //api
 import { likeSong } from '@api/Queries/Post';
 //utils
-import authToken from '@api/Services/auth_token';
 import CustomLink from '@components/CustomLink/CustomLink';
 import InfoSmI from '@app/_components/icons/infoSm/icon';
 import ShareSmI from '@app/_components/icons/shareSm/icon';
@@ -132,7 +131,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     if(HLS.isSupported() && !isUndefined(audioRef?.current)){
       const audio = audioRef.current;
       const hls = new HLS();
-      console.log("song?.link", song?.link)
       if(song?.link !== prevSongUrl){       
         hls.attachMedia(audio);
         hls.on(HLS.Events.MEDIA_ATTACHED, () => {
@@ -316,7 +314,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     if(!isUndefined(audioRef?.current))
       setDuration(audioRef?.current?.duration)
 
-    console.log('audioRef?.current?.duration', audioRef?.current?.duration)
   }, [audioRef])
 
   const handleMuteUnmute = useCallback(() => {
@@ -406,6 +403,25 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     })} 
     />
   )
+  const handleLikeSong = useCallback(async () => {
+    try {
+      if(isUndefined(audioRef?.current)) return 
+      // if(!isAuthorized()) return dispatch(setShowAuthModal(true))
+      
+      const response = await likeSong(song?.id)
+      if(response.success && response.statusCode === 200)
+      setLiked(!isLiked)
+      return {success: true}
+    } catch (error) {
+      console.log('like error',error)
+      return {success: false}
+    }
+  }, [
+    audioRef, 
+    song, 
+    isLiked, 
+    isAuthorized
+  ])
   const playPauseI = useMemo(() => (
     <SimplePlayI 
       onClick={() => dispatch(setIsSongPlaying(!isSongPlaying))} 
@@ -413,18 +429,12 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     />
   ),[isSongPlaying])
   const heartI = useMemo(() => (
-    <Heart active={isLiked} onClick={async() => {
-      if(isUndefined(audioRef?.current)) return 
-      if(!isAuthorized()) return dispatch(setShowAuthModal(true))
-      
-      try {
-        const response = await likeSong(song?.id)
-        if(response.success && response.statusCode === 200)
-        setLiked(!isLiked)
-      } catch (error) {
-        console.log('like error',error)
-      }
-    }}/>
+    <Heart active={isLiked} 
+      onClick={async () => {
+        const response = await handleLikeSong()
+        console.log("response", response)
+      }}
+    />
   ), [isLiked, song, isAuthorized])
   const repeatI = useMemo(() => (
     <RepeatI 
@@ -457,17 +467,17 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   const actionsData = [
     {
         value: 'info', 
-        label: {en: 'Maglumat', ru: 'Maglumat', tm: 'Maglumat'}, 
+        label: {ru: 'Maglumat', tk: 'Maglumat'}, 
         icon: <InfoSmI />
     }, 
     {
         value: 'share', 
-        label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+        label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
         icon: <ShareSmI />
     }, 
     {
         value: 'queue', 
-        label: {en: 'Indiki aydyma gos', ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
+        label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
         icon: <ReadMoreI />
     }, 
 ]
@@ -544,7 +554,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                   noLyricFound={isEmpty(song?.lyrics)}
                   onClick={onToggleLyrics}
                 />
-                <Device active={false}/>
                 <Volume volume={
                   volume >= 70 ? 'up' : 
                   volume > 0 ? 'down' : 'mute'
@@ -729,7 +738,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                       }}
                       noLyricFound={isEmpty(song?.lyrics)}
                     />
-                    <Device active={false}/>
                   </div>
                 </div>
 

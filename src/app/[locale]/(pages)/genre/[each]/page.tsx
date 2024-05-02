@@ -203,10 +203,13 @@ const Genre = ({params}: {params: {each: string}}) => {
                 </div>
             )}
             renderActions={() => (
-                <div className={styles.actions}>
-                    {shuffleBtn}
-                    {shareBtn}
-                </div>
+                <>
+                    {scrolly >= 271 && <div className={styles.name}>{credentials?.title}</div>}
+                    <div className={styles.actions}>
+                        {shuffleBtn}
+                        {shareBtn}
+                    </div>
+                </>
             )}
         />
 

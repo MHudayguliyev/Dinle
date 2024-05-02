@@ -92,15 +92,6 @@
     a {
         font-weight: $fontWeightMedium;
         font-size:$fontSizeBig + px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-
-        @media screen and (max-width: $md){
-            span {
-                display: none;
-            }
-        }
     }
     
 }

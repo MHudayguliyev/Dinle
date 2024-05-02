@@ -32,6 +32,9 @@ const LanguagesMenu = (props: LanguagesMenuProps) => {
     const changeLanguage = (value: string) => {
       if(value !== currentLocale){
         router.replace(pathname, {locale: value as string})
+        // window.location.reload()
+
+        
       }
     }
 

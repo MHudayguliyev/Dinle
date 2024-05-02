@@ -478,22 +478,9 @@
   flex: 1 1;
   margin-top: 30px;
   display: none;
-
   overflow-y: overlay;
   &::-webkit-scrollbar {
-      width: 5px;
-      background-color: transparent;
-  }
-  &::-webkit-scrollbar-track {
-      right: 5px;
-      border-radius: 5px;
-      background-color: transparent;
-  }
-  &::-webkit-scrollbar-track-piece {
-      background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-      border-radius: 10px;
+    display: none;
   }
 
   .item {
@@ -503,6 +490,7 @@
     align-items: center;
     width: 100%;
     padding: 4px 20px;
+    gap: 14px;
 
     &:hover {
       background-color: rgba(25, 25, 25, 0.5);
@@ -520,6 +508,9 @@
   }
 
   .listContent {
+    h4, div {
+      @include Mixin.textOverflow();
+    }
     h4{
         font-weight: calc($fontWeightMedium + 100);
         font-size: $fontSizeBig + px;

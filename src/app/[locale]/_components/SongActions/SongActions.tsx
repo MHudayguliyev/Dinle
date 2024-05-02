@@ -64,7 +64,7 @@ const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, r
                     <div className={cn({
                         title: true,
                     })}>
-                        {action.label.tm}
+                        {action.label.tk}
                     </div>
                     <>{action.icon}</>
                 </div>

@@ -23,6 +23,14 @@ export const CheckObjOrArrForNull = (obj_or_arr: any) =>  {
     }
     return false;
 }
+export function secondsToMmSs(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  // Add leading zero for single-digit seconds
+  const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+  return `${minutes}:${formattedSeconds}`;
+}
 export function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
@@ -71,7 +79,7 @@ export const isAuthorized = () => {
   const expiresAt = user?.expiresAt
   const now = moment(new Date())
   if(expiresAt && token){
-    console.log('now.isSameOrAfter(expiresAt)',now.isSameOrAfter(expiresAt))
+    // console.log('now.isSameOrAfter(expiresAt)',now.isSameOrAfter(expiresAt))
     if(now.isSameOrAfter(expiresAt)) return false
     return true
   }

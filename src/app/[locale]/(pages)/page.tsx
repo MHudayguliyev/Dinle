@@ -38,6 +38,8 @@ import Preloader from '@app/_compLibrary/Preloader';
 
 //translations 
 import {useTranslations} from 'next-intl';
+import ArrowRightI from '@app/_components/icons/arrowRight/icon';
+import ArrowRightLgI from '@app/_components/icons/ArrowRightLg/icon';
 
 const cn = classNames.bind(styles)
 export default function Home() {
@@ -74,7 +76,6 @@ export default function Home() {
 
   useEffect(() => {
     if(!isAuthorized()){
-      console.log('cames herererr')
       setIsAuthenticated(false)
     }else setIsAuthenticated(true)
     delay(500).then(() => setLoading(false))
@@ -121,17 +122,17 @@ export default function Home() {
   const actionsData = [
     {
         value: 'info', 
-        label: {en: 'Maglumat', ru: 'Maglumat', tm: 'Maglumat'}, 
+        label: {ru: 'Maglumat', tk: 'Maglumat'}, 
         icon: <InfoSmI />
     }, 
     {
         value: 'share', 
-        label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+        label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
         icon: <ShareSmI />
     }, 
     {
         value: 'queue', 
-        label: {en: 'Indiki aydyma gos', ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
+        label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
         icon: <ReadMoreI />
     }, 
 ]
@@ -139,7 +140,7 @@ export default function Home() {
   return (
     <>
         {infoMenu}
-        <div className={styles.fixed_top}>
+        <div className={styles.topMenu}>
           <h3>{t('news')}</h3>
           {authContent}
         </div>
@@ -149,7 +150,6 @@ export default function Home() {
             <div className={styles.banners}>
               <Swiper
                 navigation
-                // loop
                 modules={[ Navigation, Autoplay ]}
                 slidesPerView={2}
                 spaceBetween={15}
@@ -188,12 +188,11 @@ export default function Home() {
                           playlist ? '/search?tab=playlist' : 
                           albom ? '/search?tab=album' : 
                           homeItem.id === 'clips' ? '/clips' : 
-                          // homeItem.id === 'shows' ? `/clips/${}`
                           `viewall/${homeItem.id}`
                         } 
                         scroll
                       >
-                        <ChevronRightI />
+                        <ArrowRightLgI />
                       </CustomLink>
                     </div>
 

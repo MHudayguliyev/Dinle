@@ -1,6 +1,5 @@
 import React, { useMemo, useEffect } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation';
 import { useQuery } from 'react-query';
 //api 
 import { GetArtistInfo, GetSongInfo } from '@app/_api/Queries/Getters';
@@ -10,15 +9,16 @@ import {CheckObjOrArrForNull, formatDate} from '@utils/helpers'
 import classNames from 'classnames/bind'
 import styles from './InfoMenu.module.scss'
 //icons 
-import music from '@app/_assets/icons/music.svg'
-import genre from '@app/_assets/icons/genre.svg'
-import dateRange from '@app/_assets/icons/date_range.svg'
-import listeners from '@app/_assets/icons/listener.svg';
-import user from '@app/_assets/icons/user.svg'
-import musicHeart from '@app/_assets/icons/music_heart.svg'
-import download from '@app/_assets/icons/download.svg'
+import MusicI from '../icons/music/icon';
+import GenreI from '../icons/genre/icon';
+import DateI from '../icons/date/icon';
+import ListenersI from '../icons/listener/icon';
+import MusicLikeI from '../icons/musicLike/icon';
+import DownloadI from '../icons/download/icon';
 import ArrowI from '../icons/arrow/icon'
 import PrevNext from '@components/icons/prevNext/icon'
+import Follower from '@app/_components/icons/follower/icon'
+import AlbomI from '../icons/albom/icon';
 //types
 import CommonModalI from '../Modals/CommonModali';
 import CustomLink from '../CustomLink/CustomLink';
@@ -27,7 +27,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 //breakpoints
 import { sliderBreakpoints } from '@app/_assets/json_data/swiper_breakpoints';
-
+//redux
+import { useAppDispatch } from '@app/_hooks/redux_hooks';
+import { setIsBlockOverflow } from '@app/_redux/reducers/OverflowReducer';
 
 interface InfoMenuProps extends CommonModalI {
   id: string
@@ -43,7 +45,8 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
     id, 
     fetchMode = 'song'
   } = props
-  const router = useRouter()
+
+  const dispatch = useAppDispatch()
   const fetchArtistInfo = useMemo(() => show && fetchMode === 'artist' && !!id ,[id, show, fetchMode])
   const fetchSongInfo = useMemo(() => show && fetchMode === 'song' && !!id ,[id, show, fetchMode])
 
@@ -57,6 +60,11 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
   } = useQuery(['GetSongInfo', fetchSongInfo], () => GetSongInfo(id), {
     refetchOnWindowFocus: false, enabled: fetchSongInfo
   })
+
+  useEffect(() => {
+    if(show) dispatch(setIsBlockOverflow(true))
+    else dispatch(setIsBlockOverflow(false))
+  }, [show])
 
   return (
     <>
@@ -117,7 +125,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                   fetchArtistInfo && 
                   <div className={styles.detail}>
                     <div className={styles.theLeft}>
-                        <Image src={music} alt='music'/>
+                        <MusicI />
                         <div className={styles.head}>Aýdym:</div>
                     </div>
                     <div className={styles.theRight}>
@@ -127,7 +135,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                 }
                 <div className={styles.detail}>
                     <div className={styles.theLeft}>
-                        <Image src={music} alt='album'/>
+                        <AlbomI />
                         <div className={styles.head}>Albom:</div>
                     </div>
                     <div className={styles.theRight}>
@@ -143,22 +151,36 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                 
                 <div className={styles.detail}>
                   <div className={styles.theLeft}>
-                      <Image src={genre} alt='album'/>
+                      <GenreI />
                       <div className={styles.head}>Zanry:</div>
                   </div>
                   <div className={styles.theRight}>
                       <div className={styles.genres}>
-                      {fetchSongInfo && song?.genres?.map(genre => <span key={genre.genreId}>{genre.name + ', '}</span>)}
-                      {/* {fetchArtistInfo && data?.genres?.map(genre => <span key={genre.}>{genre.name + ', '}</span>)} */}
+                      {fetchSongInfo && 
+                        song?.genres?.map((genre, index) => <span key={genre.genreId}>
+                          <CustomLink scroll href={`/genre/${genre.genreId}`}>
+                            {genre.name + ` ${index === song?.genres?.length - 1 ? "" : ", "}`}
+                          </CustomLink>
+                        </span>
+                        )
+                      }
                       </div>
-                      <ArrowI onClick={() => router.push(`/search?tab=genre&songId=${song?.id}`)}/>
+                      <CustomLink 
+                        onClick={() => {
+                          if(CheckObjOrArrForNull(song?.genres)) close()
+                        }} 
+                        scroll 
+                        href={CheckObjOrArrForNull(song?.genres) ? `/search?tab=genre&songId=${song?.id}` : ""}
+                      >
+                        <ArrowI />
+                      </CustomLink>
                   </div>
                 </div>
                 
 
                 <div className={styles.detail}>
                     <div className={styles.theLeft}>
-                        <Image src={dateRange} alt='dateRange'/>
+                        <DateI />
                         <div className={styles.head}>Goşulan wagty:</div>
                     </div>
                     <div className={styles.theRight}>
@@ -178,7 +200,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
 
                   <div className={styles.detail}>
                       <div className={styles.theLeft}>
-                        <Image src={listeners} alt='listeners'/>
+                        <ListenersI/>
                         <div className={styles.head}>Diňleýjiler</div>
                       </div>
                       <div className={styles.theRight}>
@@ -193,7 +215,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                   </div>
                   <div className={styles.detail}>
                       <div className={styles.theLeft}>
-                        <Image src={user} alt='followers'/>
+                        <Follower/>
                         <div className={styles.head}>Follow edenler</div>
                       </div>
                       <div className={styles.theRight}>
@@ -204,19 +226,18 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                   </div>
                   <div className={styles.detail}>
                       <div className={styles.theLeft}>
-                        <Image src={musicHeart} alt='musicHeart'/>
+                        <MusicLikeI/>
                         <div className={styles.head}>Like Любимые треки</div>
                       </div>
                       <div className={styles.theRight}>
                         {fetchSongInfo ? song?.count?.likers : data?.count.songListeners}
                       </div>
                   </div>
-
                   {
                     fetchSongInfo && 
                     <div className={styles.detail}>
                       <div className={styles.theLeft}>
-                        <Image src={download} alt='download'/>
+                        <DownloadI />
                         <div className={styles.head}>Jemi ýüklenen</div>
                       </div>
                       <div className={styles.theRight}>

@@ -29,7 +29,6 @@ const ViewAll = ({params}: {params: {each: string}}) => {
   const id = useMemo(() => params?.each?.[0],[params.each])
   const renderSongs = useMemo(() => id !== 'news',[id])
   const renderNews = useMemo(() => id === 'news',[id])
-
   const [rows, setRows] = useState<Songs['rows']>([])
   const [news, setNews] = useState<ArtNews[]>([])
 
@@ -41,12 +40,12 @@ const ViewAll = ({params}: {params: {each: string}}) => {
     isLoading, 
     fetchNextPage
   } = useInfiniteQuery({
-    queryKey: ['Songs', renderSongs], 
-    queryFn: ({pageParam}) => getSongs({ page: pageParam }), 
+    queryKey: ['Songs', renderSongs, id], 
+    queryFn: ({pageParam = 0}) => getSongs({ page: pageParam, playlistId: id }), 
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.data.rows.length ? allPages.length + 1 : undefined;
     }, 
-    enabled: renderSongs
+    enabled: renderSongs && !!id
   })
 
   const {

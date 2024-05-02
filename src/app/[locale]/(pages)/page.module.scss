@@ -41,7 +41,7 @@
 
 
 
-.fixed_top {
+.topMenu {
     color: var(--text-color);
     display: flex;
     align-items: center;
@@ -89,7 +89,6 @@
     color: var(--text-color);
     padding: 10px 20px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     gap: 10px;
 
@@ -104,13 +103,6 @@
         font-size:typo.$fontSizeBig + px;
         display: flex;
         align-items: center;
-        gap: 10px;
-
-        @media screen and (max-width: $md){
-            span {
-                display: none;
-            }
-        }
     }
 }
 

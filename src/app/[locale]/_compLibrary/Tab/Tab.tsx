@@ -56,7 +56,7 @@ const Tab = (props: TabProps) => {
         {
           tabs.map(tab => (
             <CustomLink href={"/".concat(baseUrl + `?tab=${tab.route}`)} className={cn({ active: (pathname === tab.route) || (!searchMenu && isUndefined(pathname) && tab.route === tabs[0].route) })}>
-              {tab.label.tm}
+              {tab.label.tk}
             </CustomLink>
           ))
         }

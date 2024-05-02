@@ -51,7 +51,7 @@ const Bottomsheet = React.forwardRef<HTMLDivElement, BottomsheetProps>((props, r
                     {actionsData?.map((action, i) => (
                         <div className={styles.action} key={i} onClick={(e) => handleClick(e, action)}>
                         <div className={styles.title}>
-                            {action.label.tm}
+                            {action.label.tk}
                         </div>
                         <>{action.icon}</>
                         </div>

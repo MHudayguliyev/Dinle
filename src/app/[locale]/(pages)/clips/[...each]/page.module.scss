@@ -10,6 +10,12 @@
         align-items: center;
         gap: 20px;
     }
+    .actions {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 24px;
+    }
 }
 .videoPlayer {
     width: 580px;

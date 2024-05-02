@@ -59,15 +59,15 @@ const Artist = ({params}: {params: {each: string}}) => {
     const tabs: TabMenuTypes[] = [
         {
           route: 'song', label: {
-            en: 'Songs', tm: 'Songs', ru:'Songs'
+            tk: 'Songs', ru:'Songs'
           }
         }, 
         {route: 'video', label: {
-            en: 'Clips', tm:'Clips', ru: 'Clips'
+            tk:'Clips', ru: 'Clips'
         }}, 
         {
           route: 'album', label: {
-            en: 'Albums', tm:'Albums', ru: 'Albums'
+           tk:'Albums', ru: 'Albums'
           }
         }
     ]
@@ -297,14 +297,14 @@ const Artist = ({params}: {params: {each: string}}) => {
     const actionsData = [
         {
             value: 'share', 
-            label: {en: 'Paylasmak', ru: 'Paylasmak', tm: 'Paylasmak'}, 
+            label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
             icon: <ShareSmI />
         }
     ]
 
     useEffect(() => {
-        console.log("isFetching",isFetching)
-    }, [isFetching])
+        console.log("scrolly",scrolly)
+    }, [scrolly])
   return (
     <>
         {infoMenu}
@@ -319,10 +319,13 @@ const Artist = ({params}: {params: {each: string}}) => {
                 </div>
             )}
             renderActions={() => (
-                <div className={styles.actions}>
-                    {infoToggler}
-                    {shareBtn}
-                </div>
+                <>
+                    {scrolly >= 271 && <div className={styles.name}>{credentials?.title}</div>}
+                    <div className={styles.actions}>
+                        {infoToggler}
+                        {shareBtn}
+                    </div>
+                </>
             )}
         />
 

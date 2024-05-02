@@ -3,6 +3,7 @@
 @use '../../_styles/globalFunctions.scss' as *;
 @use '../../_styles/globalShapes.scss' as GShapes;
 @use '../../_styles/globalAnimation.scss' as GAnimation;
+@use '../../_styles/globalMixins.scss' as GMixin;
 
 .sidemenu__container {
     position: fixed;
@@ -21,20 +22,7 @@
     user-select: none;
     overflow-y: overlay;
     &::-webkit-scrollbar {
-        width: 5px;
-        background-color: transparent;
-    }
-    &::-webkit-scrollbar-track {
-        right: 5px;
-        border-radius: 5px;
-        background-color: transparent;
-    }
-    &::-webkit-scrollbar-track-piece {
-        background: transparent;
-    }
-    &::-webkit-scrollbar-thumb {
-        border-radius: 10px;
-        // background-color: red; //later take care of this bg color
+        display: none;
     }
 
     .head {
@@ -45,7 +33,6 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
-        // margin-top: 64px;
         .item {
             position:relative;
             display: flex;
@@ -53,6 +40,7 @@
             padding: 4px 20px;
             justify-content: space-between;
             align-items: center;
+            gap: 14px;
             cursor: pointer;
             
             &:hover {
@@ -64,6 +52,9 @@
                 gap: 10px;
                 align-items: center;
                 .content {
+                    h4, div {
+                        @include GMixin.textOverflow();
+                    }
                     h4{
                         font-weight: calc($fontWeightMedium + 100);
                         font-size: $fontSizeBig + px;

@@ -66,22 +66,22 @@ const ViewAll = () => {
     const tabs: TabMenuTypes[] = [
       {
         route: 'song', label: {
-          en: 'Songs', tm: 'Songs', ru:'Songs'
+          tk: 'Songs', ru:'Songs'
         }
       }, 
       // {route: 'clip', label: {
-      //   en: 'Clips', tm:'Clips', ru: 'Clips'
+      //   en: 'Clips', tk:'Clips', ru: 'Clips'
       // }}, 
       {
         route: 'artist', label: {
-          en: 'Artists', tm:'Artists', ru: 'Artists'
+          tk:'Artists', ru: 'Artists'
         }
       },
       {route: 'albom', label: {
-        en: 'Alboms', tm:'Alboms', ru: 'Alboms'
+        tk:'Alboms', ru: 'Alboms'
       }}, 
       {route: 'playlist', label: {
-        en: 'Playlist', tm:'Playlist', ru: 'Playlist'
+        tk:'Playlist', ru: 'Playlist'
       }}
     ]
 
@@ -375,9 +375,12 @@ const ViewAll = () => {
             </div>
         )}
         renderActions={() => (
-            <div className={styles.actions}>
-              {shareBtn}
-            </div>
+            <>
+              {scrolly >= 271 && <div className={styles.title}>My foverim</div>}
+              <div className={styles.topActions}>
+                {shareBtn}
+              </div>
+            </>
         )}
       />
 

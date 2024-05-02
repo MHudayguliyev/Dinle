@@ -1,9 +1,8 @@
 import { StaticImageData } from "next/image"
 
 export type Localization = {
-    en: string
     ru: string 
-    tm: string
+    tk: string
 }
 export type Tracks = {
     id: number

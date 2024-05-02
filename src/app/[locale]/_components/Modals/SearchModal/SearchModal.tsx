@@ -39,7 +39,7 @@ const SearchModal = (props: SearchModalProps) => {
     }
 
     const shazamify = async (chunks: any[]) => {
-      const blob = new Blob(chunks, { type: 'audio/wav' })
+      const blob = new Blob(chunks, { type: 'audio/mp3' })
       const formData = new FormData()
       formData.append('fileUrl', blob)
 

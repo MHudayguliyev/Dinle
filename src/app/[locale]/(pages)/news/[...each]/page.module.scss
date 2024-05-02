@@ -112,7 +112,7 @@
         line-height: 60px;
         margin-bottom: 5px;
         color: var(--text-color);
-        @include GMixin.wordOverflow
+        @include GMixin.textOverflow($line: 2);
     }
 
     .news {
@@ -127,16 +127,16 @@
         line-height: 21.6px;
     }
 
-    .name {
-        font-weight: $fontWeightBold;
-        font-size: 80px;
-        line-height: 96px;
-        color: var(--text-color);
-        @include GMixin.textOverflow;
-        @media screen and (max-width: $lg){
-            font-size: 40px;
-        }
-    }
+    // .name {
+    //     font-weight: $fontWeightBold;
+    //     font-size: 40px;
+    //     line-height: 40px;
+    //     color: var(--text-color);
+    //     @include GMixin.textOverflow($line: 1);
+    //     @media screen and (max-width: $lg){
+    //         font-size: 40px;
+    //     }
+    // }
 
     img {
         height: 170px;
@@ -160,9 +160,6 @@
         .title {
             font-size: 22px;
             line-height: 26.4px;   
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: break-spaces;
         }
     }
 }
@@ -175,7 +172,6 @@
         line-height: 24px;
         font-weight: $fontWeightMedium;
         margin-bottom: 14px;
-        overflow: hidden;
     }
 
     .author {

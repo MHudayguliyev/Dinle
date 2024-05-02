@@ -14,7 +14,7 @@ import Share from '@components/icons/share/icon';
 //images 
 import likedSongs from '@app/_assets/images/liked-songs.png'
 //libs
-import PrevNext from '@app/_compLibrary/PrevNext';
+// import PrevNext from '@app/_compLibrary/PrevNext';
 import Button from '@app/_compLibrary/Button';
 import { getSongs } from '@app/_api/Queries/Getters';
 import SongList from '@app/_components/SongList/SongList';
@@ -100,8 +100,6 @@ const Songs = () => {
         {infoMenu}
 
         <div className={styles.header} ref={headerRef}>
-            <PrevNext left onClick={() => router.back()}/>
-            <PrevNext right active onClick={() => router.forward()}/>
             <div className={styles.share}>
             <Share />
             </div>
@@ -146,9 +144,6 @@ const Songs = () => {
                 </div>
 
                 <div className={styles.actions}>
-                <Button color='lightDarkThird' roundedSm className={styles.actionBtn}>
-                    <PlaySm />
-                </Button>
                 <Button color='lightDarkThird' roundedSm className={styles.actionBtn}>
                     <ShuffleSmI />
                 </Button>

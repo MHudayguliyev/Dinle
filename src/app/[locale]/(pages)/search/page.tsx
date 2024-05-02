@@ -1,7 +1,7 @@
 'use client';
 import React, {useCallback, useEffect, useMemo, useState, useRef} from 'react'
 import Image from 'next/image';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
 // lib
@@ -45,14 +45,12 @@ import { Navigation } from 'swiper/modules';
 //swiper breakpoints 
 import { standardCardBreaksPoints } from '@app/_assets/json_data/swiper_breakpoints';
 import ArtistsList from '@app/_components/ArtistsList/ArtistsList';
-import ArrowRightI from '@app/_components/icons/arrowRight/icon';
-import Link from 'next/link';
 import Artists from '@app/_api/types/queryReturnTypes/Artists';
 import useObserve from '@app/_hooks/useObserve';
 import Playlists from '@app/_api/types/queryReturnTypes/Playlists';
 import Albums from '@app/_api/types/queryReturnTypes/Albums';
 import CustomLink from '@app/_components/CustomLink/CustomLink';
-import ChevronRightI from '@app/_components/icons/chevronRight/icon';
+import ArrowRightLgI from '@app/_components/icons/ArrowRightLg/icon';
 
 const cn = classNames.bind(styles)
 const Search = () => {
@@ -78,20 +76,20 @@ const Search = () => {
   const tabs: TabMenuTypes[] = [
     {
       route: 'artist', label: {
-        en: 'Artists', tm: 'Artists', ru:'Artists'
+        tk: 'Artists', ru:'Artists'
       }
     }, 
     {route: 'playlist', label: {
-      en: 'Playlist', tm:'Playlist', ru: 'Playlist'
+      tk:'Playlist', ru: 'Playlist'
     }}, 
     {
       route: 'album', label: {
-        en: 'Albums', tm:'Albums', ru: 'Albums'
+        tk:'Albums', ru: 'Albums'
       }
     }, 
     {
       route: 'genre', label: {
-        en: 'Genres', tm:'Genres', ru: 'Genres'
+        tk:'Genres', ru: 'Genres'
       }
     }
   ]
@@ -336,7 +334,7 @@ const Search = () => {
     )
   }, [isViewAll])
   const arrowRight = useMemo(() => (
-    <ChevronRightI />
+    <ArrowRightLgI />
   ), [])
 
 
@@ -701,7 +699,6 @@ const Search = () => {
                 {
                   !isViewAll && 
                   <CustomLink href={`/search?mask=${searchValue}&all=songs`}>
-                    <span>View all</span>
                     {arrowRight}
                   </CustomLink>
                 }
@@ -727,7 +724,6 @@ const Search = () => {
                 {
                   !isViewAll && 
                   <CustomLink href={`/search?mask=${searchValue}&all=artists`}>
-                    <span>View all</span>
                     {arrowRight}
                   </CustomLink>
                 }
@@ -780,7 +776,6 @@ const Search = () => {
                 {
                   !isViewAll && 
                   <CustomLink href={`/search?mask=${searchValue}&all=alboms`}>
-                    <span>View all</span>
                     {arrowRight}
                   </CustomLink>
                 }
@@ -821,7 +816,6 @@ const Search = () => {
                 {
                   !isViewAll && 
                   <CustomLink href={`/search?mask=${searchValue}&all=playlists`}>
-                    <span>View all</span>
                     {arrowRight}
                   </CustomLink>
                 }

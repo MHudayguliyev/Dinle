@@ -7,11 +7,11 @@ import classNames from 'classnames/bind'
 import styles from  './Sidebar.module.scss'
 //images
 import logo from '@app/_assets/images/logo.png'
-import premiumIcon from '@app/_assets/icons/premium.svg'
 import playlist from '@app/_assets/icons/playlist.svg';
 import gotoLib from '@app/_assets/icons/go_to_library.svg';
 import like_image from '@app/_assets/images/liked-sm.png';
 import user from '@app/_assets/icons/accountI.svg'
+import ArrowLeftI from '../icons/arrowLeft/icon'
 //json data
 import sidebar_routes from '@app/_assets/json_data/sidebar_routes'
 //components
@@ -26,10 +26,11 @@ import { useAppSelector, useAppDispatch } from '@app/_hooks/redux_hooks'
 
 import { useQuery } from 'react-query'
 import { GetPlaylists } from '@app/_api/Queries/Getters'
-import ChevronRightI from '../icons/chevronRight/icon'
-import ArrowRightI from '../icons/arrowRight/icon'
-import ArrowLeftI from '../icons/arrowLeft/icon'
 import { setToggleSidebar } from '@app/_redux/reducers/SidebarReducer'
+
+//locale 
+import { useLocale } from 'next-intl'
+import { Localization } from '@app/_types'
 
 interface SidebarProps {
     hideSidebar: boolean
@@ -38,6 +39,7 @@ interface SidebarProps {
 
 const cn = classNames.bind(styles)
 const Sidebar = (props: SidebarProps) => {
+    const locale = useLocale()
     const pathname = usePathname()
     const dispatch = useAppDispatch()
     //redux states
@@ -83,7 +85,7 @@ const Sidebar = (props: SidebarProps) => {
                                     <SidebarItem 
                                         active={i === activeItem}
                                         icon={route.icon}
-                                        title={route.display_name['en']}
+                                        title={route.display_name[locale as keyof Localization]}
                                         sidebarFolded={sidebarFolded}
                                     />
                                     </CustomLink>

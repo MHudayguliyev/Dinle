@@ -64,7 +64,7 @@
     }
 }
 .sidebarFolded {
-    transition: GAnimation.$durationFaster;
+    // transition: GAnimation.$durationFaster;
     width: calc(100% - $sidebarFoldedWidth);
     left: $sidebarFoldedWidth;
     @media screen and (max-width: $md) {
