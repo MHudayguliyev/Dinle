@@ -129,8 +129,8 @@
 
     .name {
         font-weight: $fontWeightBold;
-        font-size: 80px;
-        line-height: 96px;
+        font-size: 40px;
+        line-height: 40px;
         color: var(--text-color);
         @include GMixin.textOverflow;
         @media screen and (max-width: $lg){

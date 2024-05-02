@@ -10,6 +10,7 @@ import {CheckObjOrArrForNull, formatDate} from '@utils/helpers'
 import classNames from 'classnames/bind'
 import styles from './InfoMenu.module.scss'
 //icons 
+import Follower from '@app/_components/icons/follower/icon'
 import music from '@app/_assets/icons/music.svg'
 import genre from '@app/_assets/icons/genre.svg'
 import dateRange from '@app/_assets/icons/date_range.svg'
@@ -193,7 +194,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                   </div>
                   <div className={styles.detail}>
                       <div className={styles.theLeft}>
-                        <Image src={user} alt='followers'/>
+                        <Follower/>
                         <div className={styles.head}>Follow edenler</div>
                       </div>
                       <div className={styles.theRight}>
@@ -211,7 +212,6 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                         {fetchSongInfo ? song?.count?.likers : data?.count.songListeners}
                       </div>
                   </div>
-
                   {
                     fetchSongInfo && 
                     <div className={styles.detail}>

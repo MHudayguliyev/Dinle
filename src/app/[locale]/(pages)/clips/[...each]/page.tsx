@@ -11,8 +11,11 @@ import { GetClip } from '@app/_api/Queries/Getters';
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 import PrevNextI from '@app/_components/icons/prevNext/icon';
 import useWindowSize from '@app/_hooks/useWindowSize';
+import { useAppSelector, useAppDispatch } from '@app/_hooks/redux_hooks';
+import { setIsSongPlaying } from '@app/_redux/reducers/MediaReducer';
 
 const Video = ({params}: {params: {each: string}}) => {
+  const dispatch = useAppDispatch()
   const searchParams = useSearchParams()
   const type = searchParams.get('type')
   const renderShows = useMemo(() => type === 'show',[type])
@@ -20,10 +23,20 @@ const Video = ({params}: {params: {each: string}}) => {
 
   const [isClient, setIsClient] = useState(false)
   const [width] = useWindowSize()
+
+  const {
+    songData, 
+    songIndex, 
+    isSongPlaying, 
+  } = useAppSelector(state => state.mediaReducer)
  
   useEffect(() => {
     setIsClient(true)
   }, [])
+
+  // useEffect(() => {
+  //   if(isSongPlaying) dispatch(setIsSongPlaying(false))
+  // }, [isSongPlaying])
 
   const {
     data: clipData
@@ -31,8 +44,8 @@ const Video = ({params}: {params: {each: string}}) => {
     videoId,'clips', renderShows ? videoId : ""
   ), 
 {enabled: !!videoId})
-  console.log('clipData', clipData)
-  console.log('renderShows', renderShows)
+  // console.log('clipData', clipData)
+  // console.log('renderShows', renderShows)
 
 
   const cover = useMemo(() => (
@@ -45,6 +58,9 @@ const Video = ({params}: {params: {each: string}}) => {
         <div className={styles.videoPlayer}>
           <ReactPlayer
             controls
+            onPlay={() => {
+              if(isSongPlaying) dispatch(setIsSongPlaying(false))
+            }}
             url={clipData?.data?.link} 
             onEnded={() => console.log("ended playing video")}
             width={'100%'}
@@ -70,6 +86,11 @@ const Video = ({params}: {params: {each: string}}) => {
                   <PrevNextI  mode='prev'/>
                   <PrevNextI  mode='next'/>
               </div>
+          )}
+          renderActions={() => (
+            <div className={styles.actions}>
+              Klipler
+            </div>
           )}
       />
 
