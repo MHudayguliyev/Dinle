@@ -1,0 +1,51 @@
+@use '../../_styles/globalShapes.scss' as GShapes;
+@use '../../_styles/globalBreakPoints.scss' as *;
+
+
+.header {
+    --opacity: 0;
+    height: 80px;
+    width: calc(100% - $sidebarWidth);
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    z-index: GShapes.$fixedHeaderZIndex;
+    display: flex;
+    align-items: center;
+
+    &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #17171780;
+        z-index: -1;
+        opacity: var(--opacity);
+    }
+    &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        background: linear-gradient(0deg, #DB6795 0%, #B13A6A 100%);
+        opacity: var(--opacity);
+    }
+
+    @media screen and (max-width: $md) {
+        width: 100%;
+    }
+}
+
+.sidebarFolded {
+    width: calc(100% - $sidebarFoldedWidth);
+    @media screen and (max-width: $md) {
+        width: 100%;
+    }
+}

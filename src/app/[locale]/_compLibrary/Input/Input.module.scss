@@ -1,0 +1,137 @@
+@use '../../_styles/globalTypography.scss' as typography;
+@use '../../_styles/globalFunctions.scss' as *;
+
+.input__parent_container {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   background: rgba(19, 19, 19, 1);
+   padding: 0 10px;
+   position: relative;
+
+   .width {
+      width: 260px;
+   }
+
+   .baseStyle {
+      position: relative;
+      width: 100%;
+   }
+   .leftIcon {
+      position: absolute;
+      top: 13px;
+      font-size: 24px;
+      cursor: pointer;
+   }
+   .rightIcon {
+      width: 25.27px;
+      height: 25.27px;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+   }
+
+   .mask {
+      font-weight: typography.$fontWeightRegular;
+      font-size: typography.$fontSizeMedium + px;
+      line-height: typography.$lineHeightBig + px;
+      color: var(--text-fourth-color);
+      position: absolute;
+      top: 13px;
+  }
+
+   .input {
+      background-color: transparent;
+      border: none;
+      outline: none;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--text-color);
+      // border: 1px solid green;
+      width: 100%;
+      &::placeholder {
+         /* Chrome, Firefox, Opera, Safari 10.1+ */
+         color: var(--text-placeholder);
+         opacity: 1;
+         /* Firefox */
+      }
+   
+      &:-ms-input-placeholder {
+         /* Internet Explorer 10-11 */
+         color: var(--text-color);
+      }
+   
+      &::-ms-input-placeholder {
+         /* Microsoft Edge */
+         color: var(--text-color);
+      }
+   
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+         -webkit-appearance: none;
+         margin: 0;
+      }
+   
+      /* Firefox */
+      &[type=number] {
+         -moz-appearance: textfield;
+      }
+   
+      &[type=search] {
+         -webkit-search-cancel-button {
+         -webkit-appearance: searchfield-cancel-button;
+         }
+        
+      }
+   }
+
+
+
+}
+
+.fontSizeSmall {
+   font-size: toRem(typography.$fontSizeSmall);
+}
+.fontSizeMedium {
+   font-size: toRem(typography.$fontSizeMedium);
+}
+.fontSizeBig {
+   font-size: toRem(typography.$fontSizeBig);
+}
+.fontWeightNormal {
+   font-weight: toRem(typography.$fontWeightRegular);
+}
+.fontWeightMedium {
+   font-weight: toRem(typography.$fontWeightMedium);
+}
+.fontWeightBold {
+   font-weight: toRem(typography.$fontWeightBold);
+}
+.leftPadIcon {
+   padding-left: 20px;
+}
+.leftPadMask {
+   padding-left: 40px;
+}
+.rounded {
+   border-radius: var(--button-border-radius);
+}
+.roundedSm {
+   border-radius: calc(var(--border-radius) - 2px);
+}
+.outlineOrange {
+   outline: 1px solid var(--input-outline-bg);
+}
+.outlineDark {
+   outline: 1px solid var(--main-bg);
+}
+.outlineLight {
+   outline: 1px solid rgba(51, 51, 51, 0.49);
+}
+
+.removeBg {
+   background: transparent;
+}

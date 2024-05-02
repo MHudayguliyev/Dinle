@@ -1,0 +1,10 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="pause_circle_filled" clip-path="url(#clip0_1547_4886)">
+<path id="Vector" d="M60 10C32.4 10 10 32.4 10 60C10 87.6 32.4 110 60 110C87.6 110 110 87.6 110 60C110 32.4 87.6 10 60 10ZM55 80H45V40H55V80ZM75 80H65V40H75V80Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_1547_4886">
+<rect width="120" height="120" fill="white"/>
+</clipPath>
+</defs>
+</svg>

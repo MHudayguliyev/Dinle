@@ -1,0 +1,36 @@
+.table_wrapper {
+    overflow-y: auto;
+}
+
+.table {
+    width: 100%;
+    border-spacing: 2px;
+    border-collapse: collapse; // seperate 
+}
+
+.thead {
+    color: var(--text-color);
+    background: linear-gradient(rgba(9, 9, 9, 1), rgba(0, 0, 0, 0));
+    height: 47px;
+}
+
+.tr {
+    text-align: left;
+    font-size: 14px;
+}
+
+.th,
+.td {
+    text-transform: capitalize;
+    padding: 15px 10px;
+    color: var(--text-color);
+}
+
+.tbody > .tr:hover {
+    color: var(--text-white);
+}
+
+.tbody > .tr {
+    color: var(--text-color);
+}
+

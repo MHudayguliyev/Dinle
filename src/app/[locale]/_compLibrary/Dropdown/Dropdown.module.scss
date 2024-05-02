@@ -1,0 +1,56 @@
+@use '../../_styles/globalShapes.scss' as shapes;
+@use '../../_styles/globalAnimation.scss' as GAnimation;
+
+.dropdown {
+    position: relative;
+    width: 100%;
+    color: var(--text-color);
+}
+
+.head {
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
+    background: var(--box-main-bg);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dropdown__content {
+    z-index: shapes.$dropDownZIndex;
+    overflow: auto;
+    border-radius: var(--border-radius-sm);
+    position: absolute;
+    width: 50%;
+    top: 40px;
+    right: 0;
+    transform-origin: top right;
+    transform: scale(0);
+    transition: transform GAnimation.$duration ease 0s;
+}
+
+.dropdown__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: var(--main-bg);
+}
+
+.item {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 24px;
+    border-radius: var(--border-radius);
+    background-color: var(--box-main-bg);
+}
+
+.show {
+    transform: scale(1);
+    transition: transform GAnimation.$duration var(--transition-cubic);
+}
+
+.active {
+    background-color: rgb(44, 44, 44);
+}

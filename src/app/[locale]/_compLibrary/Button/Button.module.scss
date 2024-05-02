@@ -1,0 +1,106 @@
+@use '../../_styles/globalTypography.scss' as *;
+@use '../../_styles/globalAnimation.scss' as GAnimation;
+
+.baseStyle {
+    font-family: "Roboto Flex", sans-serif;
+    font-size: $fontSizeMedium + px;
+    font-weight: $fontWeightRegular;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    padding: 10px;
+    color: var(--text-color);
+    transition: GAnimation.$durationFaster;
+ }
+
+ .baseChildStyle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  span {
+    display: flex;
+    align-items: center;
+  }
+ }
+
+ .noPadding {
+  padding: 4px;
+ }
+
+ .rounded {
+    border-radius: var(--button-border-radius);
+ }
+
+ .roundedSm {
+    border-radius: calc(var(--border-radius) - 2px);
+  }
+
+  .borderLight {
+    border: 1px solid var(--light)
+  }
+  .borderNone {
+    border: none
+  }
+
+  .borderDark {
+    border: 1px solid var(--dark)
+  }
+
+
+ .link:hover {
+    color: var(--txt-white);
+ }
+
+ .colorLight {
+    background-color: var(--button-light);
+    color: var(--text-dark);
+
+    &:hover {
+      background-color: var(--button-gray);
+    }
+  }
+
+ .colorDark {
+   background-color: var(--button-dark);
+ }
+ .colorRed {
+  background-color: var(--button-red);
+  }
+  .colorDarkRed {
+    background-color: var(--button-second-red);
+  }
+ .colorLightDark {
+  background-color: var(--button-light-dark);
+  }
+  .colorLinearGradient {
+    background: linear-gradient(92.38deg, rgba(255, 255, 255, 0.56) -8.3%, rgba(255, 255, 255, 0) 120.83%);
+    border: 1px solid var(--light);
+    color: rgba(31, 6, 47, 1);
+    font-weight: $fontWeightMedium;
+    font-size: $fontSizeSmall + px;
+    line-height: $lineHeightSmall + px;
+  }
+  .colorLinearGradientSecond {
+    background: linear-gradient(97.19deg, #FF7777 8.68%, #53185A 90.26%, #2A005F 112.49%, #7A0B62 162.21%);
+  }
+  .colorLightDarkSecond{
+    background-color: var(--button-second-light-dark);
+  }
+  .colorLightDarkThird{
+    background-color: var(--button-third-light-dark);
+  }
+  .colorLightDarkFourth{
+    background-color: var(--button-fourth-light-dark);
+  }
+ .colorPurple {
+   background-color: var(--button-purple);
+ }
+ .colorOrange {
+  background-color: var(--button-orange);
+}
+ .colorTransparent {
+   background-color: transparent;
+ }
+ 

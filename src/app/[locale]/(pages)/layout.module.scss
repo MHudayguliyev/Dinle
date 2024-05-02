@@ -1,0 +1,48 @@
+@use '../_styles/globalBreakPoints.scss' as *;
+@use '../_styles/globalAnimation.scss' as GAnimation;
+
+.layoutContent {
+    width: 100%;
+    min-height: 100vh;
+
+    .layoutChildren {
+        position: relative;
+        transition: GAnimation.$durationFaster;
+        margin-left: 244px;
+        @media screen and (max-width: $md) {
+            margin-left: 0;
+        }
+    }
+
+    .openSidebar{
+        display: none;
+        @media screen and (min-width: $md) {       
+            display: block;     
+            position: fixed;
+            top: 15px;
+            left: 48px;
+            z-index: 100;
+            padding: 5px;
+        }
+    }
+
+    .sidebarFolded {
+        margin-left: 55px;
+        @media screen and (max-width: $md) {
+            margin-left: 0;
+        }
+    }
+
+    @media screen and (max-width: $md) {
+        min-height: calc(100vh - $sidebarResponsiveHeight);
+        margin-bottom: $sidebarResponsiveHeight;
+    }
+}
+.marginBottom {
+    min-height: calc(100vh - $audioPlayerInitialHeight);
+    margin-bottom: $audioPlayerInitialHeight;
+    @media screen and (max-width: $md) {
+        min-height: calc(100vh - $playerPlusBottombarHeight);
+        margin-bottom: $playerPlusBottombarHeight;
+    }
+}

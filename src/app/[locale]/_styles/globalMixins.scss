@@ -1,0 +1,54 @@
+@mixin grid($cols: 3, $gap: 16px) {
+    display: -ms-grid; /* IE 10+ prefix */
+    display: grid;
+    grid-template-columns: $cols;
+    gap: $gap;
+}
+@mixin flexible($justify: start, $align: start, $dir: row, $wrap: nowrap, $gap: 0) {
+    display: -webkit-box; /* Safari prefix */
+    display: -moz-box; /* Firefox prefix */
+    display: flex;
+    flex-direction: $dir;
+    justify-content: $justify;
+    align-items: $align;
+    flex-wrap: $wrap;
+    gap: $gap;
+}
+@mixin scrollYMaker($width: 8px) {
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+        width: $width;
+        background-color: transparent;
+    }
+    &::-webkit-scrollbar-track {
+        right: 5px;
+        border-radius: 5px;
+        background-color: var(--divider-main-bg);
+    }
+    &::-webkit-scrollbar-track-piece {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: #aaa;
+    }
+}
+
+@mixin textOverflow {
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    word-break: break-all;
+}
+
+@mixin wordOverflow {
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

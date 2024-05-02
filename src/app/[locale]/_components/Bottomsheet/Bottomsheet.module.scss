@@ -1,0 +1,69 @@
+@use '../../_styles/globalShapes.scss' as GShapes;
+@use '../../_styles/globalBreakPoints.scss' as *;
+@use '../../_styles/globalAnimation.scss' as *;
+@use '../../_styles/globalTypography.scss' as *;
+
+.bottomSheet {
+    background: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 100vh;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: GShapes.$bottomSheetZIndex;
+    cursor: default;
+    -webkit-transition: $durationFaster;
+    -o-transition: $durationFaster;
+    transition: $durationFaster;
+    display: none;
+    @media screen and (max-width: $md) {
+        display: block;
+    }
+}
+
+.wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: end;
+    -ms-flex-align: end;
+    align-items: flex-end;
+    position: relative;
+    top: 0;
+}
+
+.box {
+    background: var(--bottomsheet-main-bg);
+    border-radius: 10px 10px 0px 0px;
+    width: 100%;
+    height: fit-content;
+    padding: 0 10px 10px;
+}
+
+.head {
+    height: 50px;
+    text-align: center;
+}
+
+.action {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: var(--border-radius-sm);
+    color: var(--text-fourth-color);
+
+    .title {
+        font-size: $fontSizeBig + px;
+    }
+
+    &:hover {
+        background: var(--show-more-hover-bg);
+    }
+}
+
+.open {
+   top: 0;
+}

@@ -1,0 +1,62 @@
+@use '../../../_styles/globalTypography.scss' as *;
+@use '../../../_styles/globalBreakPoints.scss' as *;
+
+.logoutModal {
+    height: 340px;
+    max-width: 640px;
+    width: 100%;
+    background:rgba(10, 10, 10, 1);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 30px 30px;
+}
+
+.theCenter {
+    text-align: center;
+    .deleteAccountTxt {
+        font-size: calc($fontSizeBig + 4) + px;
+        font-weight: $fontWeightBold;
+        margin-bottom: 4px;
+        color: var(--text-color);
+    }
+    .sureTxt  {
+        color: var(--text-sixths-color);
+        font-size: $fontSizeBig + px;
+    }
+}
+
+.btnGroup {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+
+    .action {
+        width: 100%;
+    }
+
+    @media screen and (max-width: $sm) {    
+        flex-direction: column-reverse;
+    }
+}
+
+.logout {
+    height: 120px;
+    width: 120px;
+    padding: 30px;
+    border-radius: var(--border-radius-circled);
+    background: rgba(16, 16, 20, 1);
+    @media screen and (max-width: $md) {
+        width: 60px;
+        height: 60px;
+        padding: 15px;
+        img {
+            height: 30px;
+            width: 30px;
+        }
+    }
+}

@@ -1,0 +1,205 @@
+@use './globalBreakPoints.scss' as *;
+@use "./globalFunctions.scss" as *;
+@use "./globalTypography.scss" as typography;
+@use "./fonts.scss";
+
+:root {
+    --light: #fff;
+    --dark: #000;
+
+    --main-bg:#090909;
+    --main-content-bg: #0A0A0A;
+    --main-content-second-bg: #000000;
+    --audio-player-main-bg: rgba(0, 0, 0, 0.8);
+    --banner-darkness-bg: rgba(0, 0, 0, 0.2);
+    --standard-card-hover-bg: #171717;
+    --item-hover-bg: #1F1F1F;
+    --bottomsheet-main-bg: rgba(9, 9, 9, 1);
+    --sidebar-main-bg: rgba(0, 0, 0, 0.80);
+    --sidemenu-main-bg: var(--sidebar-main-bg);
+    --lyricsmenu-main-bg: var(--sidebar-main-bg);
+    --artist-card-bg: rgba(255, 255, 255, 0.05);
+    --like-count-color: rgba(179, 179, 179, 1);
+    --login-text-color: rgba(217, 217, 217, 1);
+    
+    --text-color: rgba(255, 255, 255, 1); 
+    --text-second-color: #B3B3B3;
+    --text-third-color: rgba(94, 94, 98, 1);
+    --text-fourth-color: rgba(193, 193, 193, 1);
+    --text-fifth-color: rgba(184, 184, 184, 1);
+    --text-sixths-color: rgba(132, 132, 142, 1);
+    --text-dark: rgba(15, 11, 11, 1);
+
+    --show-more-bg: rgba(9, 9, 9, 1);
+    --show-more-hover-bg:rgba(22, 22, 22, 1);
+    --sidebar-text-color: var(--like-count-color);
+    --close-icon-bg: rgba(51, 51, 51, 0.50);
+    --video-controls-bg: rgba(45, 45, 45, 0.65);
+    --box-main-bg: rgba(13, 13, 13, 1);
+
+    --button-border-radius: 999px;
+    --border-radius-circled: 50%;
+    --arrow-border-radius: 99px;
+    --border-radius: 8px;
+    --border-radius-sm: 4px;
+
+    --banner-bg: rgba(15, 8, 23, 1);
+    --banner-second-bg: rgba(15, 8, 23, 1);
+    --song-card-footer-bg: #151219;
+    --song-card-label-color: #6100C2;
+    --song-card-title-color: rgba(252, 252, 252, 1);
+    --song-card-desc-color:rgba(152, 152, 166, 1);
+    --direction-arrow-hover-bg: var(--item-hover-bg);
+    --preloader-main-bg: var(--song-card-label-color);
+
+    --input-outline-bg: rgba(166, 25, 24, 1); 
+    --main-color-orange: rgba(166, 25, 24, 1);
+    --main-color-red:  rgba(255, 55, 64, 1);
+    --main-color-blue: rgba(15, 96, 255, 1);
+    --main-color-gray: rgba(135, 135, 135, 1);
+
+    --second-color-red: rgba(186, 26, 26, 1);
+    --second-color-light-red: rgba(186, 26, 26, 0.2);
+    --second-color-blue: rgba(0, 87, 205, 0.2);
+    --second-color-dark-blue: rgba(0, 25, 60, 1);
+
+    --button-light: rgba(255, 255, 255, 1);
+    --button-purple: rgba(0, 0, 0, 0.3);
+    --button-orange: rgba(67, 23, 0, 1);
+    --button-dark: var(--main-bg);
+    --button-light-dark: rgba(26, 26, 26, 1);
+    --button-second-light-dark: rgba(47, 47, 47, 1);
+    --button-third-light-dark: rgba(26, 26, 26, 0.5);
+    --button-fourth-light-dark: rgba(16, 16, 20, 1);
+    --button-red: var(--main-color-red);
+    --button-second-red: var(--second-color-red);
+    --button-gray: var(--main-color-gray);
+
+    --prev-next-main-bg: rgba(255, 255, 255, 0.05);
+    --prev-next-active-bg: rgba(0, 0, 0, 0.5);
+    --otp-input-filled-bg:rgba(241, 104, 32, 0.2); 
+    --otp-empty-border-bg:rgba(37, 37, 37, 1);
+    --otp-focused-border-bg:var(--main-color-orange);
+    --otp-error-filled-bg:rgba(241, 32, 32, 0.2);
+    --otp-error-border-bg:var(--main-color-orange);
+    --otp-error-text-color: var(--otp-error-border-bg);
+
+    --transition-cubic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --box-shadow: rgb(10, 10, 10);
+    --standard-card-box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.25);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+ }
+
+ body {
+    font-family: "Roboto Flex", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.7px;
+    scroll-behavior: smooth;
+    background: var(--main-bg);
+    overflow-y: overlay;
+    overflow-x: hidden;
+    font-size: typography.$fontSizeMedium + px;
+    font-weight: typography.$fontWeightRegular;
+    line-height: typography.$lineHeightBig + px;
+    outline: none;
+    // user-select: none;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+        background-color: transparent;
+    }
+    &::-webkit-scrollbar-track {
+        right: 4px;
+        border-radius: 9px;
+        background-color: rgba(28, 28, 28, 1);
+    }
+    &::-webkit-scrollbar-track-piece {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 9px;
+        background-color: var(--text-color);
+    }
+ }
+
+ input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    background-image: url('../_assets/icons/search_close.svg');
+  }
+
+ .modal-opened {
+    overflow: hidden;
+ }
+
+ a {
+    text-decoration: none;
+    color: inherit;
+ }
+
+ svg {
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+ }
+ 
+ .swiper {
+    z-index: 0 !important;
+ }
+
+.swiper-button-prev {
+    color: var(--text-color) !important;
+    width: 30px !important;
+    height: 30px !important;
+    padding: 0 4px !important;
+    border-radius: 8px !important;
+    background: rgba(34, 37, 41, 0.5);
+    backdrop-filter: blur(35px);
+    opacity: 0 !important;
+    width: 34px !important;
+    height: 34px !important;
+
+    @media screen and (max-width: $md) {
+        margin-left: auto !important;
+    }
+}
+.swiper-button-next {
+    color: var(--text-color) !important;
+    width: 30px !important;
+    height: 30px !important;
+    padding: 0 4px !important;
+    border-radius: 8px !important;
+    background: rgba(34, 37, 41, 0.5);
+    backdrop-filter: blur(35px);
+    width: 34px !important;
+    height: 34px !important;
+    opacity: 0 !important;
+}
+.swiper-button-next::after {
+    content: url('../_assets/icons/sl_arrow_next.svg') !important;
+}
+.swiper-button-prev::after {
+    content: url('../_assets/icons/sl_arrow_back.svg') !important;
+
+}
+.swiper-button-next::after, .swiper-button-prev:after {
+    font-size: 0 !important;
+}
+.swiper:hover .swiper-button-next,.swiper:hover .swiper-button-prev {
+    opacity: 1 !important;
+
+}
+.swiper:hover .swiper-button-disabled {
+    opacity: 0 !important;
+}

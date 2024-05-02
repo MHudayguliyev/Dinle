@@ -1,0 +1,82 @@
+@use '../../_styles/globalTypography.scss' as *;
+@use '../../_styles/globalBreakPoints.scss' as *;
+@use '../../_styles/globalMixins.scss' as GMixin;
+
+.wrapper {
+    position: relative;
+    height: calc(100vh - 105px);
+    width: 100%;
+    color: var(--text-color);
+
+    .top {
+        position: fixed;
+        top: 0;
+        left: $sidebarWidth;
+        width: calc(100% - $sidebarWidth);
+        height: 64px;
+        background-color: transparent;
+        padding: 10px 20px;
+        @include GMixin.flexible($align: center);
+        
+    }
+    
+    @media screen and (max-width: $md) {
+        height: calc(100vh - (90px + 65px));
+
+        .top {
+            width: 100%;
+            left: 0;
+        }
+    }
+
+
+}
+.box {
+    max-width: 484px;
+    width: 100%;
+    height: 380px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+
+    @include GMixin.flexible($dir: column, $align: stretch, $gap: 20px)
+}
+
+.topHeader {
+    font-weight: $fontWeightBold;
+    font-size: calc($fontSizeBig + 6) + px;
+    line-height:26.4px;
+}
+
+.otherDevices {
+    @include GMixin.flexible($dir: column, $align: stretch, $gap: 4px)
+}
+
+.item {
+    background-color: var(--box-main-bg);
+    padding:10px;
+    border-radius: var(--border-radius);
+    @include GMixin.flexible($gap: 6px, $align: center);
+
+    .deviceInfo {
+        font-size: $fontSizeSmall + px;
+        line-height: $lineHeightMedium + px;
+        .version {
+            color: var(--text-third-color);
+        }
+    }   
+    
+    .theLeft {
+        @include GMixin.flexible($gap: 6px, $align: center);
+    }
+}
+
+.title {
+    color: var(--text-third-color);
+}
+.spaceBetween {
+    justify-content: space-between;
+}
+
