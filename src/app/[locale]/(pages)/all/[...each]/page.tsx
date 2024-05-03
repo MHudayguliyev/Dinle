@@ -10,6 +10,7 @@ import { GetArtNews, getSongs } from '@app/_api/Queries/Getters';
 import Songs from '@app/_api/types/queryReturnTypes/Songs';
 //comps
 import SongList from '@app/_components/SongList/SongList';
+import StandardCard from '@app/_components/StandardCard/StandardCard';
 //api
 import { likeSong } from '@app/_api/Queries/Post';
 //redux
@@ -17,9 +18,8 @@ import { useAppDispatch } from '@app/_hooks/redux_hooks';
 import { setCurrentSong } from '@app/_redux/reducers/MediaReducer';
 //hooks
 import useObserve from '@app/_hooks/useObserve';
-import ArtNews from '@app/_api/types/queryReturnTypes/ArtNews';
 import { CheckObjOrArrForNull } from '@app/_utils/helpers';
-import StandardCard from '@app/_components/StandardCard/StandardCard';
+import ArtNews from '@app/_api/types/queryReturnTypes/ArtNews';
 
 const ViewAll = ({params}: {params: {each: string}}) => {
   const observer = useRef<IntersectionObserver>();
@@ -89,7 +89,6 @@ const ViewAll = ({params}: {params: {each: string}}) => {
       return [...acc, ...page.data.rows];
     }, [])
   }, [newsData]);
-  console.log('newsData', newsData)
 
   useEffect(() => {
     if(!isLoading && !isError)
@@ -104,7 +103,6 @@ const ViewAll = ({params}: {params: {each: string}}) => {
   const handleLike = useCallback(async(songId: string) => {
     try {
         const response = await likeSong(songId)
-        console.log('response', response)
         if(response.success && response.statusCode === 200)
         setRows(prev => prev?.map(row => row.id === songId ? {...row, isLiked: !row.isLiked} : row))
       } catch (error) {
@@ -138,7 +136,7 @@ const ViewAll = ({params}: {params: {each: string}}) => {
               onPlay={(index) => dispatch(setCurrentSong({data: rows, index, id: rows?.[index]?.id}))}
               onLike={handleLike}
             />  
-        </div> 
+          </div> 
       }
       {
         renderNews && 

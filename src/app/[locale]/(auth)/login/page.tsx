@@ -56,15 +56,12 @@ const Login = () => {
       phone: Yup.string().required().matches(/(?:(61|62|63|64|65|71)[0-9]{6})$/, 'Phone must start with 6[1-5]/71')
     }), 
     onSubmit: async (values, {resetForm}) => {
-      console.log('value', values)
       try {
         const phone = '+993' + values.phone
         const response = await signUp({phone: phone})  
-        console.log('response', response)
         if(response.statusCode === 200){
           try {
             const response = await sendOtp({phone: phone})      
-            console.log('otps resiult', response)
             if(response.statusCode === 200){
               setPhone(phone)
               setMode('otp')
@@ -90,7 +87,6 @@ const Login = () => {
   };
   const handleSubmit = async() => {
     const keys = Object.keys(inputValues)
-    console.log("keys",keys)
     let isError = false;
     for(let i = 0; i < keys.length; i++){
       const field = inputValues[keys[i] as keyof Fields<string>]
@@ -99,7 +95,6 @@ const Login = () => {
       }
     }
     setError(isError)
-    console.log('int vals', inputValues)
     if(!isError) {
       try {
         const otp = parseInt(Object.values(inputValues).join(''))
@@ -107,7 +102,6 @@ const Login = () => {
           phone,otp, 
           device: getUserDevice()
         })
-        console.log("response", response)
 
         if(response.statusCode === 200 && response.success){
           setToStorage('authUser', stringify({

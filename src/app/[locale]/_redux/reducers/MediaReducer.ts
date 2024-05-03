@@ -51,12 +51,8 @@ const MediaReducer = createSlice({
             for(let i = songsClone.length; i > currentIndex + 1; i--){
                 songsClone[i] = songsClone[i - 1]
             }
-
             songsClone[currentIndex + 1] = action.payload
-            console.log("songs clone", songsClone)
             state.songData = [...songsClone]
-
-
         }, 
         setIsShuffle: (state, action) => {
             state.isShuffle = action.payload

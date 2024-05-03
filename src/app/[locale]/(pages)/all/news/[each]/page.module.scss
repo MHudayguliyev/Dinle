@@ -1,26 +1,9 @@
-@use '../../../_styles/globalBreakPoints.scss' as *;
-@use '../../../_styles/globalTypography.scss' as *;
-@use '../../../_styles/globalMixins.scss' as GMixin;
-.topHeader {
-    .opts {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
+@use '../../../../_styles/globalBreakPoints.scss' as *;
+@use '../../../../_styles/globalTypography.scss' as *;
+@use '../../../../_styles/globalMixins.scss' as GMixin;
 
-    .actions {
-        display: none;
-    }
-
-    @media screen and (max-width: $md) {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-
-        .actions {
-            display: block;
-        }
-    }
+.presentation, .presentation_mobile {
+    margin-top: -80px;
 }
 
 .presentation {
@@ -126,17 +109,6 @@
         font-size: $fontSizeExtraBig + px;
         line-height: 21.6px;
     }
-
-    // .name {
-    //     font-weight: $fontWeightBold;
-    //     font-size: 40px;
-    //     line-height: 40px;
-    //     color: var(--text-color);
-    //     @include GMixin.textOverflow($line: 1);
-    //     @media screen and (max-width: $lg){
-    //         font-size: 40px;
-    //     }
-    // }
 
     img {
         height: 170px;

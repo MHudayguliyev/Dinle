@@ -32,7 +32,6 @@ const SearchModal = (props: SearchModalProps) => {
 
     const refreshToken = (cb: Function) => {
       refreshAccessToken().then(isError => {
-          console.log("is error", isError)
           if(isError) router.replace('/login')
           else cb()
       })
@@ -75,7 +74,6 @@ const SearchModal = (props: SearchModalProps) => {
   
       useEffect(() => {
         if (show && !hasTimedOut) { // Ensure timeout happens only once
-          console.log('cames in............')
           let chunks:any = []
           if(navigator.mediaDevices){
             // console.log("navigator.mediaDevices", navigator.mediaDevices)
@@ -94,7 +92,7 @@ const SearchModal = (props: SearchModalProps) => {
             })
           }
           const timer = setTimeout(async() => {
-            console.log('hello stoping shazam')
+            // console.log('hello stoping shazam')
             recorderRef?.current?.stop()
           
             setHasTimedOut(true); 

@@ -50,7 +50,6 @@ const DeviceModal = (props: DeviceModalProps) => {
 
     const handleSubmit = async() => {
         const keys = Object.keys(inputValues)
-        console.log("keys",keys)
         let isError = false;
         for(let i = 0; i < keys.length; i++){
           const field = inputValues[keys[i] as keyof Fields<string>]
@@ -59,13 +58,10 @@ const DeviceModal = (props: DeviceModalProps) => {
           }
         }
         setError(isError)
-        console.log('int vals', inputValues)
 
         if(!isError){
-            console.log("deviceId", deviceId)
             try {
                 const response = await removeDevice(deviceId);
-                console.log('resois', response)
                 if(response.success && response.statusCode === 200){
                     close()
                     onSuccess()

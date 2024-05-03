@@ -36,8 +36,7 @@ const Bottomsheet = React.forwardRef<HTMLDivElement, BottomsheetProps>((props, r
 
 
     return (
-        <>
-            <div onClick={(e) => {
+        <div onClick={(e) => {
                 e.stopPropagation()
                 close()
             }} ref={ref} className={cn({
@@ -57,12 +56,8 @@ const Bottomsheet = React.forwardRef<HTMLDivElement, BottomsheetProps>((props, r
                         </div>
                     ))}
                 </div>
-
             </div>
-
         </div>
-
-        </>
     )
 })
 

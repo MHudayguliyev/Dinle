@@ -34,8 +34,6 @@ const InfoModal = (props: CommonModalI) => {
         refetchOnWindowFocus: false, enabled: show
     })
 
-    console.log("data", data)
-
   return (
     <>
         <Modal 

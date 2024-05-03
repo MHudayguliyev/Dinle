@@ -1,22 +1,7 @@
-@use '../../../_styles/globalBreakPoints.scss' as *;
-@use '../../../_styles/globalTypography.scss' as *;
-@use '../../../_styles/globalMixins.scss' as GMixin;
+@use '../../../../_styles/globalBreakPoints.scss' as *;
+@use '../../../../_styles/globalTypography.scss' as *;
+@use '../../../../_styles/globalMixins.scss' as GMixin;
 
-.topHeader {
-    display: flex;
-    gap: 15px;
-    .opts {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-    .actions {
-        color: var(--text-color);
-        font-weight: 600;
-        font-size: 24px;
-        line-height: 24px;
-    }
-}
 .videoPlayer {
     width: 580px;
     height: 330px;
@@ -26,6 +11,7 @@
 }
 
 .presentation {
+    margin-top: -80px;
     height: 490px;
     width: calc(100%);
     position: relative;

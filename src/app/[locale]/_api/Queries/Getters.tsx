@@ -76,7 +76,6 @@ export const GetArtists = async (page = 1): Promise<Artists> => {
     })
 }
 export const GetArtist = async (artistId: string, page = 1, pageSize = 10): Promise<Artist> => {
-    console.log('artist song fetch page', page)
     return api.patchDynamic({
         url: '/artists/one', 
         data: {

@@ -40,7 +40,6 @@ export async function refreshAccessToken(){
         return true
     } catch (error) {
         if(axios.isAxiosError(error)){
-            console.log(error.response)
             localStorage.removeItem('authUser')
         }
         console.log(error)

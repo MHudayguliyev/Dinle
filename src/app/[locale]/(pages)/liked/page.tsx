@@ -232,7 +232,6 @@ const ViewAll = () => {
 
   const refreshToken = (cb: Function) => {
     refreshAccessToken().then(isError => {
-        console.log("is error", isError)
         if(isError) router.replace('/login')
         else cb()
     })
@@ -241,7 +240,6 @@ const ViewAll = () => {
   const handleLike = useCallback(async (id: string) => {
     try {
       const repsonse = await likeSong(id)
-      // console.log("res", repsonse)
       if(repsonse.statusCode === 200 && repsonse.success)
       setSongsRow(prevRows => prevRows.filter(row => row.id !== id))
     } catch (error) {

@@ -176,7 +176,10 @@ export default function Home() {
                 const top10 = homeItem.id === 'top10songs'
                 const playlist = homeItem.id === 'playlists'
                 const albom = homeItem.id === 'alboms'
-                const clip = homeItem.id === 'clips' || homeItem.id === 'karaoke' || homeItem.id === 'concerts' || homeItem.id === 'shows' || homeItem.id === 'videos' || homeItem.id === 'news'
+                const clip = homeItem.id === 'clips' || homeItem.id === 'videos' || homeItem.id === 'concerts'
+                const show = homeItem.id === 'shows'
+                const karaoke = homeItem.id === 'karaoke'
+                const news = homeItem.id === 'news'
 
                 return (
                   <div key={homeItem.id}>
@@ -187,10 +190,13 @@ export default function Home() {
                           artist ? '/search?tab=artist' : 
                           playlist ? '/search?tab=playlist' : 
                           albom ? '/search?tab=album' : 
-                          homeItem.id === 'clips' ? '/clips' : 
-                          `viewall/${homeItem.id}`
+                          clip ? '/all/clip' : 
+                          news ? '/all/news' : 
+                          show ? '/all/show' : 
+                          karaoke ? '/all/karaoke' : 
+                          `all/song/${homeItem.id}`
                         } 
-                        scroll
+                        scroll={false}
                       >
                         <ArrowRightLgI />
                       </CustomLink>
@@ -229,6 +235,7 @@ export default function Home() {
                                   albomId={albom ? row.id : row?.albomId}
                                   videoId={row.id}
                                   newsId={row.id}
+                                  showId={row.id}
                                   title={row.title}
                                   description={row.description}
                                   image={row.cover}
@@ -237,8 +244,8 @@ export default function Home() {
                                   playlists={playlist}
                                   alboms={albom}
                                   videoCard={clip}
-                                  showCard={homeItem.id === 'shows'}
-                                  newsCard={homeItem.id === 'news'}
+                                  showCard={show}
+                                  newsCard={news}
                                   videoDuration={clip ? row.duration : undefined}
                                   hideMoreI={albom || playlist}
                                   standard={homeItem.type === 'playlist' || homeItem.type === 'top-playlist'}

@@ -21,7 +21,7 @@ import Bottomsheet from '../Bottomsheet/Bottomsheet'
 import useWindowSize from '@app/_hooks/useWindowSize'
 import Preloader from '@app/_compLibrary/Preloader'
 
-import { CheckObjOrArrForNull } from '@app/_utils/helpers'
+import { CheckObjOrArrForNull, secondsToMmSs } from '@app/_utils/helpers'
 import InfoSmI from '../icons/infoSm/icon';
 import ShareSmI from '../icons/shareSm/icon';
 import ReadMoreI from '../icons/readMore/icon';
@@ -179,7 +179,6 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
 
                                 <div className={styles.colActions}>
                                     <div className={styles.actions}>
-
                                         {
                                             !hideLike && 
                                             <HeartIcon active={song?.isLiked ?? false} onClick={(e) => {
@@ -187,7 +186,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                                                 if(onLike) onLike(song.id)
                                             }} className={styles.heart}/>
                                         }
-                                        <div className={styles.duration}>{song?.duration}</div>
+                                        <div className={styles.duration}>{secondsToMmSs(song?.duration)}</div>
                                         <More 
                                             ref={toggleActionsRef}
                                             onClick={() => {

@@ -16,7 +16,6 @@ function AuthMiddleware (WrappedComponent:any){
         const now = moment(new Date())
         if(expiresAt){
           if(now.isSameOrAfter(expiresAt)){
-            console.log("mother fucker")
             refreshAccessToken().then(isError => {
               if(isError) router.replace('/login')
               else window.location.reload()

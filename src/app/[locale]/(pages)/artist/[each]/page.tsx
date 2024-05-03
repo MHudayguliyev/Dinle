@@ -149,7 +149,6 @@ const Artist = ({params}: {params: {each: string}}) => {
     }, [songsData])
     
     useEffect(() => {
-        console.log("dataList", dataList)
         if(CheckObjOrArrForNull(dataList)){
             if(showSongs) setRows(dataList)
             else if(showAlbums) setAlboms(dataList)
@@ -171,7 +170,6 @@ const Artist = ({params}: {params: {each: string}}) => {
 
     const refreshToken = (cb: Function) => {
         refreshAccessToken().then(isError => {
-            console.log("is error", isError)
             if(isError) router.replace('/login')
             else cb()
         })
@@ -232,7 +230,6 @@ const Artist = ({params}: {params: {each: string}}) => {
         const playFN = () => {
             if(CheckObjOrArrForNull(rows)){
                 const index = (rowIndex !== -1 && currentSongId === rowSongId) ? rowIndex : 0
-                console.log('real index', index)
                 dispatch(setCurrentSong({
                     data: rows, index, id: rows?.[index as number]?.id
                 }))
@@ -302,9 +299,6 @@ const Artist = ({params}: {params: {each: string}}) => {
         }
     ]
 
-    useEffect(() => {
-        console.log("scrolly",scrolly)
-    }, [scrolly])
   return (
     <>
         {infoMenu}

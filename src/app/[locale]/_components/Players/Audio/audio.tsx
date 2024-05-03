@@ -406,7 +406,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   const handleLikeSong = useCallback(async () => {
     try {
       if(isUndefined(audioRef?.current)) return 
-      // if(!isAuthorized()) return dispatch(setShowAuthModal(true))
+      if(!isAuthorized()) return dispatch(setShowAuthModal(true))
       
       const response = await likeSong(song?.id)
       if(response.success && response.statusCode === 200)
@@ -432,7 +432,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     <Heart active={isLiked} 
       onClick={async () => {
         const response = await handleLikeSong()
-        console.log("response", response)
       }}
     />
   ), [isLiked, song, isAuthorized])
@@ -661,7 +660,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                           <div className={styles.listContent}>
                             <div className={styles.running}>
                                 {
-                                    Equalizer && isSongPlaying && song?.id === item.id ? 
+                                    isSongPlaying && song?.id === item.id ? 
                                     <LottieI 
                                         icon={Equalizer} 
                                         width={20} 

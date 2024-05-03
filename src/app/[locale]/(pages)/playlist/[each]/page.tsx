@@ -105,7 +105,6 @@ const Playlist = ({params}: {params: {each: string}}) => {
 
     const refreshToken = (cb: Function) => {
         refreshAccessToken().then(isError => {
-            console.log("is error", isError)
             if(isError) router.replace('/login')
             else cb()
         })

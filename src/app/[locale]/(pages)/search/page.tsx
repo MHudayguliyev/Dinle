@@ -22,7 +22,7 @@ import PrevNext from '@components/icons/prevNext/icon'
 import ShazamI from '@app/_components/icons/shazam/icon';
 
 //utils
-import { CheckObjOrArrForNull, delay, isEmpty, isUndefined, parse } from '@app/_utils/helpers';
+import { CheckObjOrArrForNull, delay, isAuthorized, isEmpty, isUndefined, parse } from '@app/_utils/helpers';
 import { getFromStorage, setToStorage } from '@app/_utils/storage';
 import { stringify } from '@utils/helpers';
 //api/types
@@ -51,6 +51,10 @@ import Playlists from '@app/_api/types/queryReturnTypes/Playlists';
 import Albums from '@app/_api/types/queryReturnTypes/Albums';
 import CustomLink from '@app/_components/CustomLink/CustomLink';
 import ArrowRightLgI from '@app/_components/icons/ArrowRightLg/icon';
+import InfoMenu from '@app/_components/InfoMenu/InfoMenu';
+import { setShowAuthModal } from '@app/_redux/reducers/AuthReducer';
+import { isAxiosError } from 'axios';
+import { refreshAccessToken } from '@app/_api/Services/auth_token';
 
 const cn = classNames.bind(styles)
 const Search = () => {
@@ -95,7 +99,11 @@ const Search = () => {
   ]
   //states
   const delayTime = 200;
+  const [dynamicSongId, setDynamicSongId] = useState<string>("")
   const [searchValue, setSearchValue] = useState<string>(mask ?? "")
+  const [showInfo, setShowInfo] = useState<boolean>(false)
+  const [showBottomSheet, setShowBottomSheet] = useState<boolean>(false)
+
   const [openShazam, setOpenShazam] = useState<boolean>(false)
   const [isSearchDataLoading, setSearchDataLoading] = useState<boolean>(false)
   const [albumsSearch, setAlbums] = useState<SearchType['data']['alboms']>([])
@@ -195,7 +203,6 @@ const Search = () => {
     isLoading: isAlbomsLoading, 
     fetchNextPage: fetchAlbomNextPage, 
   })
-
   const refetchData = useCallback(() => {
     if(showArtists) {
       setLoading(() => ({ genres: false, alboms: false, artists: true, playlists: false }))
@@ -216,7 +223,6 @@ const Search = () => {
 
   //lists
   const artistsList = useMemo((): Artists['data']['rows'] => {
-    console.log('artistsData', artistsData)
     delay(delayTime).then(() => {
       setLoading(prevState => ({...prevState, artists: false}))
     })
@@ -446,8 +452,6 @@ const Search = () => {
         search: searchValue,
       };
 
-      console.log("isViewAll in goSearch", isViewAll)
-
       if(!isViewAll){
         router.push(`/search?mask=${searchValue}`, { scroll: false })
       }else {
@@ -469,7 +473,7 @@ const Search = () => {
           playlists, 
           shows
         } = response.data
-        console.log('rsp', response.data)
+        // console.log('rsp', response.data)
         
         delay(delayTime).then(() => {
           setAlbums(alboms)
@@ -482,7 +486,7 @@ const Search = () => {
       }
 
     } catch (error) {
-      console.log('search error', error)
+      // console.log('search error', error)
       setAlbums([])
       setArtists([])
       setSongs([])
@@ -514,12 +518,44 @@ const Search = () => {
     if(CheckObjOrArrForNull(recentSearchData) && !openRecents) setOpenRecents(true)
   }, [recentSearchData, openRecents])
 
+  const refreshToken = useCallback((cb: Function) => {
+    refreshAccessToken().then(isError => {
+        if(isError) router.replace('/login')
+        else cb()
+    })
+  }, [refreshAccessToken])
+
+  const handleLike = useCallback(async(songId: string) => {
+    if(!isAuthorized()) return dispatch(setShowAuthModal(true))
+
+    try {
+        const response = await likeSong(songId)
+        if(response.success && response.statusCode === 200)
+        setSongs(prev => prev?.map(row => row.id === songId ? {...row, isLiked: !row.isLiked} : row))
+      } catch (error) {
+        if(isAxiosError(error)){
+            if(error.response?.status === 401){
+              refreshToken(() => handleLike(songId))
+            }
+        }else console.log('like song error', error)
+      }
+}, [])
+
 
   useEffect(() => {
     if(!isViewAll && showFoundData){
       goSearch()
     }
   }, [isViewAll, showFoundData])
+  
+
+  const infoMenu = useMemo(() => (
+    <InfoMenu 
+      id={dynamicSongId}
+      show={showInfo}
+      close={() => setShowInfo(false)}
+    />
+  ), [dynamicSongId, showInfo])
 
   return (
     <>
@@ -527,7 +563,8 @@ const Search = () => {
       show={openShazam}
       close={() => setOpenShazam(false)}
     />
-
+    {infoMenu}
+    
       <div className={styles.search_wrapper}>
 
         <div className={styles.search__actions}>
@@ -705,7 +742,12 @@ const Search = () => {
               </div>
               <SongList 
                 data={songsSearch} 
-                // onLike={handleLike}
+                onLike={handleLike}
+                
+                onShowInfo={(id) => {
+                  setDynamicSongId(id)
+                  setShowInfo(true)
+                }}
                 onPlay={(index) => dispatch(setCurrentSong({data: songsSearch, index, id: songsSearch[index]?.id}))}
                 fetchStatuses={{
                   isLoading: false, isError: false
