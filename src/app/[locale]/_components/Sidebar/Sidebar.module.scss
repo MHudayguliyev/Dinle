@@ -84,8 +84,6 @@
             .getItOn {
                 font-size: 7px;
                 letter-spacing: 1px;
-                font-weight: 100;
-                opacity: 0.7;
             }
             .platformName{
                 font-size: $fontSizeSmall + px;
@@ -207,10 +205,9 @@
 
     .subHeader {
         display: flex;
-        justify-content: space-between;
+        gap: 14px;
         align-items: center;
         height: 30px;
-        width: 126px;
     }
 }
 .lists {

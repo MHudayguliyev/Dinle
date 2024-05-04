@@ -105,9 +105,16 @@ export const GetAlbums = async (data: {
         }
     })
 }
-export const GetGenres = async (songId?: string): Promise<Genres> => {
+export const GetGenres = async (args: {
+    id?: string
+    mode?: 'artist' | 'song'
+}): Promise<Genres> => {
+    const {
+        mode, 
+        id
+    } = args
     return api.patch({
-        url: `/client/genres${songId ? `?songId=${songId}` : ""}`, 
+        url: `/client/genres${!isUndefined(id) ? `?${mode === 'artist' ? 'artistId' : 'songId'}=${id}` : ""}`, 
         data: {}
     })
 }

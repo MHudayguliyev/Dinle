@@ -1,5 +1,5 @@
 'use client';
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { useInfiniteQuery } from 'react-query';
 //api
 import { GetArtNews } from '@app/_api/Queries/Getters';
@@ -7,19 +7,23 @@ import { GetArtNews } from '@app/_api/Queries/Getters';
 import ArtNews from '@app/_api/types/queryReturnTypes/ArtNews';
 //hooks
 import useObserve from '@app/_hooks/useObserve';
-import { CheckObjOrArrForNull } from '@app/_utils/helpers';
+import { CheckObjOrArrForNull, copyLink } from '@app/_utils/helpers';
 //styles
 import styles from './page.module.scss'
 import StandardCard from '@app/_components/StandardCard/StandardCard';
+import Bottomsheet from '@app/_components/Bottomsheet/Bottomsheet';
+import ShareSmI from '@app/_components/icons/shareSm/icon';
+import toast from 'react-hot-toast';
 
 const News = () => {
   const observer = useRef<IntersectionObserver>();
+  const [newsId, setNewsId] = useState<string>("")
+  const [showBottomSheet, setShowBottomSheet] = useState<boolean>(false)
 
   const {
     data: newsData, 
     hasNextPage: newsHasNextPage, 
     isFetching: isNewsFetching, 
-    isError: isNewsError, 
     isLoading: isNewsLoading, 
     fetchNextPage: fetchNewsNextPage
   } = useInfiniteQuery({
@@ -45,23 +49,55 @@ const News = () => {
     }, [])
   }, [newsData]);
 
+  const actionsData = [
+    {
+        value: 'share', 
+        label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
+        icon: <ShareSmI />
+    }, 
+  ]
+
+  const handleCopyLink = useCallback((id: string) => {
+    copyLink(`/all/news/${id}`)?.then((mode) => {
+      if(showBottomSheet) setShowBottomSheet(false)
+      if(mode === 'desktop') toast.success('Link is copied.')
+      setNewsId("")
+    })
+  }, [newsId, showBottomSheet])
+
   return (
-    <div className={styles.gridBox}>
-      {
-        newsList?.map(eachNews => (
-          <StandardCard 
-            key={eachNews.id}
-            ref={lastNewsRef}
-            id={eachNews.id}
-            newsId={eachNews.id}
-            image={eachNews.cover}
-            title={eachNews.title}
-            videoCard
-            newsCard
-          />
-        ))
-      }
-    </div>
+    <>
+      <div className={styles.gridBox}>
+        {
+          newsList?.map(eachNews => (
+            <StandardCard 
+              key={eachNews.id}
+              ref={lastNewsRef}
+              id={eachNews.id}
+              newsId={eachNews.id}
+              image={eachNews.cover}
+              title={eachNews.title}
+              videoCard
+              newsCard
+              onShare={() => {
+                handleCopyLink(eachNews.id)
+              }}
+              onOpenBottomSheet={() => {
+                setNewsId(eachNews.id)
+                setShowBottomSheet(true)
+              }}
+            />
+          ))
+        }
+      </div>
+
+      <Bottomsheet
+        actionsData={actionsData} 
+        open={showBottomSheet}
+        close={() => setShowBottomSheet(false)} 
+        onClick={() => handleCopyLink(newsId)}
+      />
+    </>
   )
 }
 

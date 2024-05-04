@@ -1,5 +1,7 @@
+import Genres from "./Genres"
+
 interface ArtistInfo {
-    genres: []
+    genres: Genres['data']
     about: any
     createdAt: string 
     id: string 

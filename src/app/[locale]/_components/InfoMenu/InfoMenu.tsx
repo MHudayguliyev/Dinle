@@ -156,21 +156,26 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                   </div>
                   <div className={styles.theRight}>
                       <div className={styles.genres}>
-                      {fetchSongInfo && 
-                        song?.genres?.map((genre, index) => <span key={genre.genreId}>
-                          <CustomLink scroll href={`/genre/${genre.genreId}`}>
-                            {genre.name + ` ${index === song?.genres?.length - 1 ? "" : ", "}`}
-                          </CustomLink>
-                        </span>
-                        )
-                      }
+                        {
+                          fetchSongInfo ?
+                          song?.genres?.map((genre, index) => 
+                            <CustomLink key={genre.genreId} scroll href={`/genre/${genre.genreId}`}>
+                              {genre.name + ` ${index === song?.genres?.length - 1 ? "" : ", "}`}
+                            </CustomLink>
+                          ) : 
+                          data?.genres?.map((genre, index) => 
+                            <CustomLink key={genre.genreId} scroll href={`/genre/${genre.genreId}`}>
+                              {genre.name + ` ${index === data?.genres?.length - 1 ? "" : ", "}`}
+                            </CustomLink>
+                          )
+                        }
                       </div>
                       <CustomLink 
                         onClick={() => {
                           if(CheckObjOrArrForNull(song?.genres)) close()
                         }} 
                         scroll 
-                        href={CheckObjOrArrForNull(song?.genres) ? `/search?tab=genre&songId=${song?.id}` : ""}
+                        href={CheckObjOrArrForNull(fetchArtistInfo ? data?.genres : song?.genres) ? `/search?tab=genre&${fetchArtistInfo ? `artistId=${data?.id}` : `songId=${song?.id}`}` : ""}
                       >
                         <ArrowI />
                       </CustomLink>
@@ -230,7 +235,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                         <div className={styles.head}>Like Любимые треки</div>
                       </div>
                       <div className={styles.theRight}>
-                        {fetchSongInfo ? song?.count?.likers : data?.count.songListeners}
+                        {fetchSongInfo ? song?.count?.likers : data?.count?.songListeners}
                       </div>
                   </div>
                   {

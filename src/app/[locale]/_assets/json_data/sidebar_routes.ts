@@ -3,7 +3,7 @@ import { SidebarRoutes } from "@app/_types"
 const sidebar_routes: SidebarRoutes = [
     {
       display_name: {
-        ru: 'Основной',
+        ru: 'Главное',
         tk: 'Baş sahypa'
       },
       route: '/',

@@ -50,6 +50,8 @@ import ShareSmI from '@app/_components/icons/shareSm/icon'
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar'
 import Preloader from '@app/_compLibrary/Preloader'
 
+type Affixes = 'song' | 'clip' | 'albom' | 'artist'
+
 const cn = classNames.bind(styles)
 const Artist = ({params}: {params: {each: string}}) => {
     const dispatch = useAppDispatch()
@@ -62,11 +64,11 @@ const Artist = ({params}: {params: {each: string}}) => {
             tk: 'Songs', ru:'Songs'
           }
         }, 
-        {route: 'video', label: {
+        {route: 'clip', label: {
             tk:'Clips', ru: 'Clips'
         }}, 
         {
-          route: 'album', label: {
+          route: 'albom', label: {
            tk:'Albums', ru: 'Albums'
           }
         }
@@ -76,6 +78,7 @@ const Artist = ({params}: {params: {each: string}}) => {
     const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab])
     const showClips = useMemo(() => tab === tabs[1].route, [tab])
     const showAlbums = useMemo(() => tab === tabs[2].route,[tab])
+    const [shareId, setShareId] = useState<string>("")
 
     //selectors 
     const song = useAppSelector(state => state.mediaReducer.songData)
@@ -175,9 +178,15 @@ const Artist = ({params}: {params: {each: string}}) => {
         })
     }
 
-    const handleCopyLink = useCallback(() => {
-        copyLink(`/artist/${artistId}${!isUndefined(tab) ? `?tab=${tab}` : ""}`)?.then((mode) => {
+    const handleCopyLink = useCallback((affix: Affixes, id: string) => {
+        const isArtist = affix === 'artist'
+        const isClip = affix === 'clip'
+        const isAlbom = affix === 'albom'
+        const url = `${isClip ? '/all/clip' : `/${affix}`}/${isArtist ? artistId : id}${!isClip && !isAlbom && !isUndefined(tab) ? `?tab=${tab}` : ""}`
+        console.log('url', url)
+        copyLink(url)?.then((mode) => {
             if(mode === 'desktop') toast.success('Link is copied.')
+            setShareId("")      
         })
     }, [artistId, tab])
 
@@ -271,7 +280,7 @@ const Artist = ({params}: {params: {each: string}}) => {
         </Button>
     ),[isFollowing, handleFollow])
     const shareBtn = useMemo(() => (
-        <Share onClick={handleCopyLink}/>
+        <Share onClick={() => handleCopyLink('artist', artistId)}/>
     ), [artistId, tab])
     const infoMenu = useMemo(() => (
         <InfoMenu 
@@ -410,15 +419,17 @@ const Artist = ({params}: {params: {each: string}}) => {
             showAlbums && 
             <div className={styles.grid_wrapper}>
                 {
-                    alboms?.map((item, i) => (
+                    alboms?.map((albom, i) => (
                         <StandardCard 
                             key={i}
-                            id={item.id}
-                            albomId={item.id}
-                            title={item.title}
-                            image={item.cover}
-                            hideMoreI
+                            id={albom.id}
+                            albomId={albom.id}
+                            title={albom.title}
+                            image={albom.cover}
                             alboms
+                            onShare={() => 
+                                handleCopyLink('albom', albom.id)
+                            }
                         />              
                     ))
                 }
@@ -428,16 +439,19 @@ const Artist = ({params}: {params: {each: string}}) => {
             showClips && 
             <div className={styles.clips_wrapper}>
                 {
-                    clips?.map((item, i) => (
+                    clips?.map((clip) => (
                         <StandardCard 
-                            key={item.id}
-                            id={item.id}
-                            videoId={item.id}
-                            title={item.title}
-                            image={item.cover}
+                            key={clip.id}
+                            id={clip.id}
+                            videoId={clip.id}
+                            title={clip.title}
+                            image={clip.cover}
                             videoCard
-                            videoDuration={item.duration}
+                            videoDuration={clip.duration}
                             onOpenBottomSheet={() => setShowBottomSheet(true)}
+                            onShare={() => {
+                                handleCopyLink('clip', clip.id)
+                            }}
                         />              
                     ))
                 }

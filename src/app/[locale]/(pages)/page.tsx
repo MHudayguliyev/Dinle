@@ -1,6 +1,6 @@
 
 'use client';
-import React, {useRef, useMemo, useState, useEffect} from 'react'
+import React, {useRef, useMemo, useState, useEffect, useCallback} from 'react'
 import Image from 'next/image';
 import { useQuery } from 'react-query'
 //styles
@@ -30,7 +30,7 @@ import CustomLink from '@components/CustomLink/CustomLink';
 //hooks
 import useClickOutside from '@hooks/useOutClick';
 import { getFromStorage } from '@app/_utils/storage';
-import { delay, isAuthorized, parse } from '@app/_utils/helpers';
+import { copyLink, delay, isAuthorized, parse } from '@app/_utils/helpers';
 import InfoSmI from '@app/_components/icons/infoSm/icon';
 import ShareSmI from '@app/_components/icons/shareSm/icon';
 import ReadMoreI from '@app/_components/icons/readMore/icon';
@@ -40,6 +40,9 @@ import Preloader from '@app/_compLibrary/Preloader';
 import {useTranslations} from 'next-intl';
 import ArrowRightI from '@app/_components/icons/arrowRight/icon';
 import ArrowRightLgI from '@app/_components/icons/ArrowRightLg/icon';
+import toast from 'react-hot-toast';
+
+type Affixes = 'news' | 'clip' | 'show' | 'karaoke' | 'song'
 
 const cn = classNames.bind(styles)
 export default function Home() {
@@ -49,6 +52,7 @@ export default function Home() {
   const dropdownToggleRef:any = useRef(null)
   const [openDropdown] = useClickOutside(dropdownContentRef, dropdownToggleRef, 'mousedown')
   const [songId, setSongId] = useState<string>("")
+  const [bottomSheetAffix, setBottomSheetAffix] = useState<Affixes>('song')
   const [showBottomSheet, setShowBottomSheet] = useState<boolean>(false)
   const [showInfo, setShowInfo] = useState<boolean>(false)
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
@@ -135,7 +139,15 @@ export default function Home() {
         label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
         icon: <ReadMoreI />
     }, 
-]
+  ]
+
+  const handleCopyLink = useCallback((id: string, affix: Affixes) => {
+    copyLink(`${affix === 'song' ? "/song" : `/all/${affix}`}/${id}`)?.then((mode) => {
+      if(showBottomSheet) setShowBottomSheet(false)
+      if(mode === 'desktop') toast.success('Link is copied.')
+        setSongId("")
+    })
+  }, [songId, showBottomSheet])
 
   return (
     <>
@@ -228,6 +240,7 @@ export default function Home() {
                       >
                         {
                           homeItem?.rows?.map((row, rowIndex) => {
+                            const affix = clip ? 'clip' : show ? 'show' : news ? 'news' : karaoke ? 'karaoke' : 'song'
                             return (
                               <SwiperSlide key={rowIndex}>
                                 <StandardCard 
@@ -256,7 +269,11 @@ export default function Home() {
                                     if((homeItem.type === 'playlist' || homeItem.type === 'top-playlist') || top10) 
                                     dispatch(setCurrentSong({ data: homeItem?.rows, id: row.id, index: rowIndex }))
                                   }}
+                                  onShare={() => 
+                                    handleCopyLink(row.id, affix)
+                                  }
                                   onOpenBottomSheet={() => {
+                                    setBottomSheetAffix(affix)
                                     setSongId(row.id)
                                     setShowBottomSheet(true)
                                   }}
@@ -289,6 +306,9 @@ export default function Home() {
         onClick={(value) => {
           if(value === 'info') {
             setShowInfo(true)
+            setShowBottomSheet(false)
+          }else if(value === 'share'){
+            handleCopyLink(songId, bottomSheetAffix)
             setShowBottomSheet(false)
           }
         }}

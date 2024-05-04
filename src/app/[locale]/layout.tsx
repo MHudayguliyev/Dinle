@@ -14,23 +14,23 @@ import 'swiper/css/grid';
 //provider 
 import {ReduxProvider} from '@redux/provider';
 import OverflowSetterProvider from './_components/OverflowSetter';
+import { locales } from '../../navigation';
 const QueryProvider = dynamic(() => import('@app/_api/provider'))
 
 export const metadata: Metadata = {
   title: 'Diňle-de hiňlen',
-  description: 'Dinle.com.tm',
+  description: 'dinle.com.tm',
   icons: {
     icon: '/logo.png'
   }
 }
 // Can be imported from a shared config
-const locales = ['tk', 'ru'] 
 export default function RootLayout({
   children, 
   params: {locale}
 }: {
   children: React.ReactNode
-  params: {locale: string}
+  params: {locale: 'tk' | 'ru'}
 }) {
 
   if (!locales.includes(locale)) notFound();

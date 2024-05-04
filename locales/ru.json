@@ -1,3 +1,7 @@
 {
-    "news": "News"
+    "news": "News", 
+    "myPlaylist": "Мой плейлист", 
+    "myFavorite": "Избранное", 
+    "download": "Скачать", 
+    "settings": "Настройки"
 }

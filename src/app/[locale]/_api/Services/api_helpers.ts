@@ -1,19 +1,20 @@
 import { axiosInstance } from '../axiosInstance'    
 import authToken from './auth_token'
 
+
 interface ApiProps<T> {
     url: string 
     config?: {}
 }
 
-
 interface CommonType<T> extends ApiProps<T>{
     data: T
 }
+
 const privateConfig = {
     headers: {
       "Authorization": "", 
-      "Content-type": "application/json"
+      "Content-type": "application/json", 
     }, 
 }
 

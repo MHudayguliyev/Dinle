@@ -76,6 +76,8 @@ const Search = () => {
   const mask = searchParam.get('mask')
   const all = searchParam.get('all')
   const songId =  searchParam.get('songId')
+  const artistId =  searchParam.get('artistId')
+
 
   const tabs: TabMenuTypes[] = [
     {
@@ -177,7 +179,10 @@ const Search = () => {
     data: genresData,
     isError: isGenresError, 
     isLoading: isGenresLoading,
-  } = useQuery(['Genres', showGenres, isLoading.genres], () => GetGenres(songId ? songId : undefined),{
+  } = useQuery(['Genres', showGenres, songId, artistId, isLoading.genres], () => GetGenres({
+    id: songId ? songId : artistId ? artistId : undefined,
+    mode: songId ? 'song' : artistId ? 'artist' : undefined
+  }),{
     refetchOnWindowFocus: false, enabled: showGenres || isLoading.genres
   })
 

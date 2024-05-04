@@ -29,7 +29,7 @@ import { GetPlaylists } from '@app/_api/Queries/Getters'
 import { setToggleSidebar } from '@app/_redux/reducers/SidebarReducer'
 
 //locale 
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Localization } from '@app/_types'
 
 interface SidebarProps {
@@ -40,6 +40,7 @@ interface SidebarProps {
 const cn = classNames.bind(styles)
 const Sidebar = (props: SidebarProps) => {
     const locale = useLocale()
+    const t = useTranslations()
     const pathname = usePathname()
     const dispatch = useAppDispatch()
     //redux states
@@ -99,7 +100,7 @@ const Sidebar = (props: SidebarProps) => {
                     <CustomLink href='/liked' className={styles.header}>
                         <div className={styles.subHeader}>
                             <Image src={playlist} alt='playlist' />
-                            <div>Your library</div>
+                            <div>{t('myPlaylist')}</div>
                         </div>
                         <Image src={gotoLib} alt='gotoLib'/>
                     </CustomLink>
@@ -111,7 +112,7 @@ const Sidebar = (props: SidebarProps) => {
                                 <Image src={like_image} alt='cover' width='400' height='400'/>
                             </div>
                             <div className={styles.content}>
-                                <div>Favorim</div>
+                                <div>{t('myFavorite')}</div>
                             </div>
                         </CustomLink>
                         {
@@ -133,14 +134,14 @@ const Sidebar = (props: SidebarProps) => {
 
                     <CustomLink href='/settings' className={cn({settings: true, active: !sidebarFolded && pathname === '/settings'})}>
                         <Image src={user} alt='profile'/>
-                        <span>Settings</span>
+                        <span>{t('settings')}</span>
                     </CustomLink>
 
                 </div>
 
                 <div className={styles.download}>
                     <div className={styles.header}>
-                        DOWNLOAD APP
+                        {t('download')}
                     </div>
                     <div className={styles.btnGroup}>
                         {
@@ -159,7 +160,7 @@ const Sidebar = (props: SidebarProps) => {
                                     <div className={styles.btnContent}>
                                         <div className={styles.getItOn}>GET IT ON</div>
                                         <div className={styles.platformName}>Google Play</div>
-                                    </div>
+                                    </div>  
                                 </Button>
                                 <Button className={styles.downloadBtn} color='lightDarkSecond' roundedSm border='light' noPadding startIcon={<Apple />}> 
                                     <div className={styles.btnContent}>

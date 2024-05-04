@@ -44,6 +44,7 @@ interface StandardProps {
     onOpenBottomSheet?: () => void
     onOpenInfoMenu?: () => void
     onAddToQueue?: () => void
+    onShare?: () => void
     title:string
     description?:string
     videoDuration?: number 
@@ -104,6 +105,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         onOpenBottomSheet, 
         onOpenInfoMenu, 
         onAddToQueue, 
+        onShare
     } = props
 
     const songData = useAppSelector(state => state.mediaReducer.songData)
@@ -174,7 +176,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
             }, 
         ]
 
-        if(videoCard){
+        if(videoCard || alboms){
             for(let i = 0; i < data.length; i++){
                 const item = data[i]
                 if(item.value === 'info' || item.value === 'queue')
@@ -182,7 +184,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
             }
         }
         return data
-    }, [videoCard])
+    }, [videoCard, alboms])
 
 
   return (
@@ -241,6 +243,8 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                                             onOpenInfoMenu()
                                         }else if(value === 'queue' && onAddToQueue){
                                             onAddToQueue()
+                                        }else if(value === 'share' && onShare){
+                                            onShare()
                                         }
                                         setShow(false)
                                     }}
