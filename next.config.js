@@ -4,13 +4,17 @@ const withNextIntl = require('next-intl/plugin')(
 );
 const nextConfig = {
   reactStrictMode: true,
+  env: {
+    API_URL: process.env.API_URL,
+    SHARE_URL: process.env.SHARE_URL
+  },
   images: {
     remotePatterns: [
       {
-      protocol: 'http',
-      hostname: '95.85.125.44',
-      port: '8790',
-      pathname: '/images/**',
+        protocol: 'http',
+        hostname: 'dinle.com.tm',
+        port: '8790',
+        pathname: '/images/**',
       }
     ]
   }

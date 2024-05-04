@@ -131,6 +131,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     if(HLS.isSupported() && !isUndefined(audioRef?.current)){
       const audio = audioRef.current;
       const hls = new HLS();
+      console.log('song link', song?.link)
       if(song?.link !== prevSongUrl){       
         hls.attachMedia(audio);
         hls.on(HLS.Events.MEDIA_ATTACHED, () => {

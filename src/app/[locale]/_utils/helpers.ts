@@ -126,7 +126,7 @@ export const getUserDevice = () => {
 }
 export const copyLink = (link: string) => {
   if(typeof navigator !== 'undefined' && navigator.share) {
-    const url = 'http://localhost:3000' + link
+    const url = process.env.SHARE_URL + link
     const device = getUserDevice()
     const mode =  device?.name === 'Android' || device?.name === 'iPhone' ? 'mobile' : 'desktop'
 

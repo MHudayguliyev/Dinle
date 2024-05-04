@@ -6,7 +6,7 @@ export default createMiddleware({
   localePrefix,
   defaultLocale: 'tk'
 });
- 
+
 export const config = {
   // Match only internationalized pathnames
   matcher: ['/((?!api|_next|.*\\..*).*)']

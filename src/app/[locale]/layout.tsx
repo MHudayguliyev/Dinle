@@ -17,7 +17,7 @@ import OverflowSetterProvider from './_components/OverflowSetter';
 const QueryProvider = dynamic(() => import('@app/_api/provider'))
 
 export const metadata: Metadata = {
-  title: 'Dinle-de hinlen',
+  title: 'Diňle-de hiňlen',
   description: 'Dinle.com.tm',
   icons: {
     icon: '/logo.png'
@@ -37,7 +37,7 @@ export default function RootLayout({
   const messages = useMessages();
 
   return (
-    <html lang="tk">
+    <html lang={locale}>
       <ReduxProvider>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProvider>

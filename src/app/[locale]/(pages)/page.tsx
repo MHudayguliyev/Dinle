@@ -184,7 +184,6 @@ export default function Home() {
                 return (
                   <div key={homeItem.id}>
                     <div className={styles.song__header}>
-                      <h3>{homeItem.name}</h3>
                       <CustomLink   
                         href={
                           artist ? '/search?tab=artist' : 
@@ -197,7 +196,8 @@ export default function Home() {
                           `all/song/${homeItem.id}`
                         } 
                         scroll={false}
-                      >
+                        >
+                        <h3>{homeItem.name}</h3>
                         <ArrowRightLgI />
                       </CustomLink>
                     </div>
@@ -208,20 +208,23 @@ export default function Home() {
                         modules={[ Navigation ]}
                         slidesPerView={6}
                         spaceBetween={2}
-                        breakpoints={!clip ? standardCardBreaksPoints : {
-                          0: {
-                            slidesPerView: 2
-                          }, 
-                          576: {
-                            slidesPerView: 2
-                          },
-                          768: {
-                            slidesPerView: 3,
-                          },
-                          1200: {
-                            slidesPerView: 3.5
-                          }
-                        }}
+                        breakpoints={(clip || show || news || karaoke) ? 
+                          {
+                            0: {
+                              slidesPerView: 2
+                            }, 
+                            576: {
+                              slidesPerView: 2
+                            },
+                            768: {
+                              slidesPerView: 3,
+                            },
+                            1200: {
+                              slidesPerView: 4
+                            }
+                          } : 
+                          standardCardBreaksPoints
+                        }
                       >
                         {
                           homeItem?.rows?.map((row, rowIndex) => {

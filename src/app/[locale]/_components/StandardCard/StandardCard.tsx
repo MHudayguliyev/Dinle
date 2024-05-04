@@ -290,7 +290,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
 
                                 <div className={cn({
                                     theTop: true, 
-                                    topFlex: videoCard
+                                    topFlex: (videoCard || showCard || newsCard)
                                 })}>
                                     {
                                         (!artists && !playlists && !alboms) && (isSongPlaying && songData[songIndex]?.id === id) &&
