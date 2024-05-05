@@ -30,7 +30,7 @@ export default function RootLayout({
   params: {locale}
 }: {
   children: React.ReactNode
-  params: {locale: 'tk' | 'ru'}
+  params: {locale: 'tm' | 'ru'}
 }) {
 
   if (!locales.includes(locale)) notFound();
@@ -39,17 +39,17 @@ export default function RootLayout({
   return (
     <html lang={locale}>
       <ReduxProvider>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <QueryProvider>
-            <OverflowSetterProvider>
-              <Toaster
-                  position="top-center"
-                  reverseOrder={false}
-                />
-                {children}
-            </OverflowSetterProvider>
-          </QueryProvider>
-        </NextIntlClientProvider>
+        <OverflowSetterProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <QueryProvider>
+                <Toaster
+                    position="top-center"
+                    reverseOrder={false}
+                  />
+                  {children}
+            </QueryProvider>
+          </NextIntlClientProvider>
+        </OverflowSetterProvider>
       </ReduxProvider>
     </html>
   )

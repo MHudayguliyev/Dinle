@@ -19,15 +19,20 @@ import { useAppSelector } from '@app/_hooks/redux_hooks'
 import LottieI from '../Lottie/LottieI'
 import Bottomsheet from '../Bottomsheet/Bottomsheet'
 import useWindowSize from '@app/_hooks/useWindowSize'
-import Preloader from '@app/_compLibrary/Preloader'
+//redux
+import { useAppDispatch } from '@app/_hooks/redux_hooks';
+import { addToQueue } from '@app/_redux/reducers/MediaReducer';
 
 import { CheckObjOrArrForNull, secondsToMmSs } from '@app/_utils/helpers'
 import InfoSmI from '../icons/infoSm/icon';
 import ShareSmI from '../icons/shareSm/icon';
 import ReadMoreI from '../icons/readMore/icon';
+//tranlations
+import { useLocale } from 'next-intl';
+import { Localization } from '@app/_types';
 
 interface SongListProps {
-    data: Songs['rows'] | any
+    data: Songs['rows']
     artistId?: string 
     className?: string
     onPlay: (index: number) => void
@@ -56,6 +61,8 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
         isResponsive = false
     } = props
 
+    const locale = useLocale()
+    const dispatch = useAppDispatch()
     const toggleActionsRef:any = useRef(null)
     const actionsContentRef: any = useRef(null)
     const [showActions, setShowActions] = useClickOutside(actionsContentRef, toggleActionsRef, 'click')
@@ -87,22 +94,33 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
 
 
     const header = [
-        '#', 'Ady', 'Albom', "Hereketler", 
+        {
+            tm: "#", ru: "#"
+        }, 
+        {
+            tm: "Ady", ru: "Имя"
+        }, 
+        {
+            tm: "Albom", ru: "Альбомы"
+        }, 
+        {
+            tm: "Hereketler", ru: "Действия"
+        }, 
     ]
     const actionsData = [
         {
             value: 'info', 
-            label: {ru: 'Maglumat', tk: 'Maglumat'}, 
+            label: {ru: 'Информация', tm: 'Maglumat'}, 
             icon: <InfoSmI />
         }, 
         {
             value: 'share', 
-            label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
+            label: {ru: 'Поделиться', tm: 'Paýlaşmak'}, 
             icon: <ShareSmI />
         }, 
         {
             value: 'queue', 
-            label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
+            label: {ru: 'Добавить в очередь', tm: 'Indiki aýdyma goş'}, 
             icon: <ReadMoreI />
         }, 
     ]
@@ -117,7 +135,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                 <div className={styles.songsHeader}>
                     {header.map((col, index) => (
                         <div className={styles.col} key={index}>
-                            {col}
+                            {col[locale as keyof Localization]}
                         </div>
                     ))}
                 </div>
@@ -211,6 +229,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
                                         close={() => setShowActions(false)}
                                         onClick={(value) => {
                                             if(value === 'info' && onShowInfo) onShowInfo(song?.id)
+                                            else if(value === 'queue') dispatch(addToQueue(song))
                                             setShowActions(false)
                                         }}
                                     />
@@ -237,84 +256,3 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
 })
 
 export default SongList
-
-
-
-
-        {/* {
-            fetchStatuses?.isLoading ? <span className={styles.loader}><Preloader /></span>
-             : fetchStatuses.isError ? "Not found" : 
-            
-            data?.map((song: any, index: number) => (
-                <div key={song.id} className={cn({
-                    song: true, 
-                    active: runningSongId === song.id
-                })} onClick={() => onPlay && onPlay(index)} onMouseEnter={() => setHoveredIndex(song.id)} onMouseLeave={() => setHoveredIndex("")}>
-                    <div className={styles.the_left}>
-                        <div className={styles.indexation}>
-                            {isSongPlaying && runningSongId === song.id && <LottieI width={20} height={20} icon={EqualizerI} />}
-                            <span className={cn({
-                                index: true, 
-                                notVisible: true, 
-                                visible: (runningSongId !== song.id && hoveredIndex !== song.id)
-                            })}>{index + 1}</span>
-                          
-                        </div>
-                        <div className={styles.initial_content}>
-                            <Image src={song?.cover} alt='artist' width='400' height='400'/>
-                            <div className={styles.song_content}>
-                                <Link href={`/artist/12`} className={styles.artist}>
-                                    {song.title}
-                                </Link>
-                                <Link href={'/song/12'} className={styles.songName}>
-                                    {song.description}
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-
-                    <Link href={'/artist/12'} className={styles.the_center}>
-                        <div>{song.description}</div>
-                    </Link>
-
-                    <div className={styles.the_right}>
-                        <HeartIcon active={song?.isLiked ?? false} onClick={(e) => {
-                            e.stopPropagation()
-                            if(onLike) onLike(song.id)
-                        }} className={styles.heart}/>
-                        <div className={styles.duration}>{song?.duration}</div>
-                        <More 
-                            ref={toggleActionsRef}
-                            onClick={() => {
-                                if(width <= 768) {
-                                    setShowBottomsheet(!showBottomsheet)
-                                }else {
-                                    setToggleI(song.id)
-                                    if(toggleI === song.id) setShowActions(!showActions)
-                                    else setShowActions(true)
-                                }
-                            }}
-                        />
-                    </div>
-
-                    <SongActions 
-                        ref={actionsContentRef}
-                        open={showActions && toggleI === song.id}
-                        close={() => setShowActions(false)}
-                        onClick={(value) => {
-                            if(value === 'info' && onShowInfo) onShowInfo(song?.id)
-                            setShowActions(false)
-                        }}
-                    />
-
-                    <Bottomsheet 
-                        open={showBottomsheet}
-                        close={() => setShowBottomsheet(false)}
-                        onClick={(value) => {
-                            if(value === 'info' && onShowInfo) onShowInfo(song?.id)
-                            setShowBottomsheet(false)
-                        }}
-                    />
-                </div>
-            ))
-        } */}

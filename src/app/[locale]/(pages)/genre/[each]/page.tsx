@@ -35,9 +35,12 @@ import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 import Preloader from '@app/_compLibrary/Preloader';
 import { refreshAccessToken } from '@app/_api/Services/auth_token';
 import { isAxiosError } from 'axios';
+//translations
+import { useTranslations } from 'next-intl';
 
 const cn = classNames.bind(styles)
 const Genre = ({params}: {params: {each: string}}) => {
+    const t = useTranslations('title')
     const router = useRouter()
     const dispatch = useAppDispatch()
     const toggleMenuRef:any = useRef(null)
@@ -222,7 +225,7 @@ const Genre = ({params}: {params: {each: string}}) => {
                 <div className={styles.content_box}>
                     {cover}
                     <div className={styles.artist}>
-                        <div className={styles.title}>Genre</div>
+                        <div className={styles.title}>{t('genre')}</div>
                         <div className={styles.name}>{credentials?.title}</div>
                     </div>
                 </div>
@@ -249,7 +252,7 @@ const Genre = ({params}: {params: {each: string}}) => {
                     <div className={styles.top}>
                         <div className={styles.name}>{credentials?.title}</div>
                         <div className={styles.title}>
-                            Genre
+                            {t('genre')}
                         </div>
                     </div>
 

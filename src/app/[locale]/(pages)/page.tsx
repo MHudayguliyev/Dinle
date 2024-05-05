@@ -6,9 +6,9 @@ import { useQuery } from 'react-query'
 //styles
 import classNames from 'classnames/bind'
 import styles from './page.module.scss';
-//icons/images
-import ChevronRightI from '@app/_components/icons/chevronRight/icon';
+//icons
 import UserI from '@app/_components/icons/user/icon';
+import ArrowRightLgI from '@app/_components/icons/ArrowRightLg/icon';
 //breakpoints
 import { standardCardBreaksPoints, sliderBreakpoints } from '@app/_assets/json_data/swiper_breakpoints';
 // import Swiper JS
@@ -38,15 +38,13 @@ import Preloader from '@app/_compLibrary/Preloader';
 
 //translations 
 import {useTranslations} from 'next-intl';
-import ArrowRightI from '@app/_components/icons/arrowRight/icon';
-import ArrowRightLgI from '@app/_components/icons/ArrowRightLg/icon';
 import toast from 'react-hot-toast';
 
 type Affixes = 'news' | 'clip' | 'show' | 'karaoke' | 'song'
 
 const cn = classNames.bind(styles)
 export default function Home() {
-  const t = useTranslations();
+  const t = useTranslations('home');
   const dispatch = useAppDispatch()
   const dropdownContentRef:any = useRef(null)
   const dropdownToggleRef:any = useRef(null)
@@ -126,17 +124,17 @@ export default function Home() {
   const actionsData = [
     {
         value: 'info', 
-        label: {ru: 'Maglumat', tk: 'Maglumat'}, 
+        label: {ru: 'Maglumat', tm: 'Maglumat'}, 
         icon: <InfoSmI />
     }, 
     {
         value: 'share', 
-        label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
+        label: {ru: 'Paylasmak', tm: 'Paylasmak'}, 
         icon: <ShareSmI />
     }, 
     {
         value: 'queue', 
-        label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
+        label: {ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
         icon: <ReadMoreI />
     }, 
   ]

@@ -13,23 +13,22 @@ const Layout = ({children}: {children: React.ReactNode}) => {
   const locale = useLocale()
   const pathname = usePathname()
   const title = useMemo(() => {
-    console.log("locale", locale)
     const routes = [
       {
         value: 'song', 
-        label: {ru: "Songs", tk: "Aydymlar"}
+        label: {ru: "Песни", tm: "Aýdymlar"}
       },
       {
         value: 'news', 
-        label: {ru: "News", tk: "News"}
+        label: {ru: "Новости", tm: "News"}
       },
       {
         value: 'clip', 
-        label: {ru: "Clips", tk: "Klipler"}
+        label: {ru: "Клипы", tm: "Klipler"}
       },
       {
         value: 'show', 
-        label: {ru: "Shows", tk: "Showlar"}
+        label: {ru: "Шоу", tm: "Showlar"}
       },
     ]
     for(let i = 0; i < routes.length; i++){

@@ -55,6 +55,8 @@ import InfoMenu from '@app/_components/InfoMenu/InfoMenu';
 import { setShowAuthModal } from '@app/_redux/reducers/AuthReducer';
 import { isAxiosError } from 'axios';
 import { refreshAccessToken } from '@app/_api/Services/auth_token';
+//translations
+import { useTranslations } from 'next-intl';
 
 const cn = classNames.bind(styles)
 const Search = () => {
@@ -69,6 +71,7 @@ const Search = () => {
   const [openRecents, setOpenRecents] = useClickOutside(dropdownRef, dropdownToggleRef, 'mousedown')
   const [width] = useWindowSize()
 
+  const t = useTranslations('tabs')
   const dispatch = useAppDispatch()
   const router = useRouter()
   const searchParam = useSearchParams()
@@ -82,23 +85,22 @@ const Search = () => {
   const tabs: TabMenuTypes[] = [
     {
       route: 'artist', label: {
-        tk: 'Artists', ru:'Artists'
+        tm:'Artist', ru: 'Артисты'
       }
-    }, 
+    },
     {route: 'playlist', label: {
-      tk:'Playlist', ru: 'Playlist'
+      tm:'Plaýlist', ru: 'Плейлисты'
+    }}, 
+    {route: 'albom', label: {
+      tm:'Albom', ru: 'Альбомы'
     }}, 
     {
-      route: 'album', label: {
-        tk:'Albums', ru: 'Albums'
-      }
-    }, 
-    {
       route: 'genre', label: {
-        tk:'Genres', ru: 'Genres'
+        tm:'Genre', ru: 'Жанры'
       }
     }
   ]
+
   //states
   const delayTime = 200;
   const [dynamicSongId, setDynamicSongId] = useState<string>("")
@@ -637,7 +639,7 @@ const Search = () => {
             isArtistsLoading || isLoading.artists ?  loader('artist') :  
               isArtistsError ? errorDiv : 
               <div className={styles.recomendations}>
-                <h3 className={styles.songCardTitle}>Artists</h3>
+                <h3 className={styles.songCardTitle}>{t('artist')}</h3>
                   <div className={styles.grid_wrapper}>
                     {
                       artistsList?.map((artist:any) => (
@@ -662,7 +664,7 @@ const Search = () => {
             isPlaylistsLoading || isLoading.playlists ?  loader('playlist') :  
             isPlaylistsError ? errorDiv : 
               <div className={styles.recomendations}>
-                <h3 className={styles.songCardTitle}>Playlists</h3>
+                <h3 className={styles.songCardTitle}>{t('playlist')}</h3>
                 <div className={styles.grid_wrapper}>
                   {
                     playlistsList?.map(playlist => (
@@ -688,7 +690,7 @@ const Search = () => {
             isAlbomsLoading || isLoading.alboms ?  loader('album') :  
             isAlbomsError ? errorDiv : 
               <div className={styles.recomendations}>
-                <h3 className={styles.songCardTitle}>Albums</h3>
+                <h3 className={styles.songCardTitle}>{t('albom')}</h3>
                 <div className={styles.grid_wrapper}>
                   {
                     albomsList?.map(album => (
@@ -714,7 +716,7 @@ const Search = () => {
             isGenresLoading || isLoading.genres ?  loader('genre') :  
             isGenresError ? errorDiv : 
               <div className={styles.recomendations}>
-                <h3 className={styles.songCardTitle}>Genres</h3>
+                <h3 className={styles.songCardTitle}>{t('genre')}</h3>
                 <div className={styles.grid_wrapper}>
                   {
                     genresData?.data.map(genre => (
@@ -737,7 +739,7 @@ const Search = () => {
           showFoundData && CheckObjOrArrForNull(songsSearch) && (
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
-                <h3>Songs</h3>
+                <h3>{t('song')}</h3>
                 {
                   !isViewAll && 
                   <CustomLink href={`/search?mask=${searchValue}&all=songs`}>
@@ -767,7 +769,7 @@ const Search = () => {
           isSearchDataLoading ? loader('artist', true) : CheckObjOrArrForNull(artistsSearch) ? (
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
-                <h3>Artists</h3>
+                <h3>{t('artist')}</h3>
                 {
                   !isViewAll && 
                   <CustomLink href={`/search?mask=${searchValue}&all=artists`}>
@@ -819,7 +821,7 @@ const Search = () => {
           isSearchDataLoading ? loader('album', true) : CheckObjOrArrForNull(albumsSearch) ? (
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
-                <h3>Alboms</h3>
+                <h3>{t('albom')}</h3>
                 {
                   !isViewAll && 
                   <CustomLink href={`/search?mask=${searchValue}&all=alboms`}>
@@ -859,7 +861,7 @@ const Search = () => {
           isSearchDataLoading ? loader('playlist', true) : CheckObjOrArrForNull(playlistsSearch) ? (
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
-                <h3>Playlists</h3>
+                <h3>{t('playlist')}</h3>
                 {
                   !isViewAll && 
                   <CustomLink href={`/search?mask=${searchValue}&all=playlists`}>

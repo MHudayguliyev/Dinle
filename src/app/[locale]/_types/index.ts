@@ -2,7 +2,7 @@ import { StaticImageData } from "next/image"
 
 export type Localization = {
     ru: string 
-    tk: string
+    tm: string
 }
 export type Tracks = {
     id: number
@@ -14,7 +14,7 @@ export type Tracks = {
     duration: string
     favorite: boolean
 }
-export type IconTypes = 'home' | 'search' | 'playlist' | 'settings'
+export type IconTypes = 'home' | 'search' | 'favorite' | 'settings'
 export type SidebarRoutes = {
     display_name: Localization
     route: string

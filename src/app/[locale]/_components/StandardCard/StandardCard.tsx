@@ -135,7 +135,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
 
     const routeMem = useMemo(() => {
         const route = `
-            ${artists ? `/artist/${artistId}` : playlists ? `/playlist/${playlistId}` : alboms ? `/album/${albomId}` : 
+            ${artists ? `/artist/${artistId}` : playlists ? `/playlist/${playlistId}` : alboms ? `/albom/${albomId}` : 
             genres ? `/genre/${genreId}` : newsCard ? `/all/news/${newsId}` : videoCard ? `/all/clip/${videoId}` : showCard ? `/all/show/${showId}` : ""}
         `
         return route
@@ -161,22 +161,22 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         const data = [
             {
                 value: 'info', 
-                label: {ru: 'Maglumat', tk: 'Maglumat'}, 
+                label: {ru: 'Maglumat', tm: 'Maglumat'}, 
                 icon: <InfoSmI />
             }, 
             {
                 value: 'share', 
-                label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
+                label: {ru: 'Paylasmak', tm: 'Paylasmak'}, 
                 icon: <ShareSmI />
             }, 
             {
                 value: 'queue', 
-                label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
+                label: {ru: 'Indiki aydyma gos', tm: 'Indiki aydyma gos'}, 
                 icon: <ReadMoreI />
             }, 
         ]
 
-        if(videoCard || alboms){
+        if(videoCard || showCard || newsCard || alboms){
             for(let i = 0; i < data.length; i++){
                 const item = data[i]
                 if(item.value === 'info' || item.value === 'queue')
@@ -184,7 +184,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
             }
         }
         return data
-    }, [videoCard, alboms])
+    }, [videoCard, showCard, newsCard, alboms])
 
 
   return (

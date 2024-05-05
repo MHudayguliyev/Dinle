@@ -1,7 +1,43 @@
 {
-    "news": "News", 
-    "myPlaylist": "Мой плейлист", 
-    "myFavorite": "Избранное", 
-    "download": "Скачать", 
-    "settings": "Настройки"
+   "home": {
+        "news": "Афиша", 
+        "myPlaylist": "Мой плейлист", 
+        "myFavorite": "Избранное", 
+        "download": "Скачать", 
+        "settings": "Настройки"
+   }, 
+   "settings": {
+      "title": "Настройки", 
+      "notification": "Уведомления", 
+      "language": "Язык", 
+      "logout": "Выйти из аккаунта", 
+      "privacyPolicy":"Политика конфиденциальности", 
+      "removeAccount": "Удалить аккаунт?", 
+      "yes": "Hawa", 
+      "no": "Ýok"
+   }, 
+   "favorite": {
+      "title": "Избранное"
+   }, 
+   "tabs": {
+      "song": "Песни",
+      "artist": "Артисты", 
+      "playlist": "Плейлисты", 
+      "albom": "Альбомы", 
+      "genre": "Жанры", 
+      "clip": "Клипы", 
+      "show": "Шоу",
+      "news": "Новости"
+   }, 
+   "title": {
+      "artist": "Артист", 
+      "genre": "Жанр", 
+      "albom": "Альбом", 
+      "playlist": "Плейлист"
+   }, 
+   "share": "Поделиться", 
+   "info": "Информация", 
+   "queue": "Добавить в очередь",
+   "follow": "Подписаться", 
+   "following": "Подписанный"
 }

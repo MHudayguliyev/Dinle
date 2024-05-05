@@ -16,11 +16,14 @@ import { getUserDevice } from '@app/_utils/helpers';
 import { logOut } from '@app/_api/Queries/Post';
 import { removeFromStorage } from '@app/_utils/storage';
 
-interface LogoutModalProps extends CommonModalI {}
+interface LogoutModalProps extends CommonModalI {
+    translation: Function
+}
 const LogoutModal = (props: LogoutModalProps) => {
     const {
         show, 
-        close
+        close, 
+        translation
     } = props
 
     const router = useRouter()
@@ -30,7 +33,7 @@ const LogoutModal = (props: LogoutModalProps) => {
             const response = await logOut(device!?.id)
             console.log("res", response)
             if(response.success && response.statusCode === 200 && response.data.logout){
-                console.log('response', response)
+                // console.log('response', response)
                 router.replace('/login')
                 removeFromStorage('authUser')
             }
@@ -59,19 +62,16 @@ const LogoutModal = (props: LogoutModalProps) => {
 
             <div className={styles.theCenter}>
                 <div className={styles.deleteAccountTxt}>
-                    Удалить аккаунт?
-                </div>
-                <div className={styles.sureTxt}>
-                    Уверены, что хотите удалить аккаунт? Все ваши данные будут удалены!
+                    {translation('removeAccount')}
                 </div>
             </div>
 
             <div className={styles.btnGroup}>
                 <Button color="lightDarkFourth" roundedSm className={styles.action} onClick={() => close()}>
-                    Cancel
+                    {translation('no')}
                 </Button>
                 <Button color="darkRed" roundedSm className={styles.action} onClick={logout}>
-                    Yes
+                    {translation('yes')}
                 </Button>
             </div>
         </div>

@@ -40,7 +40,7 @@ interface SidebarProps {
 const cn = classNames.bind(styles)
 const Sidebar = (props: SidebarProps) => {
     const locale = useLocale()
-    const t = useTranslations()
+    const t = useTranslations('home')
     const pathname = usePathname()
     const dispatch = useAppDispatch()
     //redux states
@@ -83,12 +83,12 @@ const Sidebar = (props: SidebarProps) => {
                             sidebar_routes.map((route, i) => {
                                 return (
                                     <CustomLink href={route.route} key={i}>
-                                    <SidebarItem 
-                                        active={i === activeItem}
-                                        icon={route.icon}
-                                        title={route.display_name[locale as keyof Localization]}
-                                        sidebarFolded={sidebarFolded}
-                                    />
+                                        <SidebarItem 
+                                            active={i === activeItem}
+                                            icon={route.icon}
+                                            title={route.display_name[locale as keyof Localization]}
+                                            sidebarFolded={sidebarFolded}
+                                        />
                                     </CustomLink>
                                 )
                             })

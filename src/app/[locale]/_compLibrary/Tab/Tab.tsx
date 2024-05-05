@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import CustomLink from '@components/CustomLink/CustomLink';
 //types
-import { TabMenuTypes } from '@app/_types';
+import { Localization, TabMenuTypes } from '@app/_types';
 //styles
 import styles from './Tab.module.scss';
 import classNames from 'classnames/bind';
@@ -11,6 +11,8 @@ import { useWindowScrollPositions } from '@app/_hooks/useWindowOffset'
 import { isUndefined } from '@app/_utils/helpers';
 //redux-hooks
 import { useAppSelector } from '@app/_hooks/redux_hooks';
+//translations
+import { useLocale } from 'next-intl';
 
 type TabProps = {
   tabs: TabMenuTypes[]
@@ -36,6 +38,7 @@ const Tab = (props: TabProps) => {
     fixedTopNull, 
   }= props
 
+  const locale = useLocale()
   const sidebarFolded = useAppSelector(state => state.sidebarReducer.sidebarFolded)
   const [width] = useWindowSize()
   const { scrolly } = useWindowScrollPositions()
@@ -56,7 +59,7 @@ const Tab = (props: TabProps) => {
         {
           tabs.map(tab => (
             <CustomLink href={"/".concat(baseUrl + `?tab=${tab.route}`)} className={cn({ active: (pathname === tab.route) || (!searchMenu && isUndefined(pathname) && tab.route === tabs[0].route) })}>
-              {tab.label.tk}
+              {tab.label[locale as keyof Localization]}
             </CustomLink>
           ))
         }

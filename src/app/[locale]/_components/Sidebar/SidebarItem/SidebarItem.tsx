@@ -26,7 +26,7 @@ const SidebarItem = (props: SidebarItemProps) => {
   return (
     <div className={cn({
         sidebar__item: true, 
-        hideElement: icon === 'playlist' || icon === 'settings', 
+        hideElement: icon === 'favorite' || icon === 'settings', 
         sidebarFolded: sidebarFolded
     })}>
         <div className={cn({

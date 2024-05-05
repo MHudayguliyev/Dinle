@@ -25,7 +25,7 @@ import Input from '@compLibrary/Input';
 import { useAppDispatch, useAppSelector } from '@hooks/redux_hooks';
 import useClickOutside from '@hooks/useOutClick';
 //redux
-import { setCurrentSong, setIsSongPlaying, setSongIndex, setIsShuffle, shuffle } from '@redux/reducers/MediaReducer';
+import { setCurrentSong, setIsSongPlaying, setSongIndex, setIsShuffle, shuffle, addToQueue } from '@redux/reducers/MediaReducer';
 import { setShowAuthModal } from '@redux/reducers/AuthReducer';
 import { setIsBlockOverflow } from '@redux/reducers/OverflowReducer';
 //comps
@@ -43,6 +43,7 @@ import CustomLink from '@components/CustomLink/CustomLink';
 import InfoSmI from '@app/_components/icons/infoSm/icon';
 import ShareSmI from '@app/_components/icons/shareSm/icon';
 import ReadMoreI from '@app/_components/icons/readMore/icon';
+import Song from '@app/_api/types/queryReturnTypes/Song';
 
 function handleBufferProgress(e: any) {
   const audio = e.currentTarget;
@@ -105,7 +106,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   const [showMobLyrics, setShowMobLyrics] = useState<boolean>(false)
   const [showBottomsheet, setShowBottomsheet] = useState<boolean>(false)
   const [prevSongUrl, setPrevSongUrl] = useState<string>("")
-  const [songId, setSongId] = useState<string>("")
+  const [addToQueueSong, setAddToQueueSong] = useState<Song>()
 
 
   const [timeProgress, setTimeProgress] = useState<number>(0);
@@ -257,14 +258,16 @@ const AudioPlayer = (props: AudioPlayerProps) => {
   const openMenu = useCallback((value: string) => {
     if(value === 'info') {
       setShowMenu(true)
+    }else if(value === 'queue'){
+      dispatch(addToQueue(addToQueueSong))
     }
     setShowBottomsheet(false)
-  }, [])
+  }, [addToQueueSong])
 
-  const openBottomSheet = useCallback((songId:string) => {
-    setSongId(songId)
+  const openBottomSheet = useCallback((song:Song) => {
+    setAddToQueueSong(song)
     setShowBottomsheet(!showBottomsheet)
-  }, [showBottomsheet, songId])
+  }, [showBottomsheet])
 
   const handleNext = useCallback(() => {
     if(isUndefined(audioRef?.current)) return 
@@ -458,29 +461,29 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     <InfoMenu 
       ref={menuRef}
       fetchMode='song'
-      id={songId}
+      id={addToQueueSong?.id as string}
       show={showMenu}
       close={() => setShowMenu(false)}
     />
-  ), [menuRef, songId, showMenu, setShowMenu])
+  ), [menuRef, addToQueueSong?.id, showMenu, setShowMenu])
   
   const actionsData = [
     {
         value: 'info', 
-        label: {ru: 'Maglumat', tk: 'Maglumat'}, 
+        label: {ru: 'Информация', tm: 'Maglumat'}, 
         icon: <InfoSmI />
     }, 
     {
         value: 'share', 
-        label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
+        label: {ru: 'Поделиться', tm: 'Paýlaşmak'}, 
         icon: <ShareSmI />
     }, 
     {
         value: 'queue', 
-        label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
+        label: {ru: 'Добавить в очередь', tm: 'Indiki aýdyma goş'}, 
         icon: <ReadMoreI />
     }, 
-]
+  ]
 
   return (
     <>
@@ -630,7 +633,11 @@ const AudioPlayer = (props: AudioPlayerProps) => {
 
               <div className={styles.mobPlayerContent}>
                   <div className={styles.header}>
-                    <ArrowBottomI onClick={() => setShowPlayer(false)}/>
+                    <ArrowBottomI onClick={() => {
+                      setShowPlayer(false)
+                      setShowMobPlaylist(false)
+                      setShowMobLyrics(false)
+                    }}/>
                   </div>
 
                 <div className={cn({
@@ -676,7 +683,7 @@ const AudioPlayer = (props: AudioPlayerProps) => {
 
                         </div>
                         <MoreSm 
-                          onClick={() => openBottomSheet(item.id)}
+                          onClick={() => openBottomSheet(item)}
                         />
                       </div>
                     ))

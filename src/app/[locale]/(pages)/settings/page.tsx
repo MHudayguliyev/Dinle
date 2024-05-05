@@ -1,7 +1,7 @@
 'use client'
 import React, {useState} from "react"
 import Image from "next/image"
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 //styles
 import classNames from "classnames/bind"
@@ -32,6 +32,7 @@ import { useAppSelector } from "@app/_hooks/redux_hooks"
 
 const cn = classNames.bind(styles)
 const Settings = () => {
+    const t = useTranslations('settings')
     const currentLocale = useLocale()
 
     const [checked, setChecked] = useState<boolean>(false)
@@ -51,6 +52,7 @@ const Settings = () => {
             <LogoutModal 
                 show={openModal}
                 close={() => setOpenModal(false)}
+                translation={t}
             />
 
             <div className={cn({
@@ -63,7 +65,7 @@ const Settings = () => {
             </div>
 
             <div className={styles.box}>
-                <div className={styles.topHeader}>Sazlamalar</div>
+                <div className={styles.topHeader}>{t('title')}</div>
 
                 <div>
                     <div className={styles.item}>
@@ -100,7 +102,7 @@ const Settings = () => {
                     <div className={styles.item}>
                         <div className={styles.theLeft}>
                             <NotifyI />
-                            <div className={styles.header}>Notification</div>
+                            <div className={styles.header}>{t('notification')}</div>
                         </div>
                         <Switch 
                             checked={checked}
@@ -111,13 +113,13 @@ const Settings = () => {
                     <div className={`${styles.item} ${styles.addCursor}`} onClick={() => setOpenLangMenu(true)}>
                         <div className={styles.theLeft}>
                             <GlobusI />
-                            <div className={styles.header}>Language</div>
+                            <div className={styles.header}>{t('language')}</div>
                         </div>
                         
                         <div className={styles.theRight}>
                             <div className={styles.phone}>
                                 {
-                                    currentLocale === 'tk' ? "Turkmen" : "Русский"
+                                    currentLocale === 'tm' ? "Turkmen" : "Русский"
                                 }
                             </div>
                             <ArrowI/>
@@ -139,7 +141,7 @@ const Settings = () => {
                     <CustomLink href='' className={styles.item}>
                         <div className={styles.theLeft}>
                             <HelpI/>
-                            <div className={styles.header}>Salgylanma</div>
+                            <div className={styles.header}>{t('privacyPolicy')}</div>
                         </div>
                         <ArrowI />
                     </CustomLink>
@@ -154,7 +156,7 @@ const Settings = () => {
                 startIcon={<LogoutI />} 
                 roundedSm 
                 style={{display: 'flex', background: 'rgba(255, 55, 64, 0.2)'}}> 
-                    Logout
+                    {t('logout')}
                 </Button>
             </div>
             </div>

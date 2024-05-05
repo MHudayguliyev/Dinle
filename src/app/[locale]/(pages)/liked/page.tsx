@@ -15,7 +15,6 @@ import ShuffleSmI from '@app/_components/icons/shuffleSm/icon';
 import PrevNext from '@components/icons/prevNext/icon'
 //libs
 import Tab from '@app/_compLibrary/Tab';
-
 import Button from '@app/_compLibrary/Button';
 import SongList from '@app/_components/SongList/SongList';
 //redux
@@ -47,8 +46,11 @@ import LikedSongs from '@app/_api/types/queryReturnTypes/LikedSongs';
 import Albums from '@app/_api/types/queryReturnTypes/Albums';
 import LikedPlaylists from '@app/_api/types/queryReturnTypes/LikedPlaylists';
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
+//api
 import { refreshAccessToken } from '@app/_api/Services/auth_token';
 import { isAxiosError } from 'axios';
+//translations
+import { useTranslations } from 'next-intl';
 
 const cn = classNames.bind(styles)
 const ViewAll = () => {
@@ -57,6 +59,7 @@ const ViewAll = () => {
     const playlistsObserver = useRef<IntersectionObserver>();
     const albomsObserver = useRef<IntersectionObserver>();
 
+    const t = useTranslations('favorite')
     const router = useRouter()
     const dispatch = useAppDispatch()
     const searchParam = useSearchParams()
@@ -66,27 +69,23 @@ const ViewAll = () => {
     const tabs: TabMenuTypes[] = [
       {
         route: 'song', label: {
-          tk: 'Songs', ru:'Songs'
+          tm: 'Aýdym', ru: 'Песни'
         }
       }, 
-      // {route: 'clip', label: {
-      //   en: 'Clips', tk:'Clips', ru: 'Clips'
-      // }}, 
       {
         route: 'artist', label: {
-          tk:'Artists', ru: 'Artists'
+          tm:'Artist', ru: 'Артисты'
         }
       },
       {route: 'albom', label: {
-        tk:'Alboms', ru: 'Alboms'
+        tm:'Albom', ru: 'Альбомы'
       }}, 
       {route: 'playlist', label: {
-        tk:'Playlist', ru: 'Playlist'
+        tm:'Plaýlist', ru: 'Плейлисты'
       }}
     ]
 
     const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab])
-    // const showClips = useMemo(() => tab === tabs[1].route,[tab])
     const showArtists = useMemo(() => tab === tabs[1].route,[tab])
     const showAlboms = useMemo(() => tab === tabs[2].route,[tab])
     const showPlaylists = useMemo(() => tab === tabs[tabs.length - 1].route,[tab])
@@ -374,7 +373,7 @@ const ViewAll = () => {
         )}
         renderActions={() => (
             <>
-              {scrolly >= 271 && <div className={styles.title}>My foverim</div>}
+              {scrolly >= 271 && <div className={styles.title}>{t('title')}</div>}
               <div className={styles.topActions}>
                 {shareBtn}
               </div>
@@ -392,7 +391,7 @@ const ViewAll = () => {
             </div>
 
             <div className={styles.my_favorite}>
-              <div className={styles.title}>My foverim</div>
+              <div className={styles.title}>{t('title')}</div>
               {/* <p>Songs {songs?.count}</p> */}
             </div>
           </div>

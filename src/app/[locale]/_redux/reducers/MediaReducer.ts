@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { InitialState } from "../types/MediaTypes";
 import { CheckObjOrArrForNull } from '@app/_utils/helpers';
+import { v4 as uuidv4 } from 'uuid';
 
 const initialState: InitialState = {
     songData: [],
@@ -47,11 +48,12 @@ const MediaReducer = createSlice({
 
             const songsClone = state.songData.map(song => ({...song}))
             const currentIndex = state.songIndex
-            
+            const newSong = { ...action.payload, id: uuidv4() };
+            // console.log("new song", newSong)
             for(let i = songsClone.length; i > currentIndex + 1; i--){
                 songsClone[i] = songsClone[i - 1]
             }
-            songsClone[currentIndex + 1] = action.payload
+            songsClone[currentIndex + 1] = newSong
             state.songData = [...songsClone]
         }, 
         setIsShuffle: (state, action) => {

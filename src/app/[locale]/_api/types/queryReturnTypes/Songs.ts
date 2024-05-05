@@ -1,18 +1,10 @@
+import Song from "./Song"
+
 interface Songs {
     count: number 
     duration: number
     producedAt: string
     title?: string 
-    rows: {
-        id: string
-        artistId:string
-        cover: string 
-        description: string 
-        duration: Songs['duration']
-        isLiked: boolean
-        link: string 
-        title: Songs['title']
-        lyrics: string
-    }[]
+    rows: Song[]
 }
 export default Songs

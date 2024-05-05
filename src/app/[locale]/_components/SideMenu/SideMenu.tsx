@@ -62,18 +62,13 @@ const SideMenu = (props: SideMenuProps<HTMLDivElement>) => {
     const actionsData = [
         {
             value: 'info', 
-            label: {ru: 'Maglumat', tk: 'Maglumat'}, 
+            label: {ru: 'Информация', tm: 'Maglumat'}, 
             icon: <InfoSmI />
         }, 
         {
             value: 'share', 
-            label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
+            label: {ru: 'Поделиться', tm: 'Paýlaşmak'}, 
             icon: <ShareSmI />
-        }, 
-        {
-            value: 'queue', 
-            label: {ru: 'Indiki aydyma gos', tk: 'Indiki aydyma gos'}, 
-            icon: <ReadMoreI />
         }, 
     ]
 

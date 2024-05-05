@@ -39,9 +39,12 @@ import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 import Preloader from '@app/_compLibrary/Preloader';
 import { refreshAccessToken } from '@app/_api/Services/auth_token';
 import { isAxiosError } from 'axios';
+//translations 
+import { useTranslations } from 'next-intl';
 
 const cn = classNames.bind(styles)
 const Playlist = ({params}: {params: {each: string}}) => {
+    const t = useTranslations()
     const router = useRouter()
     const dispatch = useAppDispatch()
     const toggleMenuRef:any = useRef(null)
@@ -243,10 +246,10 @@ const Playlist = ({params}: {params: {each: string}}) => {
                 <div className={styles.content_box}>
                     {cover}
                     <div className={styles.playlistInfo}>
-                        <div className={styles.title}>Playlist</div>
+                        <div className={styles.title}>{t('title.playlist')}</div>
                         <div className={styles.name}>{credentials?.title}</div>
                         <div className={styles.about}>
-                            Песни {credentials?.count}
+                            {t('tabs.song')} {credentials?.count}
                         </div>
                     </div>
                 </div>
@@ -276,10 +279,10 @@ const Playlist = ({params}: {params: {each: string}}) => {
                         <div className={styles.name}>{credentials?.title}</div>
 
                         <div className={styles.about}>
-                            Песни {credentials?.count}
+                            {t('tabs.song')} {credentials?.count}
                         </div>
                         <div className={styles.title}>
-                            Playlist
+                            {t('title.playlist')}
                         </div>
                     </div>
 

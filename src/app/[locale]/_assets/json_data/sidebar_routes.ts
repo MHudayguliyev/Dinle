@@ -4,7 +4,7 @@ const sidebar_routes: SidebarRoutes = [
     {
       display_name: {
         ru: 'Главное',
-        tk: 'Baş sahypa'
+        tm: 'Baş sahypa'
       },
       route: '/',
       icon: "home",
@@ -13,25 +13,25 @@ const sidebar_routes: SidebarRoutes = [
     {
       display_name: {
         ru: 'Поиск',
-        tk: 'Gözle'
+        tm: 'Gözle'
       },
       route: '/search?tab=genre',
       icon: "search",
       sub: []
     },
-    // {
-    //   display_name: {
-    //     ru: 'playlists',
-    //     tk: 'playlists'
-    //   },
-    //   route: '/playlists',
-    //   icon: "playlist",
-    //   sub: []
-    // },
+    {
+      display_name: {
+        ru: 'Избранное',
+        tm: 'Halanlarym'
+      },
+      route: '/liked',
+      icon: "favorite",
+      sub: []
+    },
     {
       display_name: {
         ru: 'Настройки',
-        tk: 'Sazlamalar'
+        tm: 'Sazlamalar'
       },
       route: '/settings',
       icon: "settings",

@@ -13,6 +13,8 @@ import MobileRectI from '../icons/mobileRect/icon'
 import CheckI from '../icons/check/icon'
 //lang json
 import lang_json from '@app/_assets/json_data/lang_json'
+import CustomLink from '../CustomLink/CustomLink';
+import { useAppSelector } from '@app/_hooks/redux_hooks';
 
 interface LanguagesMenuProps extends CommonModalI {
   leftCut?: boolean
@@ -29,12 +31,13 @@ const LanguagesMenu = (props: LanguagesMenuProps) => {
     const router = useRouter()
     const pathname = usePathname()
     const currentLocale = useLocale()
+    const sidebarFolded = useAppSelector(state => state.sidebarReducer.sidebarFolded)
+
     const changeLanguage = (value: string) => {
+      console.log("value", value)
       if(value !== currentLocale){
         router.replace(pathname, {locale: value as string})
-        // window.location.reload()
-
-        
+        window.location.reload()
       }
     }
 
@@ -42,7 +45,7 @@ const LanguagesMenu = (props: LanguagesMenuProps) => {
     <div onClick={() => close()} className={cn({
         language: true, 
         openLocale: show, 
-        leftCut: leftCut
+        leftCut: !sidebarFolded && leftCut
       })}>
         <CloseI onClick={() => close()} className={styles.closeI}/>
         <div className={styles.language_wrapper}>
@@ -58,7 +61,6 @@ const LanguagesMenu = (props: LanguagesMenuProps) => {
                   locale: true, 
                   active: locale.value === currentLocale
                 })} key={locale.value} onClick={(e) => {
-                  e.stopPropagation()
                   changeLanguage(locale.value)
                 }}>
                   <span>{locale.label}</span>

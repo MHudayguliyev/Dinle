@@ -1,0 +1,43 @@
+{
+   "home": {
+        "news": "Afişa", 
+        "myPlaylist": "Meniň üçin", 
+        "myFavorite": "Halanlarym", 
+        "download": "Ýükläp al", 
+        "settings": "Sazlamalar"
+   }, 
+   "settings": {
+      "title": "Sazlamalar", 
+      "notification": "Bildirişler", 
+      "language": "Dili", 
+      "logout": "Sahsy sahypamdan çykmak", 
+      "privacyPolicy":"Gizlinlik syýasaty", 
+      "removeAccount": "Hasapdan çykmak?", 
+      "yes": "Hawa", 
+      "no": "Ýok"
+   }, 
+   "favorite": {
+      "title": "Halanlarym"
+   }, 
+   "tabs": {
+      "song": "Aýdym",
+      "artist": "Artist", 
+      "playlist": "Plaýlist", 
+      "albom": "Albom", 
+      "genre": "Genre", 
+      "clip": "Klip", 
+      "show": "Show",
+      "news": "Habarlar"
+   }, 
+   "title": {
+      "artist": "Artist", 
+      "genre": "Genre", 
+      "albom": "Albom", 
+      "playlist": "Plaýlist"
+   }, 
+   "share": "Paýlaşmak",
+   "info": "Maglumat", 
+   "queue": "Indiki aýdyma goş",
+   "follow": "Follow etmek", 
+   "following": "Following"
+}

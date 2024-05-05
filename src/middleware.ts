@@ -4,9 +4,9 @@ import {locales, localePrefix} from './navigation';
 export default createMiddleware({
   locales,
   localePrefix,
-  defaultLocale: 'tk'
+  defaultLocale: 'tm'
 });
-
+ 
 export const config = {
   // Match only internationalized pathnames
   matcher: ['/((?!api|_next|.*\\..*).*)']

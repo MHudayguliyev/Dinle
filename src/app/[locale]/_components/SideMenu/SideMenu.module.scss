@@ -86,6 +86,7 @@
                         height: 47px;
                         width: 47px;
                         border-radius: var(--border-radius-sm);
+                        object-fit: cover;
                     }
                     .imageActive {
                         border: 1px solid var(--text-color);

@@ -49,27 +49,31 @@ import Bottomsheet from '@app/_components/Bottomsheet/Bottomsheet'
 import ShareSmI from '@app/_components/icons/shareSm/icon'
 import TopNavbar from '@app/_components/TopNavbar/TopNavbar'
 import Preloader from '@app/_compLibrary/Preloader'
+//translations
+import { useTranslations } from 'next-intl'
 
 type Affixes = 'song' | 'clip' | 'albom' | 'artist'
 
 const cn = classNames.bind(styles)
 const Artist = ({params}: {params: {each: string}}) => {
+    const t = useTranslations()
     const dispatch = useAppDispatch()
     const router = useRouter()
     const searchParam = useSearchParams()
     const tab = searchParam.get('tab')
+    
     const tabs: TabMenuTypes[] = [
         {
           route: 'song', label: {
-            tk: 'Songs', ru:'Songs'
+            tm: 'Aýdym', ru:'Песни'
           }
         }, 
         {route: 'clip', label: {
-            tk:'Clips', ru: 'Clips'
+            tm:'Klip', ru: 'Клипы'
         }}, 
         {
           route: 'albom', label: {
-           tk:'Albums', ru: 'Albums'
+           tm:'Albom', ru: 'Альбомы'
           }
         }
     ]
@@ -163,14 +167,6 @@ const Artist = ({params}: {params: {each: string}}) => {
         if(!!artistId) setDynamicId(artistId)
     }, [artistId])
 
-    useEffect(() => {
-        const opacity = Math.min(1, scrolly / window.innerHeight)
-        if(headerRef && headerRef.current)
-        headerRef.current?.style?.setProperty(
-            '--opacity', opacity
-        )
-    }, [scrolly, headerRef])
-
     const refreshToken = (cb: Function) => {
         refreshAccessToken().then(isError => {
             if(isError) router.replace('/login')
@@ -195,7 +191,6 @@ const Artist = ({params}: {params: {each: string}}) => {
 
         try {
             const response = await likeArtist(artistId)
-            // console.log('res', response)
             if(response.success){
                 toast.success(response.data.message)
                 refetchArtist()
@@ -276,7 +271,7 @@ const Artist = ({params}: {params: {each: string}}) => {
     }, [])
     const followBtn = useMemo(() => (
         <Button startIcon={isFollowing ? <FollowCheckI /> : <></>} color={isFollowing ? 'lightDark' : 'light'} roundedSm className={styles.followBtn} onClick={handleFollow}>
-            {isFollowing ? 'Following' : 'Follow'}
+            {isFollowing ? t('following') : t('follow')}
         </Button>
     ),[isFollowing, handleFollow])
     const shareBtn = useMemo(() => (
@@ -303,7 +298,7 @@ const Artist = ({params}: {params: {each: string}}) => {
     const actionsData = [
         {
             value: 'share', 
-            label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
+            label: {ru: 'Paylasmak', tm: 'Paylasmak'}, 
             icon: <ShareSmI />
         }
     ]
@@ -341,7 +336,7 @@ const Artist = ({params}: {params: {each: string}}) => {
                 <div className={styles.content_box}>
                     {cover}
                     <div className={styles.artist}>
-                        <div className={styles.title}>Artist</div>
+                        <div className={styles.title}>{t('title.artist')}</div>
                         <div className={styles.name}>{credentials?.title}</div>
                     </div>
                 </div>
@@ -369,9 +364,7 @@ const Artist = ({params}: {params: {each: string}}) => {
                 <div className={styles.the_bottom_content}>
                     <div className={styles.top}>
                         <div className={styles.name}>{credentials?.title}</div>
-                        <div className={styles.title}>
-                            Artist
-                        </div>
+                        <div className={styles.title}>{t('title.artist')}</div>
                     </div>
 
                     <div className={styles.bottom}>
@@ -410,6 +403,7 @@ const Artist = ({params}: {params: {each: string}}) => {
                     }}
                     onLike={handleLike}
                     onPlay={(index) => dispatch(setCurrentSong({data: rows, index, id: rows![index]?.id}))}
+                
                 />
                 {isFetching && <span className={styles.loader}><Preloader /></span>}
             </>

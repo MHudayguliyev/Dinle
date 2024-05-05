@@ -37,9 +37,12 @@ import TopNavbar from '@app/_components/TopNavbar/TopNavbar';
 import Preloader from '@app/_compLibrary/Preloader';
 import { refreshAccessToken } from '@app/_api/Services/auth_token';
 import { isAxiosError } from 'axios';
+//translations
+import { useTranslations } from 'next-intl';
 
 const cn = classNames.bind(styles)
 const Album = ({params}: {params: {each: string}}) => {
+    const t = useTranslations('title')
     const router = useRouter()
     const dispatch = useAppDispatch()
     const albomsObserver = useRef<IntersectionObserver>();
@@ -246,7 +249,7 @@ const Album = ({params}: {params: {each: string}}) => {
                 <div className={styles.content_box}>
                     {cover}
                     <div className={styles.artist}>
-                        <div className={styles.title}>Album</div>
+                        <div className={styles.title}>{t('albom')}</div>
                         <div className={styles.name}>{credentials?.title}</div>
                     </div>
                 </div>
@@ -278,7 +281,7 @@ const Album = ({params}: {params: {each: string}}) => {
                             {credentials?.title}
                         </div>
                         <div className={styles.title}>
-                            Album
+                            {t('albom')}
                         </div>
                     </div>
 

@@ -6,6 +6,7 @@ import styles from './Bottomsheet.module.scss'
 import MobileRectI from '../icons/mobileRect/icon'
 //types
 import { Localization } from '@app/_types';
+import { useLocale } from 'next-intl';
 
 type ActionsType = {
     value: string 
@@ -29,6 +30,8 @@ const Bottomsheet = React.forwardRef<HTMLDivElement, BottomsheetProps>((props, r
         actionsData
     } = props
 
+    const locale = useLocale()
+
     const handleClick = useCallback((event: any, action:any) => {
         event.stopPropagation()
         if(onClick) onClick(action.value)
@@ -50,7 +53,7 @@ const Bottomsheet = React.forwardRef<HTMLDivElement, BottomsheetProps>((props, r
                     {actionsData?.map((action, i) => (
                         <div className={styles.action} key={i} onClick={(e) => handleClick(e, action)}>
                         <div className={styles.title}>
-                            {action.label.tk}
+                            {action.label[locale as keyof Localization]}
                         </div>
                         <>{action.icon}</>
                         </div>

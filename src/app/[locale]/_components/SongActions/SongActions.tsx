@@ -4,6 +4,7 @@ import styles from './SongActions.module.scss';
 import classNames from 'classnames/bind';
 import { capitalize } from '@app/_utils/helpers';
 import { Localization } from '@app/_types';
+import { useLocale } from 'next-intl';
 
 type ActionsType = {
     value: string 
@@ -33,6 +34,8 @@ const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, r
         className = "", 
         actionsData
     } = props
+
+    const locale = useLocale()
 
     // const actions = [
     // {
@@ -64,7 +67,7 @@ const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, r
                     <div className={cn({
                         title: true,
                     })}>
-                        {action.label.tk}
+                        {action.label[locale as keyof Localization]}
                     </div>
                     <>{action.icon}</>
                 </div>
