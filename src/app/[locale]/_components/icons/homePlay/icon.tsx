@@ -47,4 +47,6 @@ const PlayPause = React.forwardRef<SVGSVGElement, PlayPauseIconProps>((props, re
     )
 })
 
+PlayPause.displayName = 'PlayPause'
+
 export default PlayPause

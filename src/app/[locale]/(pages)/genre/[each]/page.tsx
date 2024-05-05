@@ -134,7 +134,7 @@ const Genre = ({params}: {params: {each: string}}) => {
                 }
             }else console.log('like song error', error)
           }
-    }, [])
+    }, [refreshToken])
     const playBtn = useCallback((topFixed = false) => {
         const currentSongId = song?.[songIndex]?.id
         const rowIndex = findIndex(rows, currentSongId)
@@ -171,15 +171,16 @@ const Genre = ({params}: {params: {each: string}}) => {
         songIndex, 
         isSongPlaying, 
         width, 
-        scrolly
+        scrolly, 
+        dispatch
     ])
 
     const shuffleBtn = useMemo(() => (
         <ShuffleI active={isShuffle} onClick={() => dispatch(setIsShuffle(!isShuffle))}/>
-    ), [isShuffle])
+    ), [isShuffle, dispatch])
     const shareBtn = useMemo(() => (
         <Share onClick={handleCopyLink}/>
-    ), [id])
+    ), [id, handleCopyLink])
     const infoMenu = useMemo(() => (
         <InfoMenu
             id={songId}
@@ -187,7 +188,7 @@ const Genre = ({params}: {params: {each: string}}) => {
             ref={menuContenRef} 
             close={() => setOpenMenu(false)}
         />
-    ), [menuContenRef, openMenu, songId])
+    ), [menuContenRef, openMenu, songId, setOpenMenu])
     const cover = useMemo(() => (
         <Image src={credentials?.cover ?? ""} alt='artist' width='400' height='400'/>
     ), [credentials?.cover])
@@ -266,6 +267,7 @@ const Genre = ({params}: {params: {each: string}}) => {
 
         <SongList 
             ref={lastGenreRef}
+            // @ts-ignore
             data={rows}
             fetchStatuses={{
                 isLoading, isError

@@ -59,5 +59,5 @@ const List = React.forwardRef<LegacyRef<SVGSVGElement>, SongListProps>((props, r
     </motion.div>
   )
 })
-
+List.displayName = 'List'
 export default List

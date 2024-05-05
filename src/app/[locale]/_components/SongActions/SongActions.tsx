@@ -73,7 +73,7 @@ const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, r
                 </div>
             ))
         )
-    }, [actionsData])
+    }, [actionsData, handleClick, locale])
 
   return (
     <>
@@ -90,5 +90,7 @@ const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, r
     </>
   )
 }) 
+
+SongActions.displayName = 'SongActions'
 
 export default SongActions

@@ -57,7 +57,7 @@ const SideMenu = (props: SideMenuProps<HTMLDivElement>) => {
         }
         setShowActions(false)
         setShow(false)
-    }, [])
+    }, [setShowActions, setShow])
 
     const actionsData = [
         {

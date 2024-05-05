@@ -48,12 +48,17 @@ const MediaReducer = createSlice({
 
             const songsClone = state.songData.map(song => ({...song}))
             const currentIndex = state.songIndex
-            const newSong = { ...action.payload, id: uuidv4() };
-            // console.log("new song", newSong)
+            for(let i = 0; i < songsClone.length; i++){
+                const song = songsClone[i]
+                if(song.id === action.payload.id){
+                    action.payload = { ...action.payload, id: uuidv4() };
+                }
+            }
+
             for(let i = songsClone.length; i > currentIndex + 1; i--){
                 songsClone[i] = songsClone[i - 1]
             }
-            songsClone[currentIndex + 1] = newSong
+            songsClone[currentIndex + 1] = {...action.payload}
             state.songData = [...songsClone]
         }, 
         setIsShuffle: (state, action) => {

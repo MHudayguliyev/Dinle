@@ -31,5 +31,5 @@ const InfoI = React.forwardRef<SVGSVGElement, InfoIProps>((props, ref): JSX.Elem
     </svg>
   )
 })
-
+InfoI.displayName = 'InfoI'
 export default InfoI

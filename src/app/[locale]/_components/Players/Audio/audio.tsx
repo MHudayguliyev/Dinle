@@ -132,12 +132,10 @@ const AudioPlayer = (props: AudioPlayerProps) => {
     if(HLS.isSupported() && !isUndefined(audioRef?.current)){
       const audio = audioRef.current;
       const hls = new HLS();
-      console.log('song link', song?.link)
       if(song?.link !== prevSongUrl){       
         hls.attachMedia(audio);
         hls.on(HLS.Events.MEDIA_ATTACHED, () => {
           hls.loadSource(song?.link); 
-          // hls.on(HLS.Events.ERROR, (event, err) => console.log(err));
         })
       }
 
@@ -697,8 +695,8 @@ const AudioPlayer = (props: AudioPlayerProps) => {
                 })}>
                     <p>
                     {
-                      song?.lyrics?.split('\n').map(item => (
-                        <p>{item}</p>
+                      song?.lyrics?.split('\n').map((item, index) => (
+                        <p key={index}>{item}</p>
                       ))
                     }
                     </p>

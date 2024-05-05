@@ -125,11 +125,90 @@ const Search = () => {
   })
 
   const showFoundData = useMemo(() => isUndefined(tab) && (!isUndefined(mask) && !isEmpty(mask)),[tab, mask])
-  const showArtists = useMemo(() => tab === tabs[0]?.route ,[tab])
-  const showPlaylists = useMemo(() => tab === tabs[1]?.route,[tab])
-  const showAlbums = useMemo(() => tab === tabs[2]?.route,[tab])
-  const showGenres = useMemo(() =>tab === tabs[3]?.route,[tab])
+  const showArtists = useMemo(() => tab === tabs[0]?.route ,[tab, tabs])
+  const showPlaylists = useMemo(() => tab === tabs[1]?.route,[tab, tabs])
+  const showAlbums = useMemo(() => tab === tabs[2]?.route,[tab, tabs])
+  const showGenres = useMemo(() =>tab === tabs[3]?.route,[tab, tabs])
   const isViewAll = useMemo(() => !isUndefined(all) && !isEmpty(all),[all])
+
+  const goSearch = useCallback(async () => {
+    const localSearches = parse(getFromStorage('recentSearchData')!)
+    if(CheckObjOrArrForNull(localSearches)){
+      let sameFound = false
+      for(let i = 0; i < localSearches?.length; i++){
+        const search:string = localSearches[i].title.toLowerCase()
+        if(search.includes(searchValue?.trim()?.toLowerCase())) {
+          sameFound = true
+          break;
+        }
+      }
+
+      if(!sameFound){
+        if(localSearches.length >= 5) localSearches.pop()
+        localSearches.unshift({title: searchValue?.trim()})
+        setToStorage('recentSearchData', stringify(localSearches))
+        setRecentSearchData(localSearches)
+      }
+
+    }  else {
+      const newSearchData = new Array()
+      newSearchData.push({title: searchValue?.trim()})
+      setToStorage('recentSearchData', stringify(newSearchData))
+      setRecentSearchData(newSearchData)
+    }
+
+    try {
+      interface DataToSend {
+        search: string;
+        type?: string
+      }
+      let dataToSend: DataToSend = {
+        search: searchValue,
+      };
+
+      if(!isViewAll){
+        router.push(`/search?mask=${searchValue}`, { scroll: false })
+      }else {
+        dataToSend = {...dataToSend, type: all as string}
+      }
+
+      setSearchDataLoading(true)
+      setAlbums([])
+      setArtists([])
+      setSongs([])
+      setPlaylists([])
+
+      const response = await searchSong(dataToSend)
+      if(response.statusCode === 200){
+        const {
+          alboms, 
+          songs, 
+          artists, 
+          playlists, 
+          shows
+        } = response.data
+        // console.log('rsp', response.data)
+        
+        delay(delayTime).then(() => {
+          setAlbums(alboms)
+          setArtists(artists)
+          setSongs(songs)
+          setPlaylists(playlists)
+          setSearchDataLoading(false)
+        })
+
+      }
+
+    } catch (error) {
+      // console.log('search error', error)
+      setAlbums([])
+      setArtists([])
+      setSongs([])
+      setPlaylists([])
+      setShows([])
+      setSearchDataLoading(false)
+    }
+  }, [searchValue, isViewAll])
 
   //queries
   const {
@@ -345,7 +424,7 @@ const Search = () => {
 
       </div>
     )
-  }, [isViewAll])
+  }, [])
   const arrowRight = useMemo(() => (
     <ArrowRightLgI />
   ), [])
@@ -357,7 +436,7 @@ const Search = () => {
     }
     else if(!isUndefined(mask) && !isEmpty(mask)) goSearch()
     setRecentSearchData(parse(getFromStorage('recentSearchData')!) ?? [])
-  }, [])
+  }, [mask, router, tab])
 
   useEffect(() => {
     if(isViewAll)
@@ -424,85 +503,6 @@ const Search = () => {
     showGenres, 
   ])
 
-  const goSearch = useCallback(async () => {
-    const localSearches = parse(getFromStorage('recentSearchData')!)
-    if(CheckObjOrArrForNull(localSearches)){
-      let sameFound = false
-      for(let i = 0; i < localSearches?.length; i++){
-        const search:string = localSearches[i].title.toLowerCase()
-        if(search.includes(searchValue?.trim()?.toLowerCase())) {
-          sameFound = true
-          break;
-        }
-      }
-
-      if(!sameFound){
-        if(localSearches.length >= 5) localSearches.pop()
-        localSearches.unshift({title: searchValue?.trim()})
-        setToStorage('recentSearchData', stringify(localSearches))
-        setRecentSearchData(localSearches)
-      }
-
-    }  else {
-      const newSearchData = new Array()
-      newSearchData.push({title: searchValue?.trim()})
-      setToStorage('recentSearchData', stringify(newSearchData))
-      setRecentSearchData(newSearchData)
-    }
-
-    try {
-      interface DataToSend {
-        search: string;
-        type?: string
-      }
-      let dataToSend: DataToSend = {
-        search: searchValue,
-      };
-
-      if(!isViewAll){
-        router.push(`/search?mask=${searchValue}`, { scroll: false })
-      }else {
-        dataToSend = {...dataToSend, type: all as string}
-      }
-
-      setSearchDataLoading(true)
-      setAlbums([])
-      setArtists([])
-      setSongs([])
-      setPlaylists([])
-
-      const response = await searchSong(dataToSend)
-      if(response.statusCode === 200){
-        const {
-          alboms, 
-          songs, 
-          artists, 
-          playlists, 
-          shows
-        } = response.data
-        // console.log('rsp', response.data)
-        
-        delay(delayTime).then(() => {
-          setAlbums(alboms)
-          setArtists(artists)
-          setSongs(songs)
-          setPlaylists(playlists)
-          setSearchDataLoading(false)
-        })
-
-      }
-
-    } catch (error) {
-      // console.log('search error', error)
-      setAlbums([])
-      setArtists([])
-      setSongs([])
-      setPlaylists([])
-      setShows([])
-      setSearchDataLoading(false)
-    }
-  }, [searchValue, isViewAll])
-
   const handleKeyDown = useCallback((e: any) => {
     if(e.keyCode === 13){
       if(isEmpty(searchValue)){
@@ -511,7 +511,7 @@ const Search = () => {
         goSearch()
       } 
     }else if(e.keyCode === 32) e.stopPropagation()
-  }, [router, searchValue, goSearch])
+  }, [router, searchValue])
 
   const searchOnIClick = useCallback(() => {
     if(isEmpty(searchValue)){
@@ -519,7 +519,7 @@ const Search = () => {
     }else {
       goSearch()
     }
-  }, [router, searchValue, goSearch])
+  }, [router, searchValue])
 
   const openRecentBoxFN = useCallback(() => {
     if(CheckObjOrArrForNull(recentSearchData) && !openRecents) setOpenRecents(true)
@@ -530,7 +530,7 @@ const Search = () => {
         if(isError) router.replace('/login')
         else cb()
     })
-  }, [refreshAccessToken])
+  }, [])
 
   const handleLike = useCallback(async(songId: string) => {
     if(!isAuthorized()) return dispatch(setShowAuthModal(true))
@@ -562,7 +562,7 @@ const Search = () => {
       show={showInfo}
       close={() => setShowInfo(false)}
     />
-  ), [dynamicSongId, showInfo])
+  ), [dynamicSongId, showInfo, setShowInfo])
 
   return (
     <>

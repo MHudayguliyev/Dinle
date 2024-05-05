@@ -143,9 +143,9 @@ export default function Home() {
     copyLink(`${affix === 'song' ? "/song" : `/all/${affix}`}/${id}`)?.then((mode) => {
       if(showBottomSheet) setShowBottomSheet(false)
       if(mode === 'desktop') toast.success('Link is copied.')
-        setSongId("")
+      setSongId("")
     })
-  }, [songId, showBottomSheet])
+  }, [showBottomSheet, setSongId])
 
   return (
     <>

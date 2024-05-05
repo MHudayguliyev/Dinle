@@ -43,13 +43,13 @@ export default function PagesLayout({
 
   useEffect(() => {
     if(showLyrics) setShowLyrics(false)
-  }, [basePath])
+  }, [basePath, showLyrics])
 
   useEffect(() => {
     if(showLyrics)
     dispatch(setIsBlockOverflow(true))
     else dispatch(setIsBlockOverflow(false))
-  }, [showLyrics])
+  }, [showLyrics, dispatch])
 
   return (
     <div className={styles.layout__container}>

@@ -93,7 +93,7 @@ const ViewAll = ({params}: {params: {each: string}}) => {
   useEffect(() => {
     if(!isLoading && !isError)
     setRows(songsList)
-  }, [songsList])
+  }, [songsList, isLoading, isError])
 
   useEffect(() => {
     if(CheckObjOrArrForNull(newsList)) setNews(newsList)

@@ -20,5 +20,6 @@ const ArrowBottomI = React.forwardRef<SVGSVGElement, ArrowBottomIProps>((props, 
         </svg>
     )
 })
+ArrowBottomI.displayName = 'ArrowBottomI'
 
 export default ArrowBottomI

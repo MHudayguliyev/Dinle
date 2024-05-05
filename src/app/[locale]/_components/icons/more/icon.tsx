@@ -17,7 +17,7 @@ const More = React.forwardRef<SVGSVGElement, MoreIProps>((props, ref): JSX.Eleme
   const handleClick = (e: any) => {
     e.preventDefault()
     e.stopPropagation()
-    if(onClick) onClick()
+    if(onClick) onClick(e)
   }
 
   return (
@@ -56,4 +56,5 @@ const More = React.forwardRef<SVGSVGElement, MoreIProps>((props, ref): JSX.Eleme
 
   )
 })
+More.displayName = 'More'
 export default More

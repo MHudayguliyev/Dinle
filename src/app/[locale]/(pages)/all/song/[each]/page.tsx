@@ -56,7 +56,7 @@ const Songs = ({params}: {params: {each: string}}) => {
   useEffect(() => {
     if(!isLoading && !isError)
     setRows(songsList)
-  }, [songsList])
+  }, [songsList, isLoading, isError])
 
   const handleLike = useCallback(async(songId: string) => {
     try {
@@ -68,7 +68,6 @@ const Songs = ({params}: {params: {each: string}}) => {
       }
   } , [])
 
-  console.log("songsList", songsList)
   return (
     <div className={styles.lists}>
       <SongList 

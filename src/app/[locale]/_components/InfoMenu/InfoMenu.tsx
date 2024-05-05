@@ -25,8 +25,6 @@ import CustomLink from '../CustomLink/CustomLink';
 // import Swiper JS
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-//breakpoints
-import { sliderBreakpoints } from '@app/_assets/json_data/swiper_breakpoints';
 //redux
 import { useAppDispatch } from '@app/_hooks/redux_hooks';
 import { setIsBlockOverflow } from '@app/_redux/reducers/OverflowReducer';
@@ -300,5 +298,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
     </>
   )
 })
+
+InfoMenu.displayName = 'InfoMenu'
 
 export default InfoMenu

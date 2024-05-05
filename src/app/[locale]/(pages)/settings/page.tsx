@@ -40,6 +40,8 @@ const Settings = () => {
     const [openModal, setOpenModal] = useState<boolean>(false)
 
     const isPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
+    console.log("navigator", navigator?.serviceWorker)
+    console.log("navigator", Notification.requestPermission())
 
     return (
         <>

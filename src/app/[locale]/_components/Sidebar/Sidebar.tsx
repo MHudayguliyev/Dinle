@@ -119,7 +119,7 @@ const Sidebar = (props: SidebarProps) => {
                             data?.data?.rows.map((row) => {
                                 const url = `/playlist/${row.id}`
                                 return (
-                                    <CustomLink href={url} className={cn({ list: true, active: url == pathname })}>
+                                    <CustomLink key={row.id} href={url} className={cn({ list: true, active: url == pathname })}>
                                         <div className={styles.playlistImage}>
                                             <Image src={row.cover} alt='cover' width='400' height='400'/>
                                         </div>

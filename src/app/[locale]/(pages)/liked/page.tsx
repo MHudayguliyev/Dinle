@@ -85,10 +85,10 @@ const ViewAll = () => {
       }}
     ]
 
-    const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab])
-    const showArtists = useMemo(() => tab === tabs[1].route,[tab])
-    const showAlboms = useMemo(() => tab === tabs[2].route,[tab])
-    const showPlaylists = useMemo(() => tab === tabs[tabs.length - 1].route,[tab])
+    const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab,tabs])
+    const showArtists = useMemo(() => tab === tabs[1].route,[tab, tabs])
+    const showAlboms = useMemo(() => tab === tabs[2].route,[tab, tabs])
+    const showPlaylists = useMemo(() => tab === tabs[tabs.length - 1].route,[tab, tabs])
     
 
     //redux states 
@@ -248,7 +248,7 @@ const ViewAll = () => {
         }
       }else console.log('like song error', error)
     }
-  }, [setSongsRow])
+  }, [setSongsRow, refreshToken])
 
   const loader = useCallback((tab: 'artist' | 'playlist' | 'albom' | 'genre', withTopShimmer = false) => {
     return (
@@ -274,7 +274,7 @@ const ViewAll = () => {
     )
   }, [])
   
-  const toggleShuffle = useCallback(() => dispatch(setIsShuffle(!isShuffle)), [isShuffle])
+  const toggleShuffle = useCallback(() => dispatch(setIsShuffle(!isShuffle)), [isShuffle, dispatch])
 
   const songIds = useMemo(() => {
     return {
@@ -305,6 +305,7 @@ const ViewAll = () => {
     songId, 
     contentRef, 
     showInfoMenu, 
+    setShowInfoMenu
   ])
 
   const playFN = useCallback(() => {
@@ -321,7 +322,8 @@ const ViewAll = () => {
   }, [
     songsRow, 
     songIndex, 
-    songIds
+    songIds, 
+    dispatch
   ])
 
   const playBtn = useCallback((topFixed = false, extraSm = false) => {
@@ -356,7 +358,9 @@ const ViewAll = () => {
     width, 
     scrolly, 
     showArtists, 
-    showPlaylists
+    showPlaylists, 
+    songsRow,
+    playFN
 ])
 
   return (
@@ -470,6 +474,7 @@ const ViewAll = () => {
           {
             artistsList?.map(artist => (
               <StandardCard
+                key={artist.id}
                 ref={lastArtistRef} 
                 id={artist.id}
                 artistId={artist.id}
@@ -489,6 +494,7 @@ const ViewAll = () => {
           {
             albomsList?.map(albom => (
               <StandardCard
+                key={albom.id}
                 ref={lastAlbomRef} 
                 id={albom.id}
                 albomId={albom.id}
@@ -509,6 +515,7 @@ const ViewAll = () => {
           {
             playlistsList?.map(playlist => (
               <StandardCard
+                key={playlist.id}
                 ref={lastPlaylistRef} 
                 id={playlist.id}
                 playlistId={playlist.id}

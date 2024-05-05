@@ -25,12 +25,12 @@ const LyricsMenu = (props: LyricsMenuProps) => {
         sidebarFolded: sidebarFolded
       })} ref={contentRef}>
           {
-            lyrics.split('\n').map(item => (
-              <p>{item}</p>
+            lyrics.split('\n').map((item, index) => (
+              <p key={index}>{item}</p>
             ))
           }
     </div>
   )
 }
-
+LyricsMenu.displayName = 'LyricsMenu'
 export default LyricsMenu

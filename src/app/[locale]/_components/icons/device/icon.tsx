@@ -34,4 +34,6 @@ const List = React.forwardRef<LegacyRef<SVGSVGElement>, SongListProps>((props, r
   )
 })
 
+List.displayName = 'List'
+
 export default List

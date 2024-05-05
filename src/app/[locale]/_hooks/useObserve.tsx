@@ -30,7 +30,7 @@ const useObserve = (props: UseObserveProps) => {
     
         if (node) observer.current.observe(node);
         },
-        [fetchNextPage, hasNextPage, isFetching, isLoading]
+        [observer, fetchNextPage, hasNextPage, isFetching, isLoading]
     );
 
     return lastElementRef

@@ -103,7 +103,7 @@ const SearchModal = (props: SearchModalProps) => {
           setFound(false)
           setIsGathering(false)
         }
-      }, [hasTimedOut, show]);
+      }, [hasTimedOut, show, shazamify]);
 
   return (
     <>

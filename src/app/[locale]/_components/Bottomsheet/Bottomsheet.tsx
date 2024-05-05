@@ -64,4 +64,6 @@ const Bottomsheet = React.forwardRef<HTMLDivElement, BottomsheetProps>((props, r
     )
 })
 
+Bottomsheet.displayName = 'BottomSheet'
+
 export default Bottomsheet

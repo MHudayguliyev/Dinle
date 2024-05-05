@@ -29,5 +29,6 @@ const ShareI = React.forwardRef<SVGSVGElement, ShareIProps>((props, ref): JSX.El
             </svg>
     )
 })
+ShareI.displayName = 'ShareI'
 
 export default ShareI

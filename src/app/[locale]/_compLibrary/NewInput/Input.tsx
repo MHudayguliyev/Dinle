@@ -2,6 +2,7 @@ import React, { InputHTMLAttributes, useMemo } from 'react'
 import styles from './Input.module.scss'
 import classNames from 'classnames/bind'
 import { capitalize } from '@app/_utils/helpers'
+import NewInput from '.'
 
 type IconType = 'start' | 'end'
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

@@ -135,7 +135,7 @@ const Album = ({params}: {params: {each: string}}) => {
                 }
             }else console.log('like song error', error)
           }
-    }, [])
+    }, [dispatch, refreshToken])
 
     const handleLikeAlbum = useCallback(async () => {
         if(!isAuthorized()) return dispatch(setShowAuthModal(true))
@@ -151,7 +151,7 @@ const Album = ({params}: {params: {each: string}}) => {
                 }
             }else console.log('like albom error', error)
         }
-    }, [id])
+    }, [id, dispatch, refreshToken])
 
     const playBtn = useCallback((topFixed = false) => {
         const currentSongId = song?.[songIndex]?.id
@@ -189,18 +189,19 @@ const Album = ({params}: {params: {each: string}}) => {
         songIndex, 
         isSongPlaying, 
         width, 
-        scrolly
+        scrolly, 
+        dispatch
     ])
 
     const heartBtn = useMemo(() => (
         <HeartFilledI active={credentials?.isLiked} onClick={handleLikeAlbum}/>
-    ), [credentials?.isLiked])
+    ), [credentials?.isLiked, handleLikeAlbum])
     const shuffleBtn = useMemo(() => (
         <ShuffleI active={isShuffle} onClick={() => dispatch(setIsShuffle(!isShuffle))}/>
-    ), [isShuffle])
+    ), [isShuffle, dispatch])
     const shareBtn = useMemo(() => (
         <Share onClick={handleCopyLink}/>
-    ), [id])
+    ), [id, handleCopyLink])
     const infoMenu = useMemo(() => (
         <InfoMenu
             id={songId}
@@ -208,7 +209,7 @@ const Album = ({params}: {params: {each: string}}) => {
             ref={menuContenRef} 
             close={() => setOpenMenu(false)}
         />
-    ), [menuContenRef, openMenu, songId])
+    ), [menuContenRef, openMenu, songId, setOpenMenu])
     const cover = useMemo(() => (
         <Image src={credentials?.cover ?? ""} alt='artist' width='400' height='400'/>
     ), [credentials?.cover])
@@ -295,6 +296,7 @@ const Album = ({params}: {params: {each: string}}) => {
 
         <SongList 
             ref={lastAlbomRef}
+            // @ts-ignore
             data={rows}
             fetchStatuses={{
                 isLoading, isError

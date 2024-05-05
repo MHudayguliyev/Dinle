@@ -52,7 +52,7 @@ const News = () => {
   const actionsData = [
     {
         value: 'share', 
-        label: {ru: 'Paylasmak', tk: 'Paylasmak'}, 
+        label: {ru: 'Поделиться', tm: 'Paýlaşmak'}, 
         icon: <ShareSmI />
     }, 
   ]
@@ -63,7 +63,7 @@ const News = () => {
       if(mode === 'desktop') toast.success('Link is copied.')
       setNewsId("")
     })
-  }, [newsId, showBottomSheet])
+  }, [showBottomSheet])
 
   return (
     <>

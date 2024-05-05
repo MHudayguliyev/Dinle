@@ -123,7 +123,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
 
     const playSong = useCallback(() => {
         if(onPlay) onPlay(id)
-    }, [onPlay])
+    }, [onPlay, id])
 
     const openBottomSheet = useCallback(() => {
         if(width <= 786 && onOpenBottomSheet) onOpenBottomSheet()
@@ -131,7 +131,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
 
     const moreBtn = useMemo(() => (
         <More ref={toggleRef} onClick={openBottomSheet}/>
-    ), [width, openBottomSheet])
+    ), [openBottomSheet])
 
     const routeMem = useMemo(() => {
         const route = `
@@ -140,7 +140,6 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         `
         return route
     }, [
-        id, 
         artistId, 
         playlistId, 
         albomId, 
@@ -335,5 +334,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
    </>
   )
 })
+
+StandardCard.displayName = 'StandardCard'
 
 export default StandardCard

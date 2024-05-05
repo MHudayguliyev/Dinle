@@ -30,8 +30,7 @@ type ModalProps = {
    onClick?: () => void
    onExitFullScreen?: () => void
 }
-const Modal = (props: ModalProps) => {
-
+function Modal (props: ModalProps) {
    const {
       isOpen,
       close,
@@ -119,5 +118,4 @@ const Modal = (props: ModalProps) => {
       document.body as HTMLElement
    );
 }
-
 export default Modal;

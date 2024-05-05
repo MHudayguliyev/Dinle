@@ -89,7 +89,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
             ) : ""
         }
         </>
-    }, [runningSongId, isSongPlaying, EqualizerI])
+    }, [runningSongId, isSongPlaying])
 
 
 
@@ -254,5 +254,7 @@ const SongList = React.forwardRef<HTMLDivElement, SongListProps>((props, ref): J
     </div>
   )
 })
+
+SongList.displayName = 'SongList'
 
 export default SongList

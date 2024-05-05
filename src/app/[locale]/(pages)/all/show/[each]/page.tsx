@@ -23,7 +23,7 @@ const OneShow = ({params}: {params: {each: string}}) => {
   }, [])
   useEffect(() => {
     if(isSongPlaying && isVideoPlaying) dispatch(setIsSongPlaying(false))
-  }, [isSongPlaying, isVideoPlaying])
+  }, [isSongPlaying, isVideoPlaying, dispatch])
 
  
   const {
@@ -64,7 +64,7 @@ const OneShow = ({params}: {params: {each: string}}) => {
         </div>
       )}
     </>
-  ), [clipData, isClient])
+  ), [clipData, isClient, dispatch])
   
   return (
     <div className={styles.presentation}>

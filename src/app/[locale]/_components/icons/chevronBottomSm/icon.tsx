@@ -14,4 +14,6 @@ return (
 )
 })
 
+ChevronBottomSmI.displayName = 'ChevronBottomSmI'
+
 export default ChevronBottomSmI

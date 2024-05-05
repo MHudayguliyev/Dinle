@@ -45,4 +45,6 @@ const TextI = React.forwardRef<SVGSVGElement, TextIProps>((props, ref): JSX.Elem
     )
 })
 
+TextI.displayName = 'TextI'
+
 export default TextI

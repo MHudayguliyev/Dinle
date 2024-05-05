@@ -79,9 +79,9 @@ const Artist = ({params}: {params: {each: string}}) => {
     ]
 
     const artistId = useMemo(() => params.each ,[params.each])
-    const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab])
-    const showClips = useMemo(() => tab === tabs[1].route, [tab])
-    const showAlbums = useMemo(() => tab === tabs[2].route,[tab])
+    const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab, tabs])
+    const showClips = useMemo(() => tab === tabs[1].route, [tab,tabs])
+    const showAlbums = useMemo(() => tab === tabs[2].route,[tab,tabs])
     const [shareId, setShareId] = useState<string>("")
 
     //selectors 
@@ -202,7 +202,7 @@ const Artist = ({params}: {params: {each: string}}) => {
                 }
             }else console.log('follow error', error)
         }
-    }, [artistId])
+    }, [artistId, dispatch, refreshToken])
 
     const handleLike = useCallback(async(songId: string) => {
         if(!isAuthorized()) return dispatch(setShowAuthModal(true))
@@ -224,7 +224,7 @@ const Artist = ({params}: {params: {each: string}}) => {
         if(dynamicId !== artistId) setDynamicId(artistId)
         setFetchMode('artist')
         setShowMenu(!showMenu)
-    }, [dynamicId, artistId, showMenu])
+    }, [dynamicId, artistId, showMenu,setShowMenu,setDynamicId, setFetchMode])
 
     const playBtn = useCallback((topFixed = false) => {
         const currentSongId = song?.[songIndex]?.id
@@ -262,13 +262,14 @@ const Artist = ({params}: {params: {each: string}}) => {
         songIndex, 
         isSongPlaying, 
         width, 
-        scrolly
+        scrolly, 
+        dispatch
     ])
 
     const isFollowing = useMemo(() => credentials?.isFollowing ?? false,[credentials?.isFollowing])
     const infoToggler = useMemo(() => {
         return <Info onClick={handleClick}/>
-    }, [])
+    }, [handleClick])
     const followBtn = useMemo(() => (
         <Button startIcon={isFollowing ? <FollowCheckI /> : <></>} color={isFollowing ? 'lightDark' : 'light'} roundedSm className={styles.followBtn} onClick={handleFollow}>
             {isFollowing ? t('following') : t('follow')}
@@ -276,7 +277,7 @@ const Artist = ({params}: {params: {each: string}}) => {
     ),[isFollowing, handleFollow])
     const shareBtn = useMemo(() => (
         <Share onClick={() => handleCopyLink('artist', artistId)}/>
-    ), [artistId, tab])
+    ), [artistId, tab, handleCopyLink])
     const infoMenu = useMemo(() => (
         <InfoMenu 
             show={showMenu} 
@@ -289,7 +290,8 @@ const Artist = ({params}: {params: {each: string}}) => {
         showMenu, 
         contentRef, 
         dynamicId,
-        fetchMode
+        fetchMode, 
+        setShowMenu
     ])
     const cover = useMemo(() => (
         <Image src={credentials?.cover ?? ""} alt='artist' width='400' height='400'/>

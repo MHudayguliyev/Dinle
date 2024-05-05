@@ -21,5 +21,6 @@ const MoreSm = React.forwardRef<SVGSVGElement, MoreIProps>((props, ref): JSX.Ele
         </svg>
     )
 })
+MoreSm.displayName = 'MoreSm'
 
 export default MoreSm
