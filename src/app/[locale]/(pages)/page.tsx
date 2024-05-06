@@ -74,7 +74,7 @@ export default function Home() {
     return homeItems?.data
   },[homeItems])
 
-  console.log(homeItems)
+  // console.log(homeItems)
 
   useEffect(() => {
     if(!isAuthorized()){

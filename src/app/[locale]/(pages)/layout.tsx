@@ -43,7 +43,7 @@ export default function PagesLayout({
 
   useEffect(() => {
     if(showLyrics) setShowLyrics(false)
-  }, [basePath, showLyrics])
+  }, [basePath])
 
   useEffect(() => {
     if(showLyrics)

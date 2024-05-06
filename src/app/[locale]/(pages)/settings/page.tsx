@@ -1,5 +1,5 @@
 'use client'
-import React, {useState} from "react"
+import React, {useCallback, useEffect, useState} from "react"
 import Image from "next/image"
 import { useLocale, useTranslations } from 'next-intl'
 
@@ -40,8 +40,32 @@ const Settings = () => {
     const [openModal, setOpenModal] = useState<boolean>(false)
 
     const isPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
-    console.log("navigator", navigator?.serviceWorker)
-    console.log("navigator", Notification.requestPermission())
+    // console.log("navigator", navigator?.serviceWorker)
+    // console.log("navigator", Notification.requestPermission())
+
+    const send = () => {
+        if('Notification' in window && Notification.permission === 'granted'){
+            new Notification('Hi there', {
+                body: "This is my notification", 
+                icon: "/logo.png", 
+                badge: "/logo.png"
+            })
+        }
+    }
+
+    const reqPermission = () => {
+        if('Notification' in window){
+            Notification.requestPermission().then(permission => {
+                if(permission === 'granted'){
+                    send()
+                }
+            })
+        }
+    }
+
+    useEffect(() => {
+        if(checked) reqPermission()
+    }, [checked])
 
     return (
         <>
