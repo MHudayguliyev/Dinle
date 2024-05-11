@@ -18,7 +18,6 @@ import { setIsBlockOverflow } from '@redux/reducers/OverflowReducer'
 //comps
 import LyricsMenu from '@app/_components/LyricsMenu/LyricsMenu'
 import ArrowRightI from '@app/_components/icons/arrowRight/icon'
-import ArrowLeftI from '@app/_components/icons/arrowLeft/icon'
 import { setToggleSidebar } from '@app/_redux/reducers/SidebarReducer'
 import Button from '@app/_compLibrary/Button'
 
@@ -40,6 +39,16 @@ export default function PagesLayout({
   const showAuthModal = useAppSelector(state => state.authReducer.showAuthModal)
   const isAudioPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
   const sidebarFolded = useAppSelector(state => state.sidebarReducer.sidebarFolded)
+
+  useEffect(() => {
+    const handleContextMenu = (e:any) => {
+      e.preventDefault()
+    }
+    document.addEventListener('contextmenu',handleContextMenu)
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu)
+    }
+  }, [])
 
   useEffect(() => {
     if(showLyrics) setShowLyrics(false)

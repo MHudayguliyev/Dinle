@@ -39,6 +39,7 @@ interface StandardProps {
     videoId?: string
     newsId?: string
     showId?: string
+    karaokeId?: string
     image?: StaticImageData | string
     onPlay?: (id: string) => void
     onOpenBottomSheet?: () => void
@@ -65,6 +66,8 @@ interface StandardProps {
     /** @defaultValue false **/
     showCard?: boolean
     /** @defaultValue false **/
+    karaokeCard?: boolean
+    /** @defaultValue false **/
     hideMoreI?: boolean
     /** @defaultValue false **/
     recentSearched?: boolean
@@ -85,6 +88,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         videoId = "",
         newsId = "",  
         showId = "", 
+        karaokeId = "", 
         image, 
         title, 
         description, 
@@ -100,6 +104,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         videoCard = false, 
         newsCard = false, 
         showCard = false, 
+        karaokeCard = false, 
         shimmer = false, 
         onPlay, 
         onOpenBottomSheet, 
@@ -136,7 +141,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
     const routeMem = useMemo(() => {
         const route = `
             ${artists ? `/artist/${artistId}` : playlists ? `/playlist/${playlistId}` : alboms ? `/albom/${albomId}` : 
-            genres ? `/genre/${genreId}` : newsCard ? `/all/news/${newsId}` : videoCard ? `/all/clip/${videoId}` : showCard ? `/all/show/${showId}` : ""}
+            genres ? `/genre/${genreId}` : newsCard ? `/all/news/${newsId}` : videoCard ? `/all/clip/${videoId}` : showCard ? `/all/show/${showId}` : karaokeCard ? `/all/karaoke/${karaokeId}` : ""}
         `
         return route
     }, [
@@ -147,13 +152,15 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         newsId, 
         videoId,
         showId,
+        karaokeId,
         newsCard,
         artists, 
         genres, 
         alboms, 
         playlists,
         videoCard, 
-        showCard
+        showCard, 
+        karaokeCard
     ])
 
     const actionsData = useMemo(() => {
@@ -175,7 +182,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
             }, 
         ]
 
-        if(videoCard || showCard || newsCard || alboms){
+        if(videoCard || showCard || newsCard || alboms || karaokeCard){
             for(let i = 0; i < data.length; i++){
                 const item = data[i]
                 if(item.value === 'info' || item.value === 'queue')
@@ -183,7 +190,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
             }
         }
         return data
-    }, [videoCard, showCard, newsCard, alboms])
+    }, [videoCard, showCard, newsCard, karaokeCard, alboms])
 
 
   return (
@@ -215,10 +222,10 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                 card_with_close: recentSearched,
                 card_for_artist: artists,
                 card_for_genres: genres, 
-                card_for_video: (videoCard || showCard || newsCard),
-                withActiveBg: (!artists && !genres && !playlists && !alboms && !standard && !(videoCard || showCard || newsCard) && !top10) || 
+                card_for_video: (videoCard || showCard || newsCard || karaokeCard),
+                withActiveBg: (!artists && !genres && !playlists && !alboms && !standard && !(videoCard || showCard || newsCard || karaokeCard) && !top10) || 
                 (songData[songIndex]?.id === id), 
-                hoverable: !artists && !genres && !(videoCard || showCard || newsCard)
+                hoverable: !artists && !genres && !(videoCard || showCard || newsCard || karaokeCard)
             })}>
             {
                 genres ? (
@@ -293,7 +300,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
 
                                 <div className={cn({
                                     theTop: true, 
-                                    topFlex: (videoCard || showCard || newsCard)
+                                    topFlex: (videoCard || showCard || newsCard || karaokeCard)
                                 })}>
                                     {
                                         (!artists && !playlists && !alboms) && (isSongPlaying && songData[songIndex]?.id === id) &&
@@ -313,11 +320,11 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                                         </CustomLink>
                                     </div>
 
-                                    {(videoCard || showCard || newsCard) && moreBtn}
+                                    {(videoCard || showCard || newsCard || karaokeCard) && moreBtn}
                                 </div>
 
                                 
-                                {!(videoCard || showCard || newsCard) && 
+                                {!(videoCard || showCard || newsCard || karaokeCard) && 
                                     <div className={styles.description}>
                                         <CustomLink onClick={stopPropagation} href={`/artist/${artistId}`}>{description}</CustomLink>
                                     </div>

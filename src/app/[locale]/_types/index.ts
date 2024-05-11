@@ -36,3 +36,22 @@ export type ActionsType = {
     label: Localization
     icon: React.ReactNode
 }
+export interface MetaValuesType {
+    title: string 
+    description?: string
+    keywords?: string
+    icons?: string[]
+    openGraph: {
+        type: "music.song" | "music.album" | "music.playlist" | "video.movie" | "video.episode" | "video.tv_show" | "article" | "profile" | "website"
+        title: string 
+        url: string 
+        description?: string
+        images?: string[]
+    }
+}
+export interface MetaReturnType extends MetaValuesType {
+    authors: {
+        name: string 
+        url?: string 
+    }[]
+}

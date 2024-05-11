@@ -1,5 +1,5 @@
 'use client'
-import React, {useCallback, useEffect, useState} from "react"
+import React, {useEffect, useState} from "react"
 import Image from "next/image"
 import { useLocale, useTranslations } from 'next-intl'
 
@@ -24,11 +24,12 @@ import LanguagesMenu from '@components/LanguagesMenu/LanguagesMenu'
 import CustomLink from "@app/_components/CustomLink/CustomLink"
 //utils
 import LogoutModal from "@app/_components/Modals/LogoutModal/LogoutModal"
-import { isAuthorized } from "@app/_utils/helpers"
+import { isAuthorized, parse } from "@app/_utils/helpers"
 //hot toast
 import toast from "react-hot-toast"
 //redux
 import { useAppSelector } from "@app/_hooks/redux_hooks"
+import { getFromStorage } from "@app/_utils/storage"
 
 const cn = classNames.bind(styles)
 const Settings = () => {
@@ -38,34 +39,40 @@ const Settings = () => {
     const [checked, setChecked] = useState<boolean>(false)
     const [openLangMenu, setOpenLangMenu] = useState<boolean>(false)
     const [openModal, setOpenModal] = useState<boolean>(false)
+    const [user, setUser] = useState<string>("")
 
     const isPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
     // console.log("navigator", navigator?.serviceWorker)
     // console.log("navigator", Notification.requestPermission())
 
-    const send = () => {
-        if('Notification' in window && Notification.permission === 'granted'){
-            new Notification('Hi there', {
-                body: "This is my notification", 
-                icon: "/logo.png", 
-                badge: "/logo.png"
-            })
-        }
-    }
+    // const send = () => {
+    //     if('Notification' in window && Notification.permission === 'granted'){
+    //         new Notification('Hi there', {
+    //             body: "This is my notification", 
+    //             icon: "/logo.png", 
+    //             badge: "/logo.png"
+    //         })
+    //     }
+    // }
 
-    const reqPermission = () => {
-        if('Notification' in window){
-            Notification.requestPermission().then(permission => {
-                if(permission === 'granted'){
-                    send()
-                }
-            })
-        }
-    }
+    // const reqPermission = () => {
+    //     if('Notification' in window){
+    //         Notification.requestPermission().then(permission => {
+    //             if(permission === 'granted'){
+    //                 send()
+    //             }
+    //         })
+    //     }
+    // }
 
+    // useEffect(() => {
+    //     if(checked) reqPermission()
+    // }, [checked])
     useEffect(() => {
-        if(checked) reqPermission()
-    }, [checked])
+        const authData = parse(getFromStorage('authUser')!)
+        const username = authData?.username 
+        setUser(username) 
+    }, [])
 
     return (
         <>
@@ -99,7 +106,7 @@ const Settings = () => {
                             <Image  src={account} alt="account" />
                             <div className={styles.leftContent}>
                                 <div className={styles.header}>Menin Dinle ID</div>
-                                <div className={styles.phone}>+993 63 509004</div>
+                                <div className={styles.phone}>{user ?? ""}</div>
                             </div>
                         </div>
                         <MoreSm />

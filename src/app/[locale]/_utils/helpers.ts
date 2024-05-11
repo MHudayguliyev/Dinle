@@ -2,6 +2,7 @@ import authToken, { refreshAccessToken } from '@app/_api/Services/auth_token';
 import moment from 'moment'
 import hash from 'object-hash'
 import { getFromStorage } from './storage';
+import { MetaReturnType, MetaValuesType } from '@app/_types';
 
 export const toRem = (value: number): string => {
   return (value / 16) + 'rem';;
@@ -142,3 +143,39 @@ export const copyLink = (link: string) => {
     });
   }
 }
+export const setMetaValues = (props: MetaValuesType): MetaReturnType  => {
+  const {
+     title, 
+     description = "",
+     keywords = "", 
+    //  icons = ['https://aydym.com/assets/logos/logo_aydym-e089d8e15a67f8d488947599eb133f07.webp'], 
+     openGraph
+  } = props
+
+  openGraph.description = openGraph.description ? openGraph.description : ""
+  openGraph.images = openGraph.images ? openGraph.images : ["logo.png"]
+  return {
+     title, description, keywords, 
+     authors: [{name: 'dinle.com.tm'}],
+     openGraph: {...openGraph},
+    //  icons
+  }
+}
+export const setSeoScript = <T>(data: T) => {
+  const ldScript = document.getElementsByTagName('script')
+  for(let i = 0; i < ldScript.length; i++){
+     const sTag = ldScript[i]
+     if(sTag.getAttribute('type') === "application/ld+json"){
+        document.head.removeChild(sTag)
+     }
+  }
+
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.innerHTML = JSON.stringify(data);
+  document.head.appendChild(script);
+  return () => {
+    document.head.removeChild(script);
+  };
+}
+

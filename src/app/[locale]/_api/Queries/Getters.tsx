@@ -156,7 +156,7 @@ export const GetOneArtNews = async (newsId: string): Promise<ArtNews> => {
 }
 export const GetClips = async (args: {
     showId?: string
-    clipId?: 'clips' | 'karaoke' | "concerts" | "videos" | string
+    clipId?: 'clips' | 'karaoke' | "concerts" | "videos"
     page?: number 
     pageSize?: number 
     search?: string
@@ -168,10 +168,10 @@ export const GetClips = async (args: {
         showId = "", 
         clipId = "clips", 
     } = args
-
+    console.log('clipId', clipId)
     return api.patch<{
         showId?: string
-        clipId?: 'clips' | 'karaoke' | "concerts" | "videos" | string
+        clipId?: 'clips' | 'karaoke' | "concerts" | "videos"
         page?: number 
         pageSize?: number 
         search?: string

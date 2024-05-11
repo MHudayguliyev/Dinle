@@ -1,16 +1,18 @@
 'use client';
 import React, {useMemo, useRef} from 'react'
+import { useSearchParams } from 'next/navigation';
 import { useInfiniteQuery } from 'react-query'
 import { GetClips } from '@app/_api/Queries/Getters'
 import Video from '@app/_api/types/queryReturnTypes/Video'
 import useObserve from '@app/_hooks/useObserve'
-import { CheckObjOrArrForNull } from '@app/_utils/helpers'
+import { CheckObjOrArrForNull, isEmpty, isUndefined } from '@app/_utils/helpers'
 import StandardCard from '@app/_components/StandardCard/StandardCard';
 //styles
 import styles from './page.module.scss'
 
 const Clips = () => {
   const observer = useRef<IntersectionObserver>()
+  const type = useSearchParams().get('type')
   const {
     data: clipsData, 
     isLoading,
@@ -18,9 +20,10 @@ const Clips = () => {
     fetchNextPage, 
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['Clips'], 
+    queryKey: ['Clips',type], 
     queryFn: ({pageParam}) => GetClips({
       page: pageParam,
+      clipId: type === 'concerts' ? 'concerts' : 'clips'
     }), 
     getNextPageParam: (lastPage, allPages) => {
       if(CheckObjOrArrForNull(lastPage.data.rows)) return allPages.length + 1

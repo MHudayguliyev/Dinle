@@ -34,7 +34,7 @@ const Clip = ({params}: {params: {each: string}}) => {
   {enabled: !!videoId})
   
   const cover = useMemo(() => (
-    <Image src={clipData?.data?.cover ?? ""} alt='cover' width='400' height='400'/>
+    <Image src={clipData?.data?.cover as string} alt='cover' width='400' height='400'/>
   ), [clipData])
 
   const clipPlayer = useMemo(() => (

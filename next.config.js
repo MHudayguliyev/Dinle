@@ -14,9 +14,9 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
+        protocol: 'https',
         hostname: 'dinle.com.tm',
-        port: '8790',
+        port: '',
         pathname: '/images/**',
       }
     ]

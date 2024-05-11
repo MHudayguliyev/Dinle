@@ -64,6 +64,10 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
     else dispatch(setIsBlockOverflow(false))
   }, [show])
 
+  const cover = useMemo(() => (
+    <Image src={fetchSongInfo ? song?.cover as string : data?.cover as string} alt='cover'  width='400' height='400'/>
+  ), [song, data])
+
   return (
     <>
       <div className={cn({backdropBlur: show})} onClick={() => close()}></div>
@@ -85,7 +89,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
           <div className={styles.theTop}>
 
             <div className={styles.bgImg}>
-              <Image src={fetchSongInfo ? song?.artist?.cover! : data?.cover!} alt='artist'  width='400' height='400'/>
+              {cover}
             </div>
 
             <div className={styles.topContent}>
@@ -93,13 +97,21 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                 frontImg: true, 
                 artistImg: fetchArtistInfo
               })}>
-                <Image src={fetchSongInfo ? song?.artist?.cover! : data?.cover!} alt='artist' width='400' height='400'/>
+                {cover}
               </div>
 
               <div className={styles.content}>
                 <div className={styles.about}>
-                  <div className={styles.title}>Aydymcy</div>
-                  <div className={styles.artist}>{fetchSongInfo ? song?.artist?.title :  data?.title}</div>
+                  <div className={cn({
+                    title: true, 
+                    songInfoTitle: fetchSongInfo
+                  })}>
+                    {fetchSongInfo ? song?.title : 'Aydymcy'}
+                  </div>
+                  <div className={cn({
+                    artist: true, 
+                    songInfoArtist: fetchSongInfo
+                  })}>{fetchSongInfo ? song?.artist?.title :  data?.title}</div>
                 </div>
 
                 <div className={styles.description}>
@@ -115,7 +127,9 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
           <div className={styles.menuBottom}>
               
             <div className={styles.statistics}>
-              <h3>Ýerine ýetiriji barada</h3>
+              <h3>
+                {fetchArtistInfo ? 'Ýerine ýetiriji barada' : 'Aýdym barada'}
+              </h3>
 
               <div className={styles.statDetails}>
 
@@ -236,7 +250,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                         {fetchSongInfo ? song?.count?.likers : data?.count?.songListeners}
                       </div>
                   </div>
-                  {
+                  {/* {
                     fetchSongInfo && 
                     <div className={styles.detail}>
                       <div className={styles.theLeft}>
@@ -247,7 +261,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                         {song?.count?.downloads}
                       </div>
                     </div>
-                  }
+                  } */}
 
                 </div>
               </div>

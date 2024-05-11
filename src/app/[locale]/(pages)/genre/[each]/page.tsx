@@ -209,7 +209,6 @@ const Genre = ({params}: {params: {each: string}}) => {
                 <>
                     {scrolly >= 271 && <div className={styles.name}>{credentials?.title}</div>}
                     <div className={styles.actions}>
-                        {shuffleBtn}
                         {shareBtn}
                     </div>
                 </>
@@ -259,6 +258,7 @@ const Genre = ({params}: {params: {each: string}}) => {
 
                     <div className={styles.bottom}>
                         {playBtn()}
+                        {shuffleBtn}
                     </div>
                 </div>
 

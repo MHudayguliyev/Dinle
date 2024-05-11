@@ -1,6 +1,6 @@
 'use client';
 import React, { useMemo } from 'react'
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 //styles
 import styles from './layout.module.scss'
 
@@ -8,9 +8,11 @@ import TopNavbar from '@app/_components/TopNavbar/TopNavbar'
 import PrevNextI from '@app/_components/icons/prevNext/icon'
 import { useLocale } from 'next-intl';
 import { Localization } from '@app/_types';
+import { isEmpty, isUndefined } from '@app/_utils/helpers';
 
 const Layout = ({children}: {children: React.ReactNode}) => {
   const locale = useLocale()
+  const search = useSearchParams().get('title')
   const pathname = usePathname()
   const title = useMemo(() => {
     const routes = [
@@ -53,7 +55,7 @@ const Layout = ({children}: {children: React.ReactNode}) => {
         )}
         renderActions={() => (
           <div className={styles.title}>
-              {title}
+            {!isUndefined(search) && !isEmpty(search) ? search : title}
           </div>
         )}
       />

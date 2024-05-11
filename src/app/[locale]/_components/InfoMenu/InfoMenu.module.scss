@@ -115,13 +115,25 @@
                 font-size: $fontSizeSmall + px;
                 line-height: $lineHeightSmall + px;
                 color: var(--text-fourth-color);
-                margin-bottom: 2.5px
+                margin-bottom: 5px;
             }
 
             .artist {
                 font-weight: $fontWeightBold;
                 font-size: calc($fontSizeBig + 2) + px;
                 line-height: $lineHeightBig + px;
+                @include GMixin.wordOverflow;
+            }
+
+            .songInfoArtist {
+                color: var(--text-fourth-color);
+            }
+            .songInfoTitle {
+                font-weight: $fontWeightBold;
+                font-size: 24px;
+                line-height: 28.8px;
+                color: var(--text-color);
+                @include GMixin.wordOverflow;
             }
 
             .description {
@@ -129,6 +141,7 @@
                 font-size: calc($fontSizeSmall - 2) + px;
                 line-height: calc($lineHeightSmall - 2) + px;
                 color: var(--text-fourth-color);
+                @include GMixin.textOverflow($line: 2);
             }
         }
         
@@ -174,10 +187,13 @@
                 font-weight: $fontWeightMedium;
                 line-height: $lineHeightSmall +px;
                 .genres {
-                    width: 88px;
                     text-overflow: ellipsis;
                     overflow: hidden;
                     white-space: nowrap;
+                    width: 100px;
+                    a:hover {
+                        text-decoration: underline;
+                    }
                 }
 
             }
