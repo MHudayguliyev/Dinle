@@ -1,10 +1,10 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useQuery } from 'react-query';
 //api 
 import { GetArtistInfo, GetSongInfo } from '@app/_api/Queries/Getters';
 //utils
-import {CheckObjOrArrForNull, formatDate} from '@utils/helpers'
+import {CheckObjOrArrForNull, formatDate, isEmpty} from '@utils/helpers'
 //styles
 import classNames from 'classnames/bind'
 import styles from './InfoMenu.module.scss'
@@ -47,6 +47,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
   const dispatch = useAppDispatch()
   const fetchArtistInfo = useMemo(() => show && fetchMode === 'artist' && !!id ,[id, show, fetchMode])
   const fetchSongInfo = useMemo(() => show && fetchMode === 'song' && !!id ,[id, show, fetchMode])
+  const [seeAll, setSeeAll] = useState<boolean>(false)
 
   const {
     data
@@ -99,24 +100,36 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
               })}>
                 {cover}
               </div>
+            </div>
 
-              <div className={styles.content}>
-                <div className={styles.about}>
-                  <div className={cn({
-                    title: true, 
-                    songInfoTitle: fetchSongInfo
-                  })}>
-                    {fetchSongInfo ? song?.title : 'Aydymcy'}
-                  </div>
-                  <div className={cn({
-                    artist: true, 
-                    songInfoArtist: fetchSongInfo
-                  })}>{fetchSongInfo ? song?.artist?.title :  data?.title}</div>
+            <div className={styles.content}>
+              <div className={styles.about}>
+                <div className={cn({
+                  title: true, 
+                  songInfoTitle: fetchSongInfo
+                })}>
+                  {fetchSongInfo ? song?.title : 'Aydymcy'}
                 </div>
-
-                <div className={styles.description}>
+                <div className={cn({
+                  artist: true, 
+                  songInfoArtist: fetchSongInfo
+                })}>{fetchSongInfo ? song?.artist?.title :  data?.title}</div>
+              </div>
+              <div >
+                <div className={cn({
+                  description: true, 
+                  foldDesc: !seeAll
+                })}>
                   {fetchSongInfo ? song?.about : data?.about}
                 </div>
+                {
+                  (fetchSongInfo && !isEmpty(song?.about)) || (fetchArtistInfo && !isEmpty(data?.about)) ? 
+                  <div onClick={() => setSeeAll(!seeAll)} className={styles.continue}>
+                    {
+                      seeAll ? 'gizle' : 'yzy'
+                    }
+                  </div> : ""
+                }
               </div>
             </div>
 
@@ -250,18 +263,7 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                         {fetchSongInfo ? song?.count?.likers : data?.count?.songListeners}
                       </div>
                   </div>
-                  {/* {
-                    fetchSongInfo && 
-                    <div className={styles.detail}>
-                      <div className={styles.theLeft}>
-                        <DownloadI />
-                        <div className={styles.head}>Jemi ýüklenen</div>
-                      </div>
-                      <div className={styles.theRight}>
-                        {song?.count?.downloads}
-                      </div>
-                    </div>
-                  } */}
+
 
                 </div>
               </div>
@@ -316,3 +318,17 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
 InfoMenu.displayName = 'InfoMenu'
 
 export default InfoMenu
+
+
+                  {/* {
+                    fetchSongInfo && 
+                    <div className={styles.detail}>
+                      <div className={styles.theLeft}>
+                        <DownloadI />
+                        <div className={styles.head}>Jemi ýüklenen</div>
+                      </div>
+                      <div className={styles.theRight}>
+                        {song?.count?.downloads}
+                      </div>
+                    </div>
+                  } */}
