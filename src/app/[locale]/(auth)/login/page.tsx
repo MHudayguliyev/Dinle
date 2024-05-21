@@ -58,10 +58,8 @@ const Login = () => {
     onSubmit: async (values, {resetForm}) => {
       try {
         const phone = '+993' + values.phone
-        const response = await signUp({phone: phone})  
-        if(response.statusCode === 200){
           try {
-            const response = await sendOtp({phone: phone})      
+            const response = await sendOtp({phone: phone})    
             if(response.statusCode === 200){
               setPhone(phone)
               setMode('otp')
@@ -70,15 +68,12 @@ const Login = () => {
           } catch (error) {
             console.log('OTP SENDING error', error)
           }
-        }
-        
       } catch (error) {
         console.log('LOGIN error', error)
       }
     }
   })
 
-  const dummyData = '1234'
   const handleInputChange = (inputId:string, event:ChangeEvent<HTMLInputElement>) => {
     setInputValues((prevInputValues) => ({
         ...prevInputValues,
@@ -86,38 +81,29 @@ const Login = () => {
     }));
   };
   const handleSubmit = async() => {
-    const keys = Object.keys(inputValues)
-    let isError = false;
-    for(let i = 0; i < keys.length; i++){
-      const field = inputValues[keys[i] as keyof Fields<string>]
-      if(field as string !== dummyData[i]){
-        isError = true
+    try {
+      const otp = parseInt(Object.values(inputValues).join(''))
+      console.log('otp.....', otp)
+      const response = await checkOtp({
+        phone,otp, 
+        device: getUserDevice()
+      })
+      console.log("otp response",response)
+      if(response.statusCode === 200 && response.success){
+        setToStorage('authUser', stringify({
+          access_token: response.data?.token, 
+          refresh_token: response?.data?.refreshToken, 
+          username: response.data?.phone,
+          userId: response.data?.userId,
+          expiresAt: moment(response.data?.worksUntil).format('YYYY-MM-DD HH:mm:ss')
+        }))
+        router.replace('/')
+      }else {
+        setError(true)
       }
+    } catch (error) {
+      console.log('SEND OTP error', error)
     }
-    setError(isError)
-    if(!isError) {
-      try {
-        const otp = parseInt(Object.values(inputValues).join(''))
-        const response = await checkOtp({
-          phone,otp, 
-          device: getUserDevice()
-        })
-
-        if(response.statusCode === 200 && response.success){
-          setToStorage('authUser', stringify({
-            access_token: response.data?.token, 
-            refresh_token: response?.data?.refreshToken, 
-            username: response.data?.phone,
-            userId: response.data?.userId,
-            expiresAt: moment(response.data?.worksUntil).format('YYYY-MM-DD HH:mm:ss')
-          }))
-          router.replace('/')
-        }
-      } catch (error) {
-        console.log('SEND OTP error', error)
-      }
-
-    } 
   };
 
   return (
