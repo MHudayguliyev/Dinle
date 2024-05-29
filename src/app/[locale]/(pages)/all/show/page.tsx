@@ -20,6 +20,7 @@ const Shows = () => {
     queryKey: ['Shows'], 
     queryFn: ({pageParam}) => GetClips({
       page: pageParam,
+      // showId: 
     }), 
     getNextPageParam: (lastPage, allPages) => {
       if(CheckObjOrArrForNull(lastPage.data.rows)) return allPages.length + 1

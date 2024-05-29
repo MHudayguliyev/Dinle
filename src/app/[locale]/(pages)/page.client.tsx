@@ -201,7 +201,7 @@ export default function Home() {
                         href={
                           artist ? '/search?tab=artist' : 
                           playlist ? '/search?tab=playlist' : 
-                          albom ? '/search?tab=album' : 
+                          albom ? '/search?tab=albom' : 
                           clip ? `/all/clip${searchParam}${homeItem.id === 'concerts' ? `&type=${homeItem.id}` : ""}` : 
                           news ? `/all/news${searchParam}` : 
                           show ? `/all/show${searchParam}` : 
