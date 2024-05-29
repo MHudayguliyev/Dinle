@@ -67,14 +67,31 @@
 
 .banners {
     padding: 0 20px;
+    position: relative;
+    overflow: hidden;
+    a {
+        padding-top: 60.1%;
+        display: block;
+    }
     .banner {
         width: 100%;
         height: 100%;
         img {
-            width: 100%;
-            height: 100%;
             border-radius: 20px;
             border: 2px solid rgba(179, 179, 179, 0.1);
+            height: 100%;
+            left: 0;
+            -o-object-fit: cover;
+            object-fit: cover;
+            -o-object-position: center;
+            object-position: center;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            width: 100%;
         }
     }
 }

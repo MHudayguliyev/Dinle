@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import ReactPlayer from 'react-player';
 //styles
@@ -12,6 +13,7 @@ import { useQuery } from 'react-query';
 
 const Clip = ({params}: {params: {each: string}}) => {
   const dispatch = useAppDispatch()
+  const type = useSearchParams().get('type')
   const videoId = useMemo(() => params.each,[params.each])
   
   const [isClient, setIsClient] = useState<boolean>(false)
@@ -24,13 +26,9 @@ const Clip = ({params}: {params: {each: string}}) => {
   useEffect(() => {
     if(isSongPlaying && isVideoPlaying) dispatch(setIsSongPlaying(false))
   }, [isSongPlaying, isVideoPlaying, dispatch])
-
- 
   const {
     data: clipData
-  } = useQuery(['Clip', videoId], () => GetClip(
-    videoId,'clips' 
-  ), 
+  } = useQuery(['Clip', videoId, type], () => GetClip(videoId,type === 'videos' ? 'videos' : type === 'concerts' ? 'concerts' : 'clips'), 
   {enabled: !!videoId})
   
   const cover = useMemo(() => (

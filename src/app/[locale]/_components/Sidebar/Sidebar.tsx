@@ -65,10 +65,10 @@ const Sidebar = (props: SidebarProps) => {
 
                 <div className={styles.theTop}>
                     <div className={styles.header}>
-                        <div className={styles.leftHead}>
+                        <CustomLink href='https://dinle.com.tm' className={styles.leftHead}>
                             <Image src={logo} alt='dinle logo'/>
                             <div className={styles.dineTM}>Diňle</div>
-                        </div>
+                        </CustomLink>
                         {
                             !sidebarFolded && 
                             <Button color='lightDark' roundedSm style={{ padding: '5px' }} onClick={() => dispatch(setToggleSidebar(!sidebarFolded))}>

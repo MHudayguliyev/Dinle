@@ -191,6 +191,9 @@
                 display: flex;
                 align-items: center;
                 gap: 8px;
+                flex: 1 1;
+                -webkit-box-flex: 1 1;
+
                 .head {
                     font-size: $fontSizeSmall + px;
                     font-weight: $fontWeightRegular;
@@ -204,16 +207,22 @@
                 font-size: $fontSizeSmall + px;
                 font-weight: $fontWeightMedium;
                 line-height: $lineHeightSmall +px;
+ 
                 .genres {
                     text-overflow: ellipsis;
                     overflow: hidden;
                     white-space: nowrap;
-                    width: 100px;
                     a:hover {
                         text-decoration: underline;
                     }
                 }
 
+            }
+            .baseGenreWrapper {
+                flex: 1 1;
+                -webkit-box-flex: 1 1;
+                width: 0;
+                justify-content: flex-end;
             }
         }
 

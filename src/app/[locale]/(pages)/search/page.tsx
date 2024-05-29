@@ -22,7 +22,7 @@ import PrevNext from '@components/icons/prevNext/icon'
 import ShazamI from '@app/_components/icons/shazam/icon';
 
 //utils
-import { CheckObjOrArrForNull, delay, isAuthorized, isEmpty, isUndefined, parse } from '@app/_utils/helpers';
+import { CheckObjOrArrForNull, copyLink, delay, isAuthorized, isEmpty, isUndefined, parse } from '@app/_utils/helpers';
 import { getFromStorage, setToStorage } from '@app/_utils/storage';
 import { stringify } from '@utils/helpers';
 //api/types
@@ -57,6 +57,9 @@ import { isAxiosError } from 'axios';
 import { refreshAccessToken } from '@app/_api/Services/auth_token';
 //translations
 import { useTranslations } from 'next-intl';
+import toast from 'react-hot-toast';
+import Bottomsheet from '@app/_components/Bottomsheet/Bottomsheet';
+import ShareSmI from '@app/_components/icons/shareSm/icon';
 
 const cn = classNames.bind(styles)
 const Search = () => {
@@ -113,7 +116,7 @@ const Search = () => {
   const [albumsSearch, setAlbums] = useState<SearchType['data']['alboms']>([])
   const [songsSearch, setSongs] = useState<SearchType['data']['songs']>([])
   const [artistsSearch, setArtists] = useState<SearchType['data']['artists']>([])
-  const [showsSearch, setShows] = useState<SearchType['data']['shows']>([])
+  const [clipsSearch, setClips] = useState<SearchType['data']['clips']>([])
   const [playlistsSearch, setPlaylists] = useState<SearchType['data']['playlists']>([])
   const [recentSearchData, setRecentSearchData] = useState<{title: string}[]>([])
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(0)
@@ -123,6 +126,8 @@ const Search = () => {
     playlists: false, 
     genres: false
   })
+  const [openBs, setOpenBs] = useState<boolean>(false)
+  const [bsSongId, setBsSongId] = useState<string>("")
 
   const showFoundData = useMemo(() => isUndefined(tab) && (!isUndefined(mask) && !isEmpty(mask)),[tab, mask])
   const showArtists = useMemo(() => tab === tabs[0]?.route ,[tab, tabs])
@@ -185,15 +190,15 @@ const Search = () => {
           songs, 
           artists, 
           playlists, 
-          shows
+          clips
         } = response.data
-        // console.log('rsp', response.data)
         
         delay(delayTime).then(() => {
           setAlbums(alboms)
           setArtists(artists)
           setSongs(songs)
           setPlaylists(playlists)
+          setClips(clips)
           setSearchDataLoading(false)
         })
 
@@ -205,7 +210,7 @@ const Search = () => {
       setArtists([])
       setSongs([])
       setPlaylists([])
-      setShows([])
+      setClips([])
       setSearchDataLoading(false)
     }
   }, [searchValue, isViewAll])
@@ -306,7 +311,6 @@ const Search = () => {
     showGenres
   ])
 
-
   //lists
   const artistsList = useMemo((): Artists['data']['rows'] => {
     delay(delayTime).then(() => {
@@ -348,8 +352,6 @@ const Search = () => {
     showGenres, 
     isLoading.genres
   ])
-
-
   const errorDiv = useMemo(() => {
     return (
       <div className={styles.error_container}>
@@ -366,12 +368,13 @@ const Search = () => {
       </div>
     )
   }, [refetchData])
-  const loader = useCallback((type: 'artist' | 'playlist' | 'album' | 'genre', swiperMode = false) => {
+  const loader = useCallback((type: 'artist' | 'playlist' | 'album' | 'genre' | 'clip', swiperMode = false) => {
     const arr = [1,2,3,4,5,6];
     const renderArtists = type === 'artist'
     const renderPlaylists = type === 'playlist'
     const renderAlboms = type === 'album'
     const renderGenres= type === 'genre'
+    const renderClips = type === 'clip'
 
     return (
       <div className={styles.recomendations}>
@@ -415,6 +418,7 @@ const Search = () => {
                     playlists={renderPlaylists}
                     alboms={renderAlboms}
                     genres={renderGenres}
+                    videoCard={renderClips}
                   />
                 ))
               }
@@ -563,6 +567,24 @@ const Search = () => {
       close={() => setShowInfo(false)}
     />
   ), [dynamicSongId, showInfo, setShowInfo])
+
+  const handleShare = (clipId: string) => {
+    copyLink(`/all/clip/${clipId}`)?.then((mode) => {
+      if(mode === 'desktop') toast.success('Link is copied.')
+      if(openBs) {
+        setBsSongId("")
+        setOpenBs(false)
+      }
+    })
+  }
+
+  const actionsData = [
+    {
+      value: 'share', 
+      label: {ru: 'Paylasmak', tm: 'Paylasmak'}, 
+      icon: <ShareSmI />
+    }
+  ]
 
   return (
     <>
@@ -739,13 +761,12 @@ const Search = () => {
           showFoundData && CheckObjOrArrForNull(songsSearch) && (
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
-                <h3>{t('song')}</h3>
-                {
-                  !isViewAll && 
-                  <CustomLink href={`/search?mask=${searchValue}&all=songs`}>
-                    {arrowRight}
-                  </CustomLink>
-                }
+                <CustomLink href={`/search?mask=${searchValue}&all=songs`}>
+                  <h3>{t('song')}</h3>
+                  {
+                    isViewAll ? "" : arrowRight
+                  }
+                </CustomLink>
               </div>
               <SongList 
                 data={songsSearch} 
@@ -769,13 +790,12 @@ const Search = () => {
           isSearchDataLoading ? loader('artist', true) : CheckObjOrArrForNull(artistsSearch) ? (
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
-                <h3>{t('artist')}</h3>
-                {
-                  !isViewAll && 
-                  <CustomLink href={`/search?mask=${searchValue}&all=artists`}>
-                    {arrowRight}
-                  </CustomLink>
-                }
+                <CustomLink href={`/search?mask=${searchValue}&all=artists`}>
+                  <h3>{t('artist')}</h3>
+                  {
+                    isViewAll ? "" : arrowRight
+                  }
+                </CustomLink>
               </div>
                 {
                   width >=768 ? 
@@ -821,13 +841,12 @@ const Search = () => {
           isSearchDataLoading ? loader('album', true) : CheckObjOrArrForNull(albumsSearch) ? (
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
-                <h3>{t('albom')}</h3>
-                {
-                  !isViewAll && 
-                  <CustomLink href={`/search?mask=${searchValue}&all=alboms`}>
-                    {arrowRight}
-                  </CustomLink>
-                }
+                <CustomLink href={`/search?mask=${searchValue}&all=alboms`}>
+                  <h3>{t('albom')}</h3>
+                  {
+                    isViewAll ? "" : arrowRight
+                  }
+                </CustomLink>
               </div>
               <Swiper
                 navigation
@@ -861,13 +880,12 @@ const Search = () => {
           isSearchDataLoading ? loader('playlist', true) : CheckObjOrArrForNull(playlistsSearch) ? (
             <div className={styles.recomendations}>
               <div className={styles.songCardTitle}>
-                <h3>{t('playlist')}</h3>
-                {
-                  !isViewAll && 
-                  <CustomLink href={`/search?mask=${searchValue}&all=playlists`}>
-                    {arrowRight}
-                  </CustomLink>
-                }
+                <CustomLink href={`/search?mask=${searchValue}&all=playlists`}>
+                  <h3>{t('playlist')}</h3>
+                  {
+                    isViewAll ? "" : arrowRight
+                  }
+                </CustomLink>
               </div>
               <Swiper
                 navigation
@@ -895,6 +913,60 @@ const Search = () => {
         ) : ""
         ) 
       }
+
+      {
+        showFoundData && (
+          isSearchDataLoading ? loader('clip', true) : CheckObjOrArrForNull(clipsSearch) ? (
+            <div className={styles.recomendations}>
+              <div className={styles.songCardTitle}>
+                <CustomLink href={`/search?mask=${searchValue}&all=clips`}>
+                  <h3>{t('clip')}</h3>
+                  {
+                    isViewAll ? "" : arrowRight
+                  }
+                </CustomLink>
+              </div>
+              <Swiper
+                navigation
+                modules={[ Navigation ]}
+                slidesPerView={6}
+                spaceBetween={2}
+                breakpoints={standardCardBreaksPoints}
+              >
+                {
+                  clipsSearch?.map(clip => (
+                    <SwiperSlide key={clip.id}>
+                      <StandardCard 
+                        id={clip.id}
+                        videoId={clip.id}
+                        title={clip.title}
+                        image={clip.cover}
+                        videoCard
+                        videoDuration={clip.duration}
+                        onShare={() => handleShare(clip.id)}
+                        onOpenBottomSheet={() => {
+                          setBsSongId(clip.id)
+                          setOpenBs(true)
+                        }}
+                      />
+                    </SwiperSlide>
+                  ))
+                }
+              </Swiper>
+            </div>
+        ) : ""
+        ) 
+      }
+
+      <Bottomsheet 
+        open={openBs}
+        actionsData={actionsData}
+        close={() => setOpenBs(false)}
+        onClick={(value) => {
+          if(value === 'share')
+          handleShare(bsSongId)
+        }}
+      />
     </>
   )
 }

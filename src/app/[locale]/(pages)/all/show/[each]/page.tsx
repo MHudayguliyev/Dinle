@@ -64,7 +64,7 @@ const OneShow = ({params}: {params: {each: string}}) => {
         </div>
       )}
     </>
-  ), [clipData, isClient, dispatch])
+  ), [clipData, isClient])
   
   return (
     <div className={styles.presentation}>

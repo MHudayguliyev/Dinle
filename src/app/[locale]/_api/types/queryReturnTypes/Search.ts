@@ -1,5 +1,6 @@
 import Albums from "./Albums"
 import Songs from "./Songs"
+import Video from "./Video"
 
 interface SearchType {
     statusCode: number
@@ -13,7 +14,7 @@ interface SearchType {
         }[] 
         songs: Songs['rows']
         playlists: Songs['rows']
-        shows: []
+        clips: Video[]
     }
 }
 export default SearchType

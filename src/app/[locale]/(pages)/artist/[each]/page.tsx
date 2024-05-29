@@ -2,7 +2,7 @@
 import React, {useMemo, useState, useRef, useCallback, useEffect} from 'react'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useQuery, useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 //lib 
 import Tab from '@app/_compLibrary/Tab'
 import Button from '@app/_compLibrary/Button'
@@ -82,7 +82,6 @@ const Artist = ({params}: {params: {each: string}}) => {
     const showSongs = useMemo(() => tab === tabs[0].route || isUndefined(tab),[tab, tabs])
     const showClips = useMemo(() => tab === tabs[1].route, [tab,tabs])
     const showAlbums = useMemo(() => tab === tabs[2].route,[tab,tabs])
-    const [shareId, setShareId] = useState<string>("")
 
     //selectors 
     const song = useAppSelector(state => state.mediaReducer.songData)
@@ -90,28 +89,24 @@ const Artist = ({params}: {params: {each: string}}) => {
     const isSongPlaying = useAppSelector(state => state.mediaReducer.isSongPlaying)
 
     const songsObserver = useRef<IntersectionObserver>();
-    const albomsObserver = useRef<IntersectionObserver>();
-
-    const headerRef:any = useRef(null)
     const contentRef:any = useRef(null)
     const toggleRef:any = useRef(null)
     const [showMenu, setShowMenu] = useClickOutside(contentRef, toggleRef, 'mousedown')
     const [width] = useWindowSize()
 
     const [showBottomSheet, setShowBottomSheet] = useState<boolean>(false)
+    const [bsSongId, setBsSongId] = useState<string>("")
     const [fetchMode, setFetchMode] = useState<'artist' | 'song'>('artist')
     const [dynamicId, setDynamicId] = useState<string>("")
     const [rows, setRows] = useState<Songs['rows']>([])
     const [alboms, setAlboms] = useState<Albums['data']['rows']>([])
     const [clips, setClips] = useState<Video[]>([])
-
     const { scrolly } = useWindowScrollPositions()
 
     const {
         data: songsData, 
         hasNextPage, 
         isFetching, 
-        isRefetching, 
         isError, 
         isLoading,
         fetchNextPage, 
@@ -182,9 +177,12 @@ const Artist = ({params}: {params: {each: string}}) => {
         console.log('url', url)
         copyLink(url)?.then((mode) => {
             if(mode === 'desktop') toast.success('Link is copied.')
-            setShareId("")      
+            if(showBottomSheet) {
+                setShowBottomSheet(false)
+                setBsSongId("") 
+            }
         })
-    }, [artistId, tab])
+    }, [artistId, tab, showBottomSheet])
 
     const handleFollow = useCallback(async () => {
         if(!isAuthorized()) return dispatch(setShowAuthModal(true))
@@ -426,6 +424,10 @@ const Artist = ({params}: {params: {each: string}}) => {
                             onShare={() => 
                                 handleCopyLink('albom', albom.id)
                             }
+                            onOpenBottomSheet={() => {
+                                setBsSongId(albom.id)
+                                setShowBottomSheet(true)
+                            }}
                         />              
                     ))
                 }
@@ -444,7 +446,10 @@ const Artist = ({params}: {params: {each: string}}) => {
                             image={clip.cover}
                             videoCard
                             videoDuration={clip.duration}
-                            onOpenBottomSheet={() => setShowBottomSheet(true)}
+                            onOpenBottomSheet={() => {
+                                setBsSongId(clip.id)
+                                setShowBottomSheet(true)
+                            }}
                             onShare={() => {
                                 handleCopyLink('clip', clip.id)
                             }}
@@ -458,6 +463,12 @@ const Artist = ({params}: {params: {each: string}}) => {
             actionsData={actionsData}
             open={showBottomSheet}
             close={() => setShowBottomSheet(false)}
+            onClick={(value) => {
+                if(value === 'share'){
+                    const affix = tab === 'albom' ? 'albom' : 'clip'
+                    handleCopyLink(affix, bsSongId)
+                }
+            }}
         />
     </>
   )

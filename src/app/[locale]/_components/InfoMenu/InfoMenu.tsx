@@ -179,7 +179,10 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                       <GenreI />
                       <div className={styles.head}>Zanry:</div>
                   </div>
-                  <div className={styles.theRight}>
+                  <div className={cn({
+                    theRight: true, 
+                    baseGenreWrapper: true
+                  })}>
                       <div className={styles.genres}>
                         {
                           fetchSongInfo ?
@@ -304,31 +307,11 @@ const InfoMenu = React.forwardRef<HTMLDivElement, InfoMenuProps>((props, ref):JS
                   </div>
                 )
               }
-
           </div>
-
         </div>            
-
-
       </div>
     </>
   )
 })
 
-InfoMenu.displayName = 'InfoMenu'
-
 export default InfoMenu
-
-
-                  {/* {
-                    fetchSongInfo && 
-                    <div className={styles.detail}>
-                      <div className={styles.theLeft}>
-                        <DownloadI />
-                        <div className={styles.head}>Jemi ýüklenen</div>
-                      </div>
-                      <div className={styles.theRight}>
-                        {song?.count?.downloads}
-                      </div>
-                    </div>
-                  } */}

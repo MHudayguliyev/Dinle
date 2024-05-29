@@ -166,14 +166,16 @@ export default function Home() {
                 slidesPerView={2}
                 spaceBetween={15}
                 speed={1000}
-                autoplay={{delay: 5000}}
+                // autoplay={{delay: 5000}}
                 breakpoints={sliderBreakpoints}
               >
                 {
                   banners?.map(banner => (
                     <SwiperSlide key={banner.id}>
                       <div className={styles.banner}>
-                        <Image src={banner.cover} alt='banner' width='400' height='400'/>
+                        <CustomLink href={''}>
+                          <Image src={banner.cover} alt='banner' width='400' height='400'/>
+                        </CustomLink>
                       </div>
                     </SwiperSlide>
                   ))
@@ -202,7 +204,7 @@ export default function Home() {
                           artist ? '/search?tab=artist' : 
                           playlist ? '/search?tab=playlist' : 
                           albom ? '/search?tab=albom' : 
-                          clip ? `/all/clip${searchParam}${homeItem.id === 'concerts' ? `&type=${homeItem.id}` : ""}` : 
+                          clip ? `/all/clip${searchParam}${homeItem.id === 'concerts' ? `&type=${homeItem.id}` : homeItem.id === 'videos' ? `&type=${homeItem.id}` : ""}` : 
                           news ? `/all/news${searchParam}` : 
                           show ? `/all/show${searchParam}` : 
                           karaoke ? `/all/karaoke${searchParam}` : 

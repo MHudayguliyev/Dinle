@@ -70,7 +70,6 @@ const api = {
             data
         } = props
         return axiosInstance.patch(url, {...data}, {...config}).then(response => {
-            // if(response.data.data) return response.data.data
             return response.data
         })
     }, 

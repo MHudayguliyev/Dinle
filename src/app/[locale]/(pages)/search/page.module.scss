@@ -79,19 +79,17 @@
 }
 
 .songCardTitle {
-    font-weight: $fontWeightBold;
-    font-size: $fontSizeBig + px;
     color: var(--text-color);
     padding: 10px 0;
 
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: space-between;
+
 
     a {
         font-weight: $fontWeightMedium;
         font-size:$fontSizeBig + px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
     }
     
 }

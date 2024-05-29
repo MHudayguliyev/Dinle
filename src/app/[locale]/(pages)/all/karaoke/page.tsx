@@ -1,17 +1,28 @@
 'use client';
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { useInfiniteQuery } from 'react-query';
 import { GetClips } from '@app/_api/Queries/Getters';
-import { CheckObjOrArrForNull } from '@app/_utils/helpers';
+import { CheckObjOrArrForNull, copyLink, getQueryString, isEmpty, isUndefined } from '@app/_utils/helpers';
 import useObserve from '@app/_hooks/useObserve';
 import Video from '@app/_api/types/queryReturnTypes/Video';
 
 //styles
 import styles from './page.module.scss'
 import StandardCard from '@app/_components/StandardCard/StandardCard';
+import toast from 'react-hot-toast';
+import { usePathname, useSearchParams } from 'next/navigation';
+import ShareSmI from '@app/_components/icons/shareSm/icon';
+import Bottomsheet from '@app/_components/Bottomsheet/Bottomsheet';
 
 const Karaoke = () => {
   const observer = useRef<IntersectionObserver>()
+  const pathname = usePathname()
+  const search = useSearchParams()
+  const title = search.get('title')
+
+  const [openBs, setOpenBs] = useState<boolean>(false)
+  const [bsSongId, setBsSongId] = useState<string>("")
+
   const {
     data: karaokeData, 
     isLoading,
@@ -43,6 +54,25 @@ const Karaoke = () => {
   }, [])
   }, [karaokeData])
 
+  const handleShare = (clipId: string) => {
+    const url = `${pathname}/${clipId}`
+    copyLink(url)?.then((mode) => {
+      if(mode === 'desktop') toast.success('Link is copied.')
+      if(openBs) {
+        setBsSongId("")
+        setOpenBs(false)
+      }
+    })
+  }
+
+  const actionsData = [
+    {
+      value: 'share', 
+      label: {ru: 'Paylasmak', tm: 'Paylasmak'}, 
+      icon: <ShareSmI />
+    }
+  ]
+
   return (
     <>
       <div className={styles.gridBox}>
@@ -58,10 +88,26 @@ const Karaoke = () => {
               image={clip.cover}
               karaokeCard
               videoDuration={clip.duration}
+              onShare={() => handleShare(clip.id)}
+              onOpenBottomSheet={() => {
+                setBsSongId(clip.id)
+                setOpenBs(true)
+              }}
+              queryString={getQueryString(search)}
             />
           ))
         }
       </div>
+
+      <Bottomsheet 
+        open={openBs}
+        actionsData={actionsData}
+        close={() => setOpenBs(false)}
+        onClick={(value) => {
+          if(value === 'share')
+          handleShare(bsSongId)
+        }}
+      />
     </>
   )
 }

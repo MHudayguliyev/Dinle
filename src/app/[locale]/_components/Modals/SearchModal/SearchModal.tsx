@@ -15,6 +15,9 @@ import Songs from '@app/_api/types/queryReturnTypes/Songs';
 import { useAppDispatch } from '@app/_hooks/redux_hooks';
 import { setCurrentSong } from '@app/_redux/reducers/MediaReducer';
 
+import logo from '@app/_assets/images/logo.png'
+import Image from 'next/image';
+
 interface SearchModalProps extends CommonModalI {}
 const SearchModal = (props: SearchModalProps) => {
     const {
@@ -118,19 +121,24 @@ const SearchModal = (props: SearchModalProps) => {
 
             <div className={styles.content}>
                 <div className={styles.header}>
-                  {found ? 'Gozlegin netijesi' : isGathering ? 'Summing up...' : 'Dinle'}
+                  {found ? 'Gozlegin netijesi' : isGathering ? 'Summing up...' : 'Diňle'}
                 </div>
                 {
                   !found ? 
                   <>
-                    <LottieI 
-                      height={126}
-                      width={126}
-                      icon={ShazamI}
-                    />
-                  <p className={styles.text}>
-                  “Dinle” ses arkaly aydym-sazyn gozlegini dowam et...
-                  </p>
+                    <div className={styles.background}>
+                      <div className={styles.logo}>
+                        <Image src={logo} alt='logo'/>
+                      </div>
+                      <LottieI 
+                        height={126}
+                        width={126}
+                        icon={ShazamI}
+                      />
+                    </div>
+                    <p className={styles.text}>
+                    “Diňle” ses arkaly aydym-sazyn gozlegini dowam et...
+                    </p>
                   </> : 
                   <SongList
                     className={styles.songsList}

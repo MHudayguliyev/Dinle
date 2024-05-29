@@ -42,3 +42,23 @@
     font-size: $fontSizeSmall + px;
     line-height: $lineHeightMedium + px;
 }
+
+.background {
+    position: relative;
+
+    .logo {
+        width: 80px;
+        height: 80px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 999;
+        transform: translate(-50%, -50%);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+}

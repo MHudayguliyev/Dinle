@@ -3,6 +3,7 @@ import moment from 'moment'
 import hash from 'object-hash'
 import { getFromStorage } from './storage';
 import { MetaReturnType, MetaValuesType } from '@app/_types';
+import { ReadonlyURLSearchParams } from 'next/navigation';
 
 export const toRem = (value: number): string => {
   return (value / 16) + 'rem';;
@@ -15,6 +16,10 @@ export const isUndefined = (data:any): data is undefined | null => {
 }
 export const randomize = (max: number) => {
   return Math.floor(Math.random() * max) 
+}
+export const getQueryString = (search: ReadonlyURLSearchParams) => {
+  const params = new URLSearchParams(search.toString()).toString()
+  return params
 }
 export const CheckObjOrArrForNull = (obj_or_arr: any) =>  {
     if (obj_or_arr !== null && obj_or_arr !== undefined) {

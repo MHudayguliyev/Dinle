@@ -41,6 +41,7 @@ interface StandardProps {
     showId?: string
     karaokeId?: string
     image?: StaticImageData | string
+    queryString?: string
     onPlay?: (id: string) => void
     onOpenBottomSheet?: () => void
     onOpenInfoMenu?: () => void
@@ -89,6 +90,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         newsId = "",  
         showId = "", 
         karaokeId = "", 
+        queryString = "", 
         image, 
         title, 
         description, 
@@ -138,10 +140,15 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         <More ref={toggleRef} onClick={openBottomSheet}/>
     ), [openBottomSheet])
 
+    const queryStringMem = useMemo(() => {
+        if(isEmpty(queryString)) return ""
+        return `?${queryString}` 
+      }, [queryString])
+
     const routeMem = useMemo(() => {
         const route = `
             ${artists ? `/artist/${artistId}` : playlists ? `/playlist/${playlistId}` : alboms ? `/albom/${albomId}` : 
-            genres ? `/genre/${genreId}` : newsCard ? `/all/news/${newsId}` : videoCard ? `/all/clip/${videoId}` : showCard ? `/all/show/${showId}` : karaokeCard ? `/all/karaoke/${karaokeId}` : ""}
+            genres ? `/genre/${genreId}` : newsCard ? `/all/news/${newsId}${queryStringMem}` : videoCard ? `/all/clip/${videoId}${queryStringMem}` : showCard ? `/all/show/${showId}${queryStringMem}` : karaokeCard ? `/all/karaoke/${karaokeId}${queryStringMem}` : ""}
         `
         return route
     }, [
@@ -160,7 +167,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         playlists,
         videoCard, 
         showCard, 
-        karaokeCard
+        karaokeCard, 
     ])
 
     const actionsData = useMemo(() => {
