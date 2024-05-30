@@ -147,7 +147,6 @@ export default function Home() {
       setSongId("")
     })
   }, [showBottomSheet, setSongId])
-  console.log("data", data)
 
   return (
     <>
@@ -277,11 +276,6 @@ export default function Home() {
                                   onShare={() => 
                                     handleCopyLink(row.id, affix)
                                   }
-                                  onOpenBottomSheet={() => {
-                                    setBottomSheetAffix(affix)
-                                    setSongId(row.id)
-                                    setShowBottomSheet(true)
-                                  }}
                                   onOpenInfoMenu={() => {
                                     setSongId(row.id)
                                     setShowInfo(true)
@@ -289,6 +283,11 @@ export default function Home() {
                                   onAddToQueue={() => 
                                     dispatch(addToQueue(row))
                                   }
+                                  onOpenBottomSheet={() => {
+                                    setBottomSheetAffix(affix)
+                                    setSongId(row.id)
+                                    setShowBottomSheet(true)
+                                  }}
                                 />
                               </SwiperSlide>
                             )

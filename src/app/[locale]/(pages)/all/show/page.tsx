@@ -4,7 +4,7 @@ import { useInfiniteQuery } from 'react-query'
 import { GetClips, GetShows } from '@app/_api/Queries/Getters'
 import Video from '@app/_api/types/queryReturnTypes/Video'
 import useObserve from '@app/_hooks/useObserve'
-import { CheckObjOrArrForNull, copyLink, getQueryString } from '@app/_utils/helpers'
+import { CheckObjOrArrForNull, copyLink, getQueryString, isEmpty, isUndefined } from '@app/_utils/helpers'
 import StandardCard from '@app/_components/StandardCard/StandardCard';
 //styles
 import styles from './page.module.scss'
@@ -49,7 +49,9 @@ const Shows = () => {
   }, [showsData])
 
   const handleShare = (clipId: string) => {
-    const url = `${pathname}/${clipId}`
+    const queryString = getQueryString(search)
+    const notEmptyQueryString = !isUndefined(queryString) && !isEmpty(queryString)
+    const url = `${pathname}/${clipId}${notEmptyQueryString ? `?${queryString}` : "" }`
     copyLink(url)?.then((mode) => {
       if(mode === 'desktop') toast.success('Link is copied.')
       if(openBs) {

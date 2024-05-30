@@ -171,7 +171,7 @@ const Settings = () => {
                 </div> */}
 
                 <div>
-                    <CustomLink href='' className={styles.item}>
+                    <CustomLink href='https://dinle.com.tm/api/privacy' className={styles.item}>
                         <div className={styles.theLeft}>
                             <HelpI/>
                             <div className={styles.header}>{t('privacyPolicy')}</div>

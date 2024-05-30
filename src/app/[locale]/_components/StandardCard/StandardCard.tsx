@@ -28,6 +28,7 @@ import ReadMoreI from '../icons/readMore/icon';
 import { ActionsType } from '@app/_types';
 import PlayExtraSm from '../icons/playExtraSm/icon';
 import { isEmpty, isUndefined, secondsToMmSs } from '@app/_utils/helpers';
+import Bottomsheet from '../Bottomsheet/Bottomsheet';
 
 interface StandardProps {
     id: string
@@ -39,6 +40,7 @@ interface StandardProps {
     videoId?: string
     newsId?: string
     showId?: string
+    showItemId?: string
     karaokeId?: string
     image?: StaticImageData | string
     queryString?: string
@@ -67,6 +69,8 @@ interface StandardProps {
     /** @defaultValue false **/
     showCard?: boolean
     /** @defaultValue false **/
+    showItemCard?: boolean
+    /** @defaultValue false **/
     karaokeCard?: boolean
     /** @defaultValue false **/
     hideMoreI?: boolean
@@ -89,6 +93,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         videoId = "",
         newsId = "",  
         showId = "", 
+        showItemId = "", 
         karaokeId = "", 
         queryString = "", 
         image, 
@@ -106,6 +111,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         videoCard = false, 
         newsCard = false, 
         showCard = false, 
+        showItemCard = false, 
         karaokeCard = false, 
         shimmer = false, 
         onPlay, 
@@ -132,8 +138,19 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         if(onPlay) onPlay(id)
     }, [onPlay, id])
 
+    const handleContextClick = useCallback((value: string) => {
+        if(value === 'info' && onOpenInfoMenu) {
+            onOpenInfoMenu()
+        }else if(value === 'queue' && onAddToQueue){
+            onAddToQueue()
+        }else if(value === 'share' && onShare){
+            onShare()
+        }
+        setShow(false)
+    }, [onOpenInfoMenu, onAddToQueue, onShare])
+
     const openBottomSheet = useCallback(() => {
-        if(width <= 786 && onOpenBottomSheet) onOpenBottomSheet()
+        if(width <= 786 && onOpenBottomSheet)onOpenBottomSheet()
     }, [width, onOpenBottomSheet])
 
     const moreBtn = useMemo(() => (
@@ -148,7 +165,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
     const routeMem = useMemo(() => {
         const route = `
             ${artists ? `/artist/${artistId}` : playlists ? `/playlist/${playlistId}` : alboms ? `/albom/${albomId}` : 
-            genres ? `/genre/${genreId}` : newsCard ? `/all/news/${newsId}${queryStringMem}` : videoCard ? `/all/clip/${videoId}${queryStringMem}` : showCard ? `/all/show/${showId}${queryStringMem}` : karaokeCard ? `/all/karaoke/${karaokeId}${queryStringMem}` : ""}
+            genres ? `/genre/${genreId}` : newsCard ? `/all/news/${newsId}${queryStringMem}` : videoCard ? `/all/clip/${videoId}${queryStringMem}` : showCard ? `/all/show/${showId}${showItemCard ? `/${showItemId}` : ""}${queryStringMem}` : karaokeCard ? `/all/karaoke/${karaokeId}${queryStringMem}` : ""}
         `
         return route
     }, [
@@ -159,6 +176,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         newsId, 
         videoId,
         showId,
+        showItemId, 
         karaokeId,
         newsCard,
         artists, 
@@ -167,6 +185,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         playlists,
         videoCard, 
         showCard, 
+        showItemCard, 
         karaokeCard, 
     ])
 
@@ -198,7 +217,6 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
         }
         return data
     }, [videoCard, showCard, newsCard, karaokeCard, alboms])
-
 
   return (
    <>
@@ -251,16 +269,7 @@ const StandardCard = React.forwardRef<HTMLDivElement, StandardProps>((props, ref
                                         ref={contentRef}
                                         open={show}
                                         actionsData={actionsData}
-                                        onClick={(value) => {
-                                        if(value === 'info' && onOpenInfoMenu) {
-                                            onOpenInfoMenu()
-                                        }else if(value === 'queue' && onAddToQueue){
-                                            onAddToQueue()
-                                        }else if(value === 'share' && onShare){
-                                            onShare()
-                                        }
-                                        setShow(false)
-                                    }}
+                                        onClick={handleContextClick}
                                     />
                                 </>
                             )

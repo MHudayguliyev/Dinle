@@ -1,85 +1,120 @@
 'use client';
-import React, { useEffect, useMemo, useState } from 'react'
-import Image from 'next/image';
-import ReactPlayer from 'react-player';
-import { useQuery } from 'react-query';
+import React, { useMemo, useRef, useState } from 'react'
+import { useInfiniteQuery, useQuery } from 'react-query';
 //styles
 import styles from './page.module.scss';
 
-import { GetClip } from '@app/_api/Queries/Getters';  
-import { useAppSelector, useAppDispatch } from '@app/_hooks/redux_hooks';
-import { setIsSongPlaying } from '@app/_redux/reducers/MediaReducer';
+import { GetClips } from '@app/_api/Queries/Getters';  
+import ShareSmI from '@app/_components/icons/shareSm/icon';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { CheckObjOrArrForNull, copyLink, getQueryString, isEmpty, isUndefined } from '@app/_utils/helpers';
+import useObserve from '@app/_hooks/useObserve';
+import Video from '@app/_api/types/queryReturnTypes/Video';
+import Bottomsheet from '@app/_components/Bottomsheet/Bottomsheet';
+import toast from 'react-hot-toast';
+import StandardCard from '@app/_components/StandardCard/StandardCard';
 
 const OneShow = ({params}: {params: {each: string}}) => {
-  const dispatch = useAppDispatch()
-  const videoId = useMemo(() => params.each,[params.each])
-  
-  const [isClient, setIsClient] = useState<boolean>(false)
-  const [isVideoPlaying, setVideoPlaying] = useState<boolean>(false)
-  const {isSongPlaying} = useAppSelector(state => state.mediaReducer)
-  
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-  useEffect(() => {
-    if(isSongPlaying && isVideoPlaying) dispatch(setIsSongPlaying(false))
-  }, [isSongPlaying, isVideoPlaying, dispatch])
+  const observer = useRef<IntersectionObserver>()
+  const showId = useMemo(() => params.each,[params.each])
+  const search = useSearchParams()
+  const pathname = usePathname()
+  const [openBs, setOpenBs] = useState<boolean>(false)
+  const [bsSongId, setBsSongId] = useState<string>("")
 
- 
+
+  const actionsData = [
+    {
+      value: 'share', 
+      label: {ru: 'Paylasmak', tm: 'Paylasmak'}, 
+      icon: <ShareSmI />
+    }
+  ]
+
   const {
-    data: clipData
-  } = useQuery(['Clip', videoId], () => GetClip(
-    videoId,'clips', videoId
-  ), 
-  {enabled: !!videoId})
-  console.log("clipData",clipData)
-  const cover = useMemo(() => (
-    <Image src={clipData?.data?.cover ?? ""} alt='cover' width='400' height='400'/>
-  ), [clipData])
+    data: seriesData, 
+    isLoading,
+    isFetching, 
+    fetchNextPage, 
+    hasNextPage
+  } = useInfiniteQuery({
+    queryKey: ['Series', showId], 
+    queryFn: ({pageParam = 0}) => GetClips({
+      page: pageParam, 
+      showId: showId, 
+      addClipId: false
+    }), 
+    getNextPageParam: (lastPage, allPages) => {
+      if(CheckObjOrArrForNull(lastPage.data.rows)) return allPages.length + 1
+      return null
+    }, 
+    enabled: !!showId
+  })
 
-  const clipPlayer = useMemo(() => (
-    <>
-      {isClient && (
-        <div className={styles.videoPlayer}>
-          <ReactPlayer
-            controls
-            onPlay={() => {
-              if(isSongPlaying) dispatch(setIsSongPlaying(false))
-              setVideoPlaying(true)
-            }}
-            onPause={() => setVideoPlaying(false)}
-            playing={isVideoPlaying}
-            url={clipData?.data?.link} 
-            onEnded={() => console.log("ended playing video")}
-            width={'100%'}
-            height={'100%'}
-            config={{
-              file: {
-                attributes: {
-                  poster: clipData?.data?.cover
-                }
-              }
-            }}
-          />
-        </div>
-      )}
-    </>
-  ), [clipData, isClient])
-  
+  const lastSeriesObserver = useObserve({
+    observer, fetchNextPage, 
+    hasNextPage, isFetching, 
+    isLoading
+  })
+
+  const seriasList = useMemo((): Video[] =>  {
+    // @ts-ignore
+    return seriesData?.pages.reduce((acc, page) => {
+      return [...acc, ...page.data.rows];
+  }, [])
+  }, [seriesData])
+
+  const handleShare = (clipId: string) => {
+    const queryString = getQueryString(search)
+    const notEmptyQueryString = !isUndefined(queryString) && !isEmpty(queryString)
+    const url = `${pathname}/${clipId}${notEmptyQueryString ? `?${queryString}` : "" }`
+    copyLink(url)?.then((mode) => {
+      if(mode === 'desktop') toast.success('Link is copied.')
+      if(openBs) {
+        setBsSongId("")
+        setOpenBs(false)
+      }
+    })
+  }
+
+
   return (
-    <div className={styles.presentation}>
-      <div className={styles.background_gradient}></div>
-      <div className={styles.background_image}>
-          {cover}
+    <>
+
+      <div className={styles.gridBox}>
+        {
+          seriasList?.map(seria => (
+            <StandardCard 
+              ref={lastSeriesObserver}
+              key={seria.id}
+              id={seria.id}
+              showId={showId}
+              showItemId={seria.id}
+              title={seria.title}
+              image={seria.cover}
+              showCard
+              showItemCard
+              onShare={() => handleShare(seria.id)}
+              onOpenBottomSheet={() => {
+                setBsSongId(seria.id)
+                setOpenBs(true)
+              }}
+              queryString={getQueryString(search)}
+            />
+          ))
+        }
       </div>
-      
-      <div className={styles.wrapper}>
-          <div className={styles.content_box}>
-              {clipPlayer}
-              <div className={styles.title}>{clipData?.data.title}</div>
-          </div>
-      </div>
-    </div>
+
+      <Bottomsheet 
+        open={openBs}
+        actionsData={actionsData}
+        close={() => setOpenBs(false)}
+        onClick={(value) => {
+          if(value === 'share')
+          handleShare(bsSongId)
+        }}
+      />
+    </>
   )
 }
 

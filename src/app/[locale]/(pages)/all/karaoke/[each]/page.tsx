@@ -27,7 +27,10 @@ const OneKaraoke = ({params}: {params: {each: string}}) => {
 
     const {
         data: karaokeData
-      } = useQuery(['OneKaraoke', karaokeId], () => GetClip(karaokeId,'karaoke'), 
+      } = useQuery(['OneKaraoke', karaokeId], () => GetClip({
+        id: karaokeId, 
+        clipId: 'karaoke'
+      }), 
       {enabled: !!karaokeId})
       
       const cover = useMemo(() => (

@@ -36,25 +36,6 @@ const SongActions = React.forwardRef<HTMLDivElement, SongActionsProps>((props, r
     } = props
 
     const locale = useLocale()
-
-    // const actions = [
-    // {
-    //     value: 'info', 
-    //     title: 'Maglumat', 
-    //     icon: <InfoSmI />
-    // }, 
-    //     {
-    //         value: 'share', 
-    //         title: 'Paylasmak', 
-    //         icon: <ShareSmI />
-    //     }, 
-    //     {
-    //         value: 'queue', 
-    //         title: 'Add to queue', 
-    //         icon: <ReadMoreI />
-    //     }
-    // ]
-
     const handleClick = useCallback((event: any, action:any) => {
         event.stopPropagation()
         if(onClick) onClick(action.value)

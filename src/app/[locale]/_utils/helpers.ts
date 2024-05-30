@@ -85,7 +85,6 @@ export const isAuthorized = () => {
   const expiresAt = user?.expiresAt
   const now = moment(new Date())
   if(expiresAt && token){
-    console.log('now.isSameOrAfter(expiresAt)',now.isSameOrAfter(expiresAt))
     if(now.isSameOrAfter(expiresAt)) return false
     return true
   }

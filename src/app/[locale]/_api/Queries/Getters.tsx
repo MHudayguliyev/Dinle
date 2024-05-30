@@ -161,6 +161,7 @@ export const GetClips = async (args: {
     page?: number 
     pageSize?: number 
     search?: string
+    addClipId?: boolean
 }): Promise<Videos> => {
     const {
         page = 0, 
@@ -168,30 +169,41 @@ export const GetClips = async (args: {
         search = "", 
         showId = "", 
         clipId = "clips", 
+        addClipId = true, 
     } = args
-    return api.patch<{
-        showId?: string
-        clipId?: 'clips' | 'karaoke' | "concerts" | "videos"
-        page?: number 
-        pageSize?: number 
-        search?: string
-    }, Videos>({
+
+    let json = {}
+    json = {...json, showId, page, pageSize, search}
+    if(addClipId) {
+        json = {...json, clipId: clipId}
+    }
+    return api.patch({
         url: `/client/clips`, 
-        data: {
-            showId,
-            clipId, 
-            page,
-            pageSize,
-            search
-        }
+        data: json
     })
 }
-export const GetClip = async (id: string, clipId?: 'clips' | 'karaoke' | "concerts" | "videos", showId = ""): Promise<{data: Video}> => {
+export const GetClip = async (args: {
+    id: string, 
+    showId?: string
+    clipId?: 'clips' | 'karaoke' | "concerts" | "videos",
+    addClipId?: boolean
+}): Promise<{data: Video}> => {
+
+    const {
+      id, 
+      showId = "", 
+      clipId = "clips", 
+      addClipId = true, 
+    } = args
+
+    let json = {}
+    json = {...json, id, showId}
+    if(addClipId) {
+        json = {...json, clipId: clipId}
+    }
     return api.patch({
         url: '/client/clips/one', 
-        data: {
-            id, clipId, showId
-        }
+        data: json
     })
 }
 export const GetShows = async (page = 0, pageSize = 10): Promise<Shows> => {

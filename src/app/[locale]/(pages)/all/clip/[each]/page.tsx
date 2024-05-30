@@ -25,10 +25,14 @@ const Clip = ({params}: {params: {each: string}}) => {
   }, [])
   useEffect(() => {
     if(isSongPlaying && isVideoPlaying) dispatch(setIsSongPlaying(false))
-  }, [isSongPlaying, isVideoPlaying, dispatch])
+  }, [isSongPlaying, isVideoPlaying])
   const {
     data: clipData
-  } = useQuery(['Clip', videoId, type], () => GetClip(videoId,type === 'videos' ? 'videos' : type === 'concerts' ? 'concerts' : 'clips'), 
+  } = useQuery(['Clip', videoId, type], 
+  () => GetClip({
+    id: videoId, 
+    clipId: type === 'videos' ? 'videos' : type === 'concerts' ? 'concerts' : 'clips'
+  }), 
   {enabled: !!videoId})
   
   const cover = useMemo(() => (
@@ -62,7 +66,7 @@ const Clip = ({params}: {params: {each: string}}) => {
         </div>
       )}
     </>
-  ), [clipData, isClient, dispatch])
+  ), [clipData, isClient])
   
   return (
     <div className={styles.presentation}>
