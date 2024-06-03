@@ -40,15 +40,15 @@ export default function PagesLayout({
   const isAudioPlayerOpen = useAppSelector(state => state.mediaReducer.isAudioPlayerOpen)
   const sidebarFolded = useAppSelector(state => state.sidebarReducer.sidebarFolded)
 
-  // useEffect(() => {
-  //   const handleContextMenu = (e:any) => {
-  //     e.preventDefault()
-  //   }
-  //   document.addEventListener('contextmenu',handleContextMenu)
-  //   return () => {
-  //     document.removeEventListener('contextmenu', handleContextMenu)
-  //   }
-  // }, [])
+  useEffect(() => {
+    const handleContextMenu = (e:any) => {
+      e.preventDefault()
+    }
+    document.addEventListener('contextmenu',handleContextMenu)
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu)
+    }
+  }, [])
 
   useEffect(() => {
     if(showLyrics) setShowLyrics(false)
