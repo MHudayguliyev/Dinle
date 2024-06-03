@@ -11,7 +11,7 @@ import { useAppSelector, useAppDispatch } from '@app/_hooks/redux_hooks';
 import { setIsSongPlaying } from '@app/_redux/reducers/MediaReducer';
 import { useQuery } from 'react-query';
 
-const Clip = ({params}: {params: {each: string}}) => {
+const Concert = ({params}: {params: {each: string}}) => {
   const dispatch = useAppDispatch()
   const videoId = useMemo(() => params.each,[params.each])
   
@@ -30,7 +30,7 @@ const Clip = ({params}: {params: {each: string}}) => {
   } = useQuery(['Clip', videoId], 
   () => GetClip({
     id: videoId, 
-    clipId: 'clips'
+    clipId: 'concerts'
   }), 
   {enabled: !!videoId})
   
@@ -84,4 +84,4 @@ const Clip = ({params}: {params: {each: string}}) => {
   )
 }
 
-export default Clip
+export default Concert

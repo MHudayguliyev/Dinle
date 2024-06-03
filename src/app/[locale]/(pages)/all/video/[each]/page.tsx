@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import ReactPlayer from 'react-player';
 //styles
@@ -11,7 +10,7 @@ import { useAppSelector, useAppDispatch } from '@app/_hooks/redux_hooks';
 import { setIsSongPlaying } from '@app/_redux/reducers/MediaReducer';
 import { useQuery } from 'react-query';
 
-const Clip = ({params}: {params: {each: string}}) => {
+const Video = ({params}: {params: {each: string}}) => {
   const dispatch = useAppDispatch()
   const videoId = useMemo(() => params.each,[params.each])
   
@@ -27,10 +26,10 @@ const Clip = ({params}: {params: {each: string}}) => {
   }, [isSongPlaying, isVideoPlaying])
   const {
     data: clipData
-  } = useQuery(['Clip', videoId], 
+  } = useQuery(['Video', videoId], 
   () => GetClip({
     id: videoId, 
-    clipId: 'clips'
+    clipId: 'videos'
   }), 
   {enabled: !!videoId})
   
@@ -84,4 +83,4 @@ const Clip = ({params}: {params: {each: string}}) => {
   )
 }
 
-export default Clip
+export default Video

@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 import Bottomsheet from '@app/_components/Bottomsheet/Bottomsheet';
 import ShareSmI from '@app/_components/icons/shareSm/icon';
 
-const Clips = () => {
+const Concerts = () => {
   const observer = useRef<IntersectionObserver>()
   const search = useSearchParams()
   const pathname = usePathname()
@@ -27,10 +27,10 @@ const Clips = () => {
     fetchNextPage, 
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['Clips'], 
+    queryKey: ['Concerts'], 
     queryFn: ({pageParam}) => GetClips({
       page: pageParam,
-      clipId: 'clips'
+      clipId: 'concerts'
     }), 
     getNextPageParam: (lastPage, allPages) => {
       if(CheckObjOrArrForNull(lastPage.data.rows)) return allPages.length + 1
@@ -81,10 +81,10 @@ const Clips = () => {
               ref={lastClipObserver}
               key={clip.id}
               id={clip.id}
-              clipId={clip.id}
+              concertId={clip.id}
               title={clip.title}
               image={clip.cover}
-              clipCard
+              concertCard
               videoDuration={clip.duration}
               onShare={() => handleShare(clip.id)}
               onOpenBottomSheet={() => {
@@ -110,4 +110,4 @@ const Clips = () => {
   )
 }
 
-export default Clips
+export default Concerts

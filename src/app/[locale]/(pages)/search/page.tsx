@@ -938,10 +938,10 @@ const Search = () => {
                     <SwiperSlide key={clip.id}>
                       <StandardCard 
                         id={clip.id}
-                        videoId={clip.id}
+                        clipId={clip.id}
                         title={clip.title}
                         image={clip.cover}
-                        videoCard
+                        clipCard
                         videoDuration={clip.duration}
                         onShare={() => handleShare(clip.id)}
                         onOpenBottomSheet={() => {

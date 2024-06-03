@@ -55,7 +55,9 @@ const Karaoke = () => {
   }, [karaokeData])
 
   const handleShare = (clipId: string) => {
-    const url = `${pathname}/${clipId}`
+    const queryString = getQueryString(search)
+    const notEmptyQueryString = !isUndefined(queryString) && !isEmpty(queryString)
+    const url = `${pathname}/${clipId}${notEmptyQueryString ? `?${queryString}` : "" }`
     copyLink(url)?.then((mode) => {
       if(mode === 'desktop') toast.success('Link is copied.')
       if(openBs) {

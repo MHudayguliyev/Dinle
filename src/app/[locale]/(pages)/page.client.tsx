@@ -40,7 +40,7 @@ import Preloader from '@app/_compLibrary/Preloader';
 import {useTranslations, useLocale} from 'next-intl';
 import toast from 'react-hot-toast';
 
-type Affixes = 'news' | 'clip' | 'show' | 'karaoke' | 'song'
+type Affixes = 'news' | 'clip' | 'show' | 'karaoke' | 'song' | 'concert' | 'video'
 
 const cn = classNames.bind(styles)
 export default function Home() {
@@ -52,6 +52,7 @@ export default function Home() {
   const [openDropdown] = useClickOutside(dropdownContentRef, dropdownToggleRef, 'mousedown')
   const [songId, setSongId] = useState<string>("")
   const [bottomSheetAffix, setBottomSheetAffix] = useState<Affixes>('song')
+  const [bsShareTitle, setBsShareTitle] = useState<string>("")
   const [showBottomSheet, setShowBottomSheet] = useState<boolean>(false)
   const [showInfo, setShowInfo] = useState<boolean>(false)
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
@@ -75,7 +76,7 @@ export default function Home() {
     return homeItems?.data
   },[homeItems])
 
-  // console.log(homeItems)
+  console.log(homeItems)
 
   useEffect(() => {
     if(!isAuthorized()){
@@ -140,8 +141,9 @@ export default function Home() {
     }, 
   ]
 
-  const handleCopyLink = useCallback((id: string, affix: Affixes) => {
-    copyLink(`${affix === 'song' ? "/song" : `/all/${affix}`}/${id}`)?.then((mode) => {
+  const handleCopyLink = useCallback((id: string, affix: Affixes, title: string) => {
+    const url = `${affix === 'song' ? "/song" : `/all/${affix}`}/${id}?title=${title}`
+    copyLink(url)?.then((mode) => {
       if(showBottomSheet) setShowBottomSheet(false)
       if(mode === 'desktop') toast.success('Link is copied.')
       setSongId("")
@@ -189,7 +191,9 @@ export default function Home() {
                 const top10 = homeItem.id === 'top10songs'
                 const playlist = homeItem.id === 'playlists'
                 const albom = homeItem.id === 'alboms'
-                const clip = homeItem.id === 'clips' || homeItem.id === 'videos' || homeItem.id === 'concerts'
+                const clip = homeItem.id === 'clips' 
+                const concerts = homeItem.id === 'concerts'
+                const videos = homeItem.id === 'videos'
                 const show = homeItem.id === 'shows'
                 const karaoke = homeItem.id === 'karaoke'
                 const news = homeItem.id === 'news'
@@ -203,7 +207,9 @@ export default function Home() {
                           artist ? '/search?tab=artist' : 
                           playlist ? '/search?tab=playlist' : 
                           albom ? '/search?tab=albom' : 
-                          clip ? `/all/clip${searchParam}${homeItem.id === 'concerts' ? `&type=${homeItem.id}` : homeItem.id === 'videos' ? `&type=${homeItem.id}` : ""}` : 
+                          clip ? `/all/clip${searchParam}` : 
+                          concerts ? `/all/concert${searchParam}` : 
+                          videos ? `/all/video${searchParam}` :
                           news ? `/all/news${searchParam}` : 
                           show ? `/all/show${searchParam}` : 
                           karaoke ? `/all/karaoke${searchParam}` : 
@@ -242,7 +248,7 @@ export default function Home() {
                       >
                         {
                           homeItem?.rows?.map((row, rowIndex) => {
-                            const affix = clip ? 'clip' : show ? 'show' : news ? 'news' : karaoke ? 'karaoke' : 'song'
+                            const affix = clip ? 'clip' : show ? 'show' : news ? 'news' : karaoke ? 'karaoke' : videos ? 'video' : concerts ? 'clip' : 'song'
                             return (
                               <SwiperSlide key={rowIndex}>
                                 <StandardCard 
@@ -252,9 +258,11 @@ export default function Home() {
                                   playlistId={playlist ? row.id : row?.playlistId}
                                   albomId={albom ? row.id : row?.albomId}
                                   videoId={row.id}
+                                  clipId={row.id}
                                   newsId={row.id}
                                   showId={row.id}
                                   karaokeId={row.id}
+                                  concertId={row.id}
                                   title={row.title}
                                   description={row.description}
                                   image={row.cover}
@@ -262,19 +270,24 @@ export default function Home() {
                                   artists={artist}
                                   playlists={playlist}
                                   alboms={albom}
-                                  videoCard={clip}
+                                  videoCard={videos}
+                                  clipCard={clip}
                                   showCard={show}
                                   newsCard={news}
                                   karaokeCard={karaoke}
+                                  concertCard={concerts}
                                   videoDuration={clip ? row.duration : undefined}
                                   hideMoreI={albom || playlist}
+                                  queryString={
+                                    (clip || videos || karaoke || concerts || show || news) ? `title=${homeItem.name}` : ""
+                                  }
                                   standard={homeItem.type === 'playlist' || homeItem.type === 'top-playlist'}
                                   onPlay={(id) => {
                                     if((homeItem.type === 'playlist' || homeItem.type === 'top-playlist') || top10) 
                                     dispatch(setCurrentSong({ data: homeItem?.rows, id: row.id, index: rowIndex }))
                                   }}
                                   onShare={() => 
-                                    handleCopyLink(row.id, affix)
+                                    handleCopyLink(row.id, affix, homeItem.name)
                                   }
                                   onOpenInfoMenu={() => {
                                     setSongId(row.id)
@@ -285,6 +298,7 @@ export default function Home() {
                                   }
                                   onOpenBottomSheet={() => {
                                     setBottomSheetAffix(affix)
+                                    setBsShareTitle(homeItem.name)
                                     setSongId(row.id)
                                     setShowBottomSheet(true)
                                   }}
@@ -312,7 +326,7 @@ export default function Home() {
             setShowInfo(true)
             setShowBottomSheet(false)
           }else if(value === 'share'){
-            handleCopyLink(songId, bottomSheetAffix)
+            handleCopyLink(songId, bottomSheetAffix, bsShareTitle)
             setShowBottomSheet(false)
           }
         }}

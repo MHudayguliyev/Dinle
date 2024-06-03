@@ -441,10 +441,10 @@ const Artist = ({params}: {params: {each: string}}) => {
                         <StandardCard 
                             key={clip.id}
                             id={clip.id}
-                            videoId={clip.id}
+                            clipId={clip.id}
                             title={clip.title}
                             image={clip.cover}
-                            videoCard
+                            clipCard
                             videoDuration={clip.duration}
                             onOpenBottomSheet={() => {
                                 setBsSongId(clip.id)
